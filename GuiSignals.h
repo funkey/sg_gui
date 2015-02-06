@@ -2,13 +2,14 @@
 #define SG_GUI_SIGNALS_H__
 
 #include <util/rect.hpp>
+#include <scopegraph/Signals.h>
 
 namespace sg_gui {
 
 /**
  * Base class for all gui signals.
  */
-class GuiSignal {};
+class GuiSignal : public sg::Signal { public: typedef sg::Signal parent_type; };
 
 /**
  * Indicates a change of the content of a gui element.

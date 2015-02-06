@@ -2,7 +2,8 @@
 #define SG_GUI_MESH_VIEW_H__
 
 #include <scopegraph/Agent.h>
-#include <sg_gui/GuiSignals.h>
+#include "GuiSignals.h"
+#include "ViewSignals.h"
 #include "RecordableView.h"
 #include "Meshes.h"
 
@@ -13,12 +14,18 @@ class MeshView :
 			MeshView,
 			sg::Accepts<
 					Draw,
-					QuerySize
+					QuerySize,
+					ChangeAlpha
+			>,
+			sg::Provides<
+					ContentChanged
 			>
 		>,
 		public RecordableView {
 
 public:
+
+	MeshView() : _alpha(1.0) {}
 
 	void setMeshes(std::shared_ptr<Meshes> meshes);
 
@@ -26,9 +33,15 @@ public:
 
 	void onSignal(QuerySize& signal);
 
+	void onSignal(ChangeAlpha& signal);
+
 private:
 
+	void updateRecording();
+
 	std::shared_ptr<Meshes> _meshes;
+
+	double _alpha;
 };
 
 } // namespace sg_gui

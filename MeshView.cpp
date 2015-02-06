@@ -9,6 +9,41 @@ MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 
 	_meshes = meshes;
 
+	updateRecording();
+}
+
+void
+MeshView::onSignal(Draw& /*draw*/) {
+
+	draw();
+}
+
+void
+MeshView::onSignal(QuerySize& signal) {
+
+	if (!_meshes)
+		return;
+
+	signal.setSize(
+			util::rect<double>(
+					_meshes->getBoundingBox().getMinX(),
+					_meshes->getBoundingBox().getMinY(),
+					_meshes->getBoundingBox().getMaxX(),
+					_meshes->getBoundingBox().getMaxY()));
+}
+
+void
+MeshView::onSignal(ChangeAlpha& signal) {
+
+	_alpha = signal.alpha;
+	updateRecording();
+
+	send<ContentChanged>();
+}
+
+void
+MeshView::updateRecording() {
+
 	OpenGl::Guard guard;
 
 	startRecording();
@@ -21,7 +56,11 @@ MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 		// colorize the mesh according to its id
 		unsigned char r, g, b;
 		idToRgb(id, r, g, b);
-		glColor3f(static_cast<float>(r)/255.0, static_cast<float>(g)/255.0, static_cast<float>(b)/255.0);
+		glColor4f(
+				static_cast<float>(r)/255.0,
+				static_cast<float>(g)/255.0,
+				static_cast<float>(b)/255.0,
+				_alpha);
 
 		const std::vector<Triangle>& triangles = _meshes->get(id)->getTriangles();
 
@@ -43,26 +82,8 @@ MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 	}
 
 	stopRecording();
-}
 
-void
-MeshView::onSignal(Draw& /*draw*/) {
-
-	draw();
-}
-
-void
-MeshView::onSignal(QuerySize& signal) {
-
-	if (!_meshes)
-		return;
-
-	signal.setSize(
-			util::rect<double>(
-					_meshes->getBoundingBox().getMinX(),
-					_meshes->getBoundingBox().getMinY(),
-					_meshes->getBoundingBox().getMaxX(),
-					_meshes->getBoundingBox().getMaxY()));
+	send<ContentChanged>();
 }
 
 } // namespace sg_gui
