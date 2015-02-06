@@ -1,7 +1,7 @@
-#ifndef GUI_BUTTON_H__
-#define GUI_BUTTON_H__
+#ifndef SG_GUI_BUTTON_H__
+#define SG_GUI_BUTTON_H__
 
-namespace gui {
+namespace sg_gui {
 
 namespace buttons {
 
@@ -14,7 +14,7 @@ enum Button {
 
 } // namespace buttons
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_BUTTON_H__
+#endif // SG_GUI_BUTTON_H__
 

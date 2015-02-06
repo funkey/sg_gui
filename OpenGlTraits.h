@@ -1,5 +1,5 @@
-#ifndef OPENGL_TRAITS_H__
-#define OPENGL_TRAITS_H__
+#ifndef SG_GUI_OPENGL_TRAITS_H__
+#define SG_GUI_OPENGL_TRAITS_H__
 
 #include <boost/array.hpp>
 
@@ -15,7 +15,7 @@
 
 #include <sg_gui/Skia.h>
 
-namespace gui {
+namespace sg_gui {
 
 namespace detail {
 
@@ -114,7 +114,7 @@ struct pixel_format_traits<boost::array<ValueType, 4> > {
 
 } // namspace detail
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // OPENGL_TRAITS_H__
+#endif // SG_OPENGL_TRAITS_H__
 

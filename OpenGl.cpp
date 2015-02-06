@@ -7,7 +7,7 @@
 
 logger::LogChannel opengllog("opengllog", "[OpenGl] ");
 
-namespace gui {
+namespace sg_gui {
 
 namespace priv {
 
@@ -247,4 +247,4 @@ OpenGl::Guard::invalidateCurrentContext() {
 	_openGl->_contextCreator.reset();
 }
 
-} // namespace gui
+} // namespace sg_gui

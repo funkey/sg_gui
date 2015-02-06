@@ -1,7 +1,7 @@
-#ifndef GUI_MODIFIERS_H__
-#define GUI_MODIFIERS_H__
+#ifndef SG_GUI_MODIFIERS_H__
+#define SG_GUI_MODIFIERS_H__
 
-namespace gui {
+namespace sg_gui {
 
 enum Modifiers {
 
@@ -26,7 +26,7 @@ static const Modifiers AltDown     = static_cast<Modifiers>(32);
 
 } // namespace keys
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_MODIFIERS_H__
+#endif // SG_GUI_MODIFIERS_H__
 

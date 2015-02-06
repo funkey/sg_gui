@@ -5,7 +5,7 @@
 #include "GuiSignals.h"
 #include "MouseSignals.h"
 
-namespace gui {
+namespace sg_gui {
 
 class ZoomView :
 		public sg::Scope<
@@ -96,7 +96,7 @@ private:
 	double _zClipFar;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
 #endif // SG_GUI_ZOOM_VIEW_H__
 

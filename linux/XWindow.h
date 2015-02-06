@@ -1,5 +1,5 @@
-#ifndef X_WINDOW_H__
-#define X_WINDOW_H__
+#ifndef SG_GUI_X_WINDOW_H__
+#define SG_GUI_X_WINDOW_H__
 
 #include <map>
 #include <string>
@@ -12,7 +12,7 @@
 
 using std::string;
 
-namespace gui {
+namespace sg_gui {
 
 /**
  * Linux dependent implementation of the abstract class WindowBase.
@@ -207,7 +207,7 @@ private:
 	Atom _tabletAreaProperty;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // X_WINDOW_H__
+#endif // SG_GUI_X_WINDOW_H__
 

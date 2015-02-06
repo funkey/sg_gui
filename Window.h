@@ -20,21 +20,21 @@
 #if defined(SYSTEM_LINUX) || defined(SYSTEM_FREEBSD)
 
 	#include <sg_gui/linux/XWindow.h>
-	typedef gui::XWindow WindowType;
+	typedef sg_gui::XWindow WindowType;
 
 #elif defined(SYSTEM_WINDOWS)
 
 	#include <sg_gui/windows/WinWindow.h>
-	typedef gui::WinWindow WindowType;
+	typedef sg_gui::WinWindow WindowType;
 
 #elif defined(SYSTEM_OSX)
 
 	#include <sg_gui/osx/CocoaWindow.h>
-	typedef gui::CocoaWindow WindowType;
+	typedef sg_gui::CocoaWindow WindowType;
 
 #endif
 
-namespace gui {
+namespace sg_gui {
 
 using namespace util;
 
@@ -140,16 +140,6 @@ private:
 	void updateOutputs() {};
 
 	/**
-	 * Pipeline callback for new input connections.
-	 */
-	//void onInputAdded(const pipeline::InputAdded<gui::Painter>& signal);
-
-	/**
-	 * Pipeline callback for modified signals from the painter.
-	 */
-	//void onModified(const pipeline::Modified& signal);
-
-	/**
 	 * Callback for top-down resize events.
 	 *
 	 * @return True, if the size of the window changed and a redraw is in order.
@@ -182,7 +172,6 @@ private:
 	 */
 	void processFingerUpEvent(
 			unsigned long              timestamp,
-			const buttons::Button&     button,
 			const util::point<double>& position,
 			int                        id,
 			const Modifiers&           modifiers);
@@ -194,7 +183,6 @@ private:
 	 */
 	void processFingerDownEvent(
 			unsigned long              timestamp,
-			const buttons::Button&     button,
 			const util::point<double>& position,
 			int                        id,
 			const Modifiers&           modifiers);
@@ -336,26 +324,6 @@ private:
 	 */
 	void saveFrame();
 
-	// the painter to draw
-	//pipeline::Input<Painter> _painter;
-
-	// backward signals
-	//signals::Slot<const Resize>           _resize;
-	//signals::Slot<KeyDown>                _keyDown;
-	//signals::Slot<KeyUp>                  _keyUp;
-	//signals::Slot<FingerMove>             _fingerMove;
-	//signals::Slot<FingerDown>             _fingerDown;
-	//signals::Slot<FingerUp>               _fingerUp;
-	//signals::Slot<PenMove>                _penMove;
-	//signals::Slot<PenDown>                _penDown;
-	//signals::Slot<PenUp>                  _penUp;
-	//signals::Slot<PenIn>                  _penIn;
-	//signals::Slot<PenOut>                 _penOut;
-	//signals::Slot<PenAway>                _penAway;
-	//signals::Slot<MouseMove>              _mouseMove;
-	//signals::Slot<MouseDown>              _mouseDown;
-	//signals::Slot<MouseUp>                _mouseUp;
-
 	// the region displayed by this window in GL units
 	rect<double>  _region;
 
@@ -377,7 +345,7 @@ private:
 	double        _clear_r, _clear_g, _clear_b;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
 #endif // SG_GUI_WINDOW_H__
 

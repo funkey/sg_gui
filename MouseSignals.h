@@ -1,86 +1,60 @@
-#ifndef GUI_MOUSE_SIGNALS_H__
-#define GUI_MOUSE_SIGNALS_H__
+#ifndef SG_GUI_MOUSE_SIGNALS_H__
+#define SG_GUI_MOUSE_SIGNALS_H__
 
-#include "PointerSignal.h"
+#include "PointerSignals.h"
 #include <sg_gui/Buttons.h>
 #include <sg_gui/Modifiers.h>
 
-namespace gui {
+namespace sg_gui {
 
-class MouseSignal : public PointerSignal {
-
-public:
-
-	typedef PointerSignal parent_type;
-
-	MouseSignal() :
-		modifiers(NoModifier) {}
-
-	MouseSignal(
-			unsigned long timestamp,
-			const util::point<double>& position_,
-			const Modifiers& modifiers_) :
-		PointerSignal(timestamp, position_),
-		modifiers(modifiers_) {}
-
-	Modifiers modifiers;
-};
-
-class MouseMove : public MouseSignal {
+class MouseMove : public PointerMove {
 
 public:
 
-	typedef MouseSignal parent_type;
-
-	MouseMove() {}
+	typedef PointerMove parent_type;
 
 	MouseMove(
 			unsigned long timestamp,
 			const util::point<double>& position,
 			const Modifiers& modifiers) :
-		MouseSignal(timestamp, position, modifiers) {}
+		PointerMove(timestamp, position, modifiers) {}
 };
 
-class MouseDown : public MouseSignal {
+class MouseDown : public PointerDown {
 
 public:
 
-	typedef MouseSignal parent_type;
-
-	MouseDown() :
-		button(buttons::NoButton) {}
+	typedef PointerDown parent_type;
 
 	MouseDown(
 			unsigned long timestamp,
 			const buttons::Button& button_,
 			const util::point<double>& position,
 			const Modifiers& modifiers) :
-		MouseSignal(timestamp, position, modifiers),
+		PointerDown(timestamp, position, modifiers),
 		button(button_) {}
 
 	buttons::Button button;
 };
 
-class MouseUp   : public MouseSignal {
+class MouseUp : public PointerUp {
 
 public:
 
-	typedef MouseSignal parent_type;
-
-	MouseUp() {}
+	typedef PointerUp parent_type;
 
 	MouseUp(
 			unsigned long timestamp,
 			const buttons::Button& button_,
 			const util::point<double>& position,
 			const Modifiers& modifiers) :
-		MouseSignal(timestamp, position, modifiers),
+		PointerUp(timestamp, position, modifiers),
 		button(button_) {}
 
 	buttons::Button button;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_MOUSE_SIGNALS_H__
+#endif // SG_GUI_MOUSE_SIGNALS_H__
 

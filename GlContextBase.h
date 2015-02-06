@@ -1,5 +1,5 @@
-#ifndef GL_CONTEXT_BASE_H__
-#define GL_CONTEXT_BASE_H__
+#ifndef SG_GUI_GL_CONTEXT_BASE_H__
+#define SG_GUI_GL_CONTEXT_BASE_H__
 
 #include <cstdlib>
 
@@ -7,7 +7,7 @@
 
 using std::abs;
 
-namespace gui {
+namespace sg_gui {
 
 class GlContextBase {
 
@@ -54,7 +54,7 @@ protected:
 	}
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GL_CONTEXT_BASE_H__
+#endif // SG_GUI_GL_CONTEXT_BASE_H__
 

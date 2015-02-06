@@ -18,7 +18,7 @@ using std::endl;
 
 using namespace logger;
 
-namespace gui {
+namespace sg_gui {
 
 LogChannel winlog("winlog", "[Window] ");
 
@@ -43,7 +43,7 @@ Window::Window(
 
 Window::~Window() {
 
-	gui::OpenGl::Guard guard;
+	sg_gui::OpenGl::Guard guard;
 
 	LOG_DEBUG(winlog) << "[" << getCaption() << "] destructing..." << endl;
 
@@ -167,23 +167,21 @@ Window::processKeyDownEvent(const keys::Key& key, const Modifiers& modifiers) {
 void
 Window::processFingerUpEvent(
 		unsigned long              timestamp,
-		const buttons::Button&     button,
 		const util::point<double>& position,
 		int                        id,
 		const Modifiers&           modifiers) {
 
-	sendInner<FingerUp>(timestamp, button, position, id, modifiers);
+	sendInner<FingerUp>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processFingerDownEvent(
 		unsigned long              timestamp,
-		const buttons::Button&     button,
 		const util::point<double>& position,
 		int                        id,
 		const Modifiers&           modifiers) {
 
-	sendInner<FingerDown>(timestamp, button, position, id, modifiers);
+	sendInner<FingerDown>(timestamp, position, id, modifiers);
 }
 
 void
@@ -392,4 +390,4 @@ Window::processCloseEvent(){
 	close();
 }
 
-} // namespace gui
+} // namespace sg_gui

@@ -1,95 +1,65 @@
-#ifndef GUI_FINGER_SIGNALS_H__
-#define GUI_FINGER_SIGNALS_H__
+#ifndef SG_GUI_FINGER_SIGNALS_H__
+#define SG_GUI_FINGER_SIGNALS_H__
 
-#include "PointerSignal.h"
+#include "PointerSignals.h"
 #include <sg_gui/Buttons.h>
 #include <sg_gui/Modifiers.h>
 
-namespace gui {
+namespace sg_gui {
 
-class FingerSignal : public PointerSignal {
-
-public:
-
-	typedef PointerSignal parent_type;
-
-	FingerSignal() :
-		id(0),
-		modifiers(NoModifier) {}
-
-	FingerSignal(
-			unsigned long timestamp,
-			const util::point<double>& position_,
-			int id_,
-			const Modifiers& modifiers_) :
-		PointerSignal(timestamp, position_),
-		id(id_),
-		modifiers(modifiers_) {}
-
-	int id;
-
-	Modifiers modifiers;
-};
-
-class FingerMove : public FingerSignal {
+class FingerMove : public PointerMove {
 
 public:
 
-	typedef FingerSignal parent_type;
-
-	FingerMove() {}
+	typedef PointerMove parent_type;
 
 	FingerMove(
 			unsigned long timestamp,
 			const util::point<double>& position,
-			int id,
+			int id_,
 			const Modifiers& modifiers) :
-		FingerSignal(timestamp, position, id, modifiers) {}
+		PointerMove(timestamp, position, modifiers),
+		id(id_) {}
+
+	int id;
 };
 
-class FingerDown : public FingerSignal {
+class FingerDown : public PointerDown {
 
 public:
 
-	typedef FingerSignal parent_type;
-
-	FingerDown() :
-		button(buttons::NoButton) {}
+	typedef PointerDown parent_type;
 
 	FingerDown(
 			unsigned long timestamp,
-			const buttons::Button& button_,
 			const util::point<double>& position,
-			int id,
+			int id_,
 			const Modifiers& modifiers) :
-		FingerSignal(timestamp, position, id, modifiers),
-		button(button_) {}
+		PointerDown(timestamp, position, modifiers),
+		id(id_) {}
 
-	buttons::Button button;
+	int id;
 };
 
-class FingerUp   : public FingerSignal {
+class FingerUp : public PointerUp {
 
 public:
 
-	typedef FingerSignal parent_type;
-
-	FingerUp() {}
+	typedef PointerUp parent_type;
 
 	FingerUp(
 			unsigned long timestamp,
-			const buttons::Button& button_,
 			const util::point<double>& position,
-			int id,
+			int id_,
 			const Modifiers& modifiers) :
-		FingerSignal(timestamp, position, id, modifiers),
-		button(button_) {}
+		PointerUp(timestamp, position, modifiers),
+		id(id_) {}
 
-	buttons::Button button;
+	int id;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_FINGER_SIGNALS_H__
+#endif // SG_GUI_FINGER_SIGNALS_H__
 
 

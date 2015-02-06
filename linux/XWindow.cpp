@@ -16,7 +16,7 @@ using namespace logger;
 
 LogChannel xlog("xlog", "[XWindow] ");
 
-namespace gui {
+namespace sg_gui {
 
 XWindow::XWindow(string caption, const WindowMode& mode) :
 	WindowBase(caption),
@@ -384,7 +384,6 @@ XWindow::processEvent(XEvent& event) {
 
 					processFingerDownEvent(
 								deviceEvent->time,
-								button,
 								point<double>(deviceEvent->event_x, deviceEvent->event_y),
 								deviceEvent->detail,
 								modifiers);
@@ -415,7 +414,6 @@ XWindow::processEvent(XEvent& event) {
 
 					processFingerUpEvent(
 								deviceEvent->time,
-								button,
 								point<double>(deviceEvent->event_x, deviceEvent->event_y),
 								deviceEvent->detail,
 								modifiers);
@@ -574,7 +572,7 @@ XWindow::processEvent(XEvent& event) {
 				key       = keycodeToKey(event.xkey.keycode);
 				modifiers = stateToModifiers(event.xkey.state);
 
-				if (key == gui::keys::F)
+				if (key == sg_gui::keys::F)
 					setFullscreen(!_fullscreen);
 				else
 					processKeyUpEvent(key, modifiers);
@@ -992,4 +990,4 @@ XWindow::getPressure(XIDeviceEvent* event) {
 	return 0.75;
 }
 
-} // namespace gui
+} // namespace sg_gui

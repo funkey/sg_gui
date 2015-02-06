@@ -1,12 +1,12 @@
-#ifndef GLX_CONTEXT_H__
-#define GLX_CONTEXT_H__
+#ifndef SG_GUI_GLX_CONTEXT_H__
+#define SG_GUI_GLX_CONTEXT_H__
 
 #include <X11/Xlib.h>
 
 #include <sg_gui/GlContextBase.h>
 #include <sg_gui/OpenGl.h>
 
-namespace gui {
+namespace sg_gui {
 
 // forward declaration
 class Window;
@@ -86,7 +86,7 @@ private:
 	bool       _active;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GLX_CONTEXT_H__
+#endif // SG_GUI_GLX_CONTEXT_H__
 

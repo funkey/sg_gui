@@ -1,9 +1,9 @@
-#ifndef GUI_WINDOW_SIGNALS_H__
-#define GUI_WINDOW_SIGNALS_H__
+#ifndef SG_GUI_WINDOW_SIGNALS_H__
+#define SG_GUI_WINDOW_SIGNALS_H__
 
 #include "GuiSignals.h"
 
-namespace gui {
+namespace sg_gui {
 
 /**
  * Base class for window signals.
@@ -30,7 +30,7 @@ public:
  */
 class WindowIconify : public WindowSignal { public: typedef WindowSignal parent_type; };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_WINDOW_SIGNALS_H__
+#endif // SG_GUI_WINDOW_SIGNALS_H__
 

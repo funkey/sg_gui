@@ -9,15 +9,15 @@
  *         Author:  Jan Funke, TU Dresden
  */
 
-#ifndef __ERROR_HANDLING_H
-#define __ERROR_HANDLING_H
+#ifndef SG_GUI_ERROR_HANDLING_H
+#define SG_GUI_ERROR_HANDLING_H
 
 #include <assert.h>
 #include "util/Logger.h"
 
   #ifndef NDEBUG
 
-    #define GL_ASSERT assert(glCheckHealth())
+    #define GL_ASSERT assert(sg_gui::glCheckHealth())
 
   #else
 
@@ -25,7 +25,11 @@
 
   #endif // NDEBUG
 
+namespace sg_gui {
+
   bool glCheckHealth();
 
-#endif // __ERROR_HANDLING_H
+} // namespace sg_gui
+
+#endif // SG_GUI_ERROR_HANDLING_H
 

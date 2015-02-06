@@ -17,18 +17,21 @@ zoom with `CTRL` + mouse wheel.
 #include <sg_gui/Window.h>
 #include <sg_gui/ZoomView.h>
 
+using namespace sg;
+using namespace sg_gui;
+
 /**
  * A simple example painter, that draws a yellow square. A painter is just an
  * Agent that accepts the Draw signal.
  */
 class SimplePainter :
-		public sg::Agent<
+		public Agent<
 			SimplePainter,
-			sg::Accepts<gui::Draw>> {
+			Accepts<Draw>> {
 
 public:
 
-	void onSignal(gui::Draw&) {
+	void onSignal(Draw&) {
 
 		glDisable(GL_CULL_FACE);
 
@@ -47,8 +50,8 @@ public:
 
 int main(int argc, char** argv) {
 
-  auto window  = std::make_shared<sg::gui::Window>("test window");
-  auto zoom    = std::make_shared<sg::gui::ZoomView>();
+  auto window  = std::make_shared<Window>("test window");
+  auto zoom    = std::make_shared<ZoomView>();
   auto painter = std::make_shared<SimplePainter>();
 
   window->add(zoom);

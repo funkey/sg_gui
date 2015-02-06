@@ -12,6 +12,8 @@
 #include "OpenGl.h"
 #include "error_handling.h"
 
+namespace sg_gui {
+
 bool glCheckHealth() {
 
   GLenum error = glGetError();
@@ -24,3 +26,4 @@ bool glCheckHealth() {
   return true;
 }
 
+} // namespace sg_gui

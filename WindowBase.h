@@ -1,5 +1,5 @@
-#ifndef WINDOW_BASE_H__
-#define WINDOW_BASE_H__
+#ifndef SG_GUI_WINDOW_BASE_H__
+#define SG_GUI_WINDOW_BASE_H__
 
 #include <string>
 
@@ -12,7 +12,7 @@
 
 using std::string;
 
-namespace gui {
+namespace sg_gui {
 
 /**
  * Abstract base class that defines the interface for all window
@@ -90,7 +90,6 @@ public:
 	 */
 	virtual void processFingerUpEvent(
 			unsigned long              timestamp,
-			const buttons::Button&     button,
 			const util::point<double>& position,
 			int                        id,
 			const Modifiers&           modifiers) = 0;
@@ -102,7 +101,6 @@ public:
 	 */
 	virtual void processFingerDownEvent(
 			unsigned long              timestamp,
-			const buttons::Button&     button,
 			const util::point<double>& position,
 			int                        id,
 			const Modifiers&           modifiers) = 0;
@@ -280,7 +278,7 @@ private:
 	string _caption;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // WINDOW_BASE_H__
+#endif // SG_GUI_WINDOW_BASE_H__
 

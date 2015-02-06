@@ -1,7 +1,7 @@
-#ifndef CONTEXT_SETTINGS_H__
-#define CONTEXT_SETTINGS_H__
+#ifndef SG_GUI_CONTEXT_SETTINGS_H__
+#define SG_GUI_CONTEXT_SETTINGS_H__
 
-namespace gui {
+namespace sg_gui {
 
 struct ContextSettings {
 
@@ -27,7 +27,7 @@ struct ContextSettings {
 	bool         vsync;
 };
 
-} // namespace
+} // namespace sg_gui
 
-#endif // CONTEXT_SETTINGS_H__
+#endif // SG_GUI_CONTEXT_SETTINGS_H__
 

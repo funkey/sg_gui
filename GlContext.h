@@ -1,5 +1,5 @@
-#ifndef GL_CONTEXT_H__
-#define GL_CONTEXT_H__
+#ifndef SG_GUI_GL_CONTEXT_H__
+#define SG_GUI_GL_CONTEXT_H__
 
 #include <config.h>
 
@@ -18,5 +18,5 @@
 
 #endif
 
-#endif // GL_CONTEXT_H__
+#endif // SG_GUI_GL_CONTEXT_H__
 

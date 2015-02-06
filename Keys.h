@@ -1,7 +1,7 @@
-#ifndef GUI_KEY_H__
-#define GUI_KEY_H__
+#ifndef SG_GUI_KEY_H__
+#define SG_GUI_KEY_H__
 
-namespace gui {
+namespace sg_gui {
 
 namespace keys {
 
@@ -16,7 +16,7 @@ enum Key {
 
 } // namespace keys
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_KEY_H__
+#endif // SG_GUI_KEY_H__
 

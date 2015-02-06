@@ -1,5 +1,5 @@
-#ifndef OPEN_GL_H__
-#define OPEN_GL_H__
+#ifndef SG_GUI_OPEN_GL_H__
+#define SG_GUI_OPEN_GL_H__
 
 #include <string>
 
@@ -13,7 +13,7 @@
 
 #include <util/exceptions.h>
 
-namespace gui {
+namespace sg_gui {
 
 namespace priv {
 
@@ -25,7 +25,7 @@ void glCheckError(const char* file, const char* function, unsigned int line);
 #ifndef NDEBUG
 
 	// executes an OpenGl call and throw an exception if an OpenGl error occured
-	#define glCheck(call) ((call), gui::priv::glCheckError(__FILE__, BOOST_CURRENT_FUNCTION, __LINE__))
+	#define glCheck(call) ((call), sg_gui::priv::glCheckError(__FILE__, BOOST_CURRENT_FUNCTION, __LINE__))
 
 #else
 
@@ -144,7 +144,7 @@ private:
 	boost::thread_specific_ptr<GlContextCreator*> _contextCreator;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // OPEN_GL_H__
+#endif // SG_GUI_OPEN_GL_H__
 

@@ -1,7 +1,7 @@
-#ifndef GUI_GL_CONTEXT_CREATOR_H__
-#define GUI_GL_CONTEXT_CREATOR_H__
+#ifndef SG_GUI_GL_CONTEXT_CREATOR_H__
+#define SG_GUI_GL_CONTEXT_CREATOR_H__
 
-namespace gui {
+namespace sg_gui {
 
 // forward declaration
 class GlContext;
@@ -16,7 +16,7 @@ public:
 	virtual GlContext* createGlContext() = 0;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_GL_CONTEXT_CREATOR_H__
+#endif // SG_GUI_GL_CONTEXT_CREATOR_H__
 

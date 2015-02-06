@@ -2,7 +2,7 @@
 #include "OpenGl.h"
 #include "ZoomView.h"
 
-namespace gui {
+namespace sg_gui {
 
 static logger::LogChannel zoomviewlog("zoomviewlog", "[ZoomView] ");
 
@@ -258,4 +258,4 @@ ZoomView::updateScaleAndShift() {
 	_scale = _autoScale*_userScale;
 }
 
-} // namespace gui
+} // namespace sg_gui

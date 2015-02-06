@@ -1,143 +1,110 @@
-#ifndef GUI_PEN_SIGNALS_H__
-#define GUI_PEN_SIGNALS_H__
+#ifndef SG_GUI_PEN_SIGNALS_H__
+#define SG_GUI_PEN_SIGNALS_H__
 
-#include "PointerSignal.h"
+#include "PointerSignals.h"
 #include <sg_gui/Buttons.h>
 #include <sg_gui/Modifiers.h>
 
-namespace gui {
+namespace sg_gui {
 
-class PenSignal : public PointerSignal {
-
-public:
-
-	typedef PointerSignal parent_type;
-
-	PenSignal() :
-		pressure(0.75),
-		modifiers(NoModifier) {}
-
-	PenSignal(
-			unsigned long timestamp,
-			const util::point<double>& position_,
-			double pressure_,
-			const Modifiers& modifiers_) :
-		PointerSignal(timestamp, position_),
-		pressure(pressure_),
-		modifiers(modifiers_) {}
-
-	double pressure;
-
-	Modifiers modifiers;
-};
-
-class PenMove : public PenSignal {
+class PenMove : public PointerMove {
 
 public:
 
-	typedef PenSignal parent_type;
-
-	PenMove() {}
+	typedef PointerMove parent_type;
 
 	PenMove(
 			unsigned long timestamp,
 			const util::point<double>& position,
-			double pressure,
+			double pressure_,
 			const Modifiers& modifiers) :
-		PenSignal(timestamp, position, pressure, modifiers) {}
+		PointerMove(timestamp, position, modifiers),
+		pressure(pressure_) {}
+
+	double pressure;
 };
 
-class PenDown : public PenSignal {
+class PenDown : public PointerDown {
 
 public:
 
-	typedef PenSignal parent_type;
-
-	PenDown() :
-		button(buttons::NoButton) {}
+	typedef PointerDown parent_type;
 
 	PenDown(
 			unsigned long timestamp,
 			const buttons::Button& button_,
 			const util::point<double>& position,
-			double pressure,
+			double pressure_,
 			const Modifiers& modifiers) :
-		PenSignal(timestamp, position, pressure, modifiers),
-		button(button_) {}
+		PointerDown(timestamp, position, modifiers),
+		button(button_),
+		pressure(pressure_) {}
 
 	buttons::Button button;
+	double          pressure;
 };
 
-class PenUp   : public PenSignal {
+class PenUp : public PointerUp {
 
 public:
 
-	typedef PenSignal parent_type;
-
-	PenUp() {}
+	typedef PointerUp parent_type;
 
 	PenUp(
 			unsigned long timestamp,
 			const buttons::Button& button_,
 			const util::point<double>& position,
-			double pressure,
+			double pressure_,
 			const Modifiers& modifiers) :
-		PenSignal(timestamp, position, pressure, modifiers),
-		button(button_) {}
+		PointerUp(timestamp, position, modifiers),
+		button(button_),
+		pressure(pressure_) {}
 
 	buttons::Button button;
+	double          pressure;
 };
 
-class PenIn : public PenSignal {
+class PenIn : public PointerSignal {
 
 public:
 
-	typedef PenSignal parent_type;
-
-	PenIn() {}
+	typedef PointerSignal parent_type;
 
 	PenIn(unsigned long timestamp) :
-		PenSignal(
+		PointerSignal(
 				timestamp,
 				util::point<double>(0, 0),
-				0,
-				gui::NoModifier) {}
+				sg_gui::NoModifier) {}
 };
 
-class PenOut : public PenSignal {
+class PenOut : public PointerSignal {
 
 public:
 
-	typedef PenSignal parent_type;
-
-	PenOut() {}
+	typedef PointerSignal parent_type;
 
 	PenOut(unsigned long timestamp) :
-		PenSignal(
+		PointerSignal(
 				timestamp,
 				util::point<double>(0, 0),
-				0,
-				gui::NoModifier) {}
+				sg_gui::NoModifier) {}
 };
 
-class PenAway : public PenSignal {
+class PenAway : public PointerSignal {
 
 public:
 
-	typedef PenSignal parent_type;
-
-	PenAway() {}
+	typedef PointerSignal parent_type;
 
 	PenAway(unsigned long timestamp) :
-		PenSignal(
+		PointerSignal(
 				timestamp,
 				util::point<double>(0, 0),
-				0,
-				gui::NoModifier) {}
+				sg_gui::NoModifier) {}
 };
 
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_PEN_SIGNALS_H__
+#endif // SG_GUI_PEN_SIGNALS_H__
 

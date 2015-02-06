@@ -1,9 +1,9 @@
-#ifndef GUI_SIGNALS_H__
-#define GUI_SIGNALS_H__
+#ifndef SG_GUI_SIGNALS_H__
+#define SG_GUI_SIGNALS_H__
 
 #include <util/rect.hpp>
 
-namespace gui {
+namespace sg_gui {
 
 /**
  * Base class for all gui signals.
@@ -38,6 +38,39 @@ public:
 private:
 
 	util::rect<double> _newSize;
+};
+
+/**
+ * A signal to query the size of all downstream views.
+ */
+class QuerySize : public GuiSignal {
+
+public:
+
+	typedef GuiSignal parent_type;
+
+	QuerySize() :
+		_size(0, 0, 0, 0) {}
+
+	/**
+	 * Answer the size query. To be called by accepting agents.
+	 */
+	void setSize(const util::rect<double>& size) {
+
+		_size.fit(size);
+	}
+
+	/**
+	 * Get the size of all downstream views combined.
+	 */
+	const util::rect<double>& getSize() const {
+
+		return _size;
+	}
+
+private:
+
+	util::rect<double> _size;
 };
 
 /**
@@ -120,7 +153,7 @@ private:
 	bool _needsRedraw;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_SIGNALS_H__
+#endif // SG_GUI_SIGNALS_H__
 

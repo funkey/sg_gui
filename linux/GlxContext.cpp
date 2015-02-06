@@ -11,7 +11,7 @@ using namespace logger;
 
 LogChannel glxlog("glxlog", "[GlContext] ");
 
-namespace gui {
+namespace sg_gui {
 
 GlContext::GlContext(ContextSettings& settings, GlContext* share) :
 	_window(0),
@@ -348,4 +348,4 @@ GlContext::createContext(ContextSettings& settings, GlContext* share) {
 	XFree(visuals);
 }
 
-} // namespace gui
+} // namespace sg_gui

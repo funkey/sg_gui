@@ -1,11 +1,11 @@
-#ifndef WINDOW_MODE_H__
-#define WINDOW_MODE_H__
+#ifndef SG_GUI_WINDOW_MODE_H__
+#define SG_GUI_WINDOW_MODE_H__
 
 #include <util/point.hpp>
 
 using namespace util;
 
-namespace gui {
+namespace sg_gui {
 
 struct WindowMode {
 
@@ -44,7 +44,7 @@ struct WindowMode {
 	bool hideCursor;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // WINDOW_MODE_H__
+#endif // SG_GUI_WINDOW_MODE_H__
 

@@ -5,7 +5,7 @@
 #include <sg_gui/Keys.h>
 #include <sg_gui/Modifiers.h>
 
-namespace gui {
+namespace sg_gui {
 
 class KeySignal : public InputSignal {
 
@@ -49,7 +49,7 @@ public:
 		KeySignal(key, modifiers) {}
 };
 
-} // namespace gui
+} // namespace sg_gui
 
-#endif // GUI_KEY_SIGNALS_H__
+#endif // SG_GUI_KEY_SIGNALS_H__
 
