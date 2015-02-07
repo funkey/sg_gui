@@ -3,6 +3,7 @@
 
 #include "GuiSignals.h"
 #include "Modifiers.h"
+#include "Buttons.h"
 
 namespace sg_gui {
 
@@ -50,8 +51,12 @@ public:
 	PointerDown(
 			unsigned long              timestamp,
 			const util::point<double>& position,
-			const Modifiers&           modifiers) :
-		PointerSignal(timestamp, position, modifiers) {}
+			const Modifiers&           modifiers,
+			const buttons::Button&     button_) :
+		PointerSignal(timestamp, position, modifiers),
+		button(button_) {}
+
+	buttons::Button button;
 };
 
 class PointerUp : public PointerSignal {
@@ -63,8 +68,12 @@ public:
 	PointerUp(
 			unsigned long              timestamp,
 			const util::point<double>& position,
-			const Modifiers&           modifiers) :
-		PointerSignal(timestamp, position, modifiers) {}
+			const Modifiers&           modifiers,
+			const buttons::Button&     button_) :
+		PointerSignal(timestamp, position, modifiers),
+		button(button_) {}
+
+	buttons::Button button;
 };
 
 } // namespace sg_gui

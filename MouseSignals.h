@@ -2,7 +2,6 @@
 #define SG_GUI_MOUSE_SIGNALS_H__
 
 #include "PointerSignals.h"
-#include <sg_gui/Buttons.h>
 #include <sg_gui/Modifiers.h>
 
 namespace sg_gui {
@@ -28,13 +27,10 @@ public:
 
 	MouseDown(
 			unsigned long timestamp,
-			const buttons::Button& button_,
+			const buttons::Button& button,
 			const util::point<double>& position,
 			const Modifiers& modifiers) :
-		PointerDown(timestamp, position, modifiers),
-		button(button_) {}
-
-	buttons::Button button;
+		PointerDown(timestamp, position, modifiers, button) {}
 };
 
 class MouseUp : public PointerUp {
@@ -45,13 +41,10 @@ public:
 
 	MouseUp(
 			unsigned long timestamp,
-			const buttons::Button& button_,
+			const buttons::Button& button,
 			const util::point<double>& position,
 			const Modifiers& modifiers) :
-		PointerUp(timestamp, position, modifiers),
-		button(button_) {}
-
-	buttons::Button button;
+		PointerUp(timestamp, position, modifiers, button) {}
 };
 
 } // namespace sg_gui

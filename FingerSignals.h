@@ -2,8 +2,8 @@
 #define SG_GUI_FINGER_SIGNALS_H__
 
 #include "PointerSignals.h"
-#include <sg_gui/Buttons.h>
-#include <sg_gui/Modifiers.h>
+#include "Buttons.h"
+#include "Modifiers.h"
 
 namespace sg_gui {
 
@@ -35,7 +35,7 @@ public:
 			const util::point<double>& position,
 			int id_,
 			const Modifiers& modifiers) :
-		PointerDown(timestamp, position, modifiers),
+		PointerDown(timestamp, position, modifiers, buttons::Left),
 		id(id_) {}
 
 	int id;
@@ -52,7 +52,7 @@ public:
 			const util::point<double>& position,
 			int id_,
 			const Modifiers& modifiers) :
-		PointerUp(timestamp, position, modifiers),
+		PointerUp(timestamp, position, modifiers, buttons::Left),
 		id(id_) {}
 
 	int id;

@@ -3,7 +3,7 @@
 
 #include <scopegraph/Scope.h>
 #include "GuiSignals.h"
-#include "MouseSignals.h"
+#include "PointerSignals.h"
 
 namespace sg_gui {
 
@@ -12,7 +12,7 @@ class ZoomView :
 				ZoomView,
 				sg::FiltersDown<Draw, PointerSignal>,
 				sg::PassesUp<ContentChanged>,
-				sg::Accepts<MouseDown, MouseMove>,
+				sg::Accepts<PointerDown, PointerMove>,
 				sg::Provides<ContentChanged>
 		> {
 
@@ -36,9 +36,9 @@ public:
 
 	void unfilterDown(PointerSignal& signal);
 
-	void onSignal(MouseDown& signal);
+	void onSignal(PointerDown& signal);
 
-	void onSignal(MouseMove& signal);
+	void onSignal(PointerMove& signal);
 
 private:
 
