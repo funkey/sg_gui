@@ -15,7 +15,6 @@ MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 void
 MeshView::onSignal(Draw& /*draw*/) {
 
-	updateRecording();
 	draw();
 }
 
