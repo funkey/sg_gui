@@ -112,7 +112,7 @@ ZoomView::unfilterDown(PointerSignal& signal) {
 }
 
 void
-ZoomView::onSignal(MouseDown& signal) {
+ZoomView::onSignal(PointerDown& signal) {
 
 	LOG_ALL(zoomviewlog) << "a button was pressed" << std::endl;
 
@@ -161,7 +161,7 @@ ZoomView::onSignal(MouseDown& signal) {
 }
 
 void
-ZoomView::onSignal(MouseMove& signal) {
+ZoomView::onSignal(PointerMove& signal) {
 
 	if (!(signal.modifiers & keys::ControlDown))
 		return;

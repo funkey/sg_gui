@@ -6,6 +6,7 @@
 
 #include <sg_gui/linux/GlxContext.h>
 #include <sg_gui/Window.h>
+#include "DisplayConnection.h"
 
 using namespace logger;
 
@@ -19,7 +20,7 @@ GlContext::GlContext(ContextSettings& settings, GlContext* share) :
 	_context(0),
 	_active(false) {
 
-	_display = XOpenDisplay(0);
+	_display = DisplayConnection::getDisplay();
 
 	// create a dummy window to associate this context with
 	int screen = DefaultScreen(_display);
@@ -71,8 +72,8 @@ GlContext::~GlContext() {
 	}
 	
 	// close the connection with the X server
-	if (_ownWindow)
-		XCloseDisplay(_display);
+	//if (_ownWindow)
+	//	XCloseDisplay(_display);
 }
 
 bool

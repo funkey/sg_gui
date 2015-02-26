@@ -9,14 +9,15 @@
 #include <sg_gui/Modifiers.h>
 #include <util/Logger.h>
 #include <util/foreach.h>
+#include "DisplayConnection.h"
 
 using std::endl;
 using std::abs;
 using namespace logger;
 
-LogChannel xlog("xlog", "[XWindow] ");
-
 namespace sg_gui {
+
+LogChannel xlog("xlog", "[XWindow] ");
 
 XWindow::XWindow(string caption, const WindowMode& mode) :
 	WindowBase(caption),
@@ -35,7 +36,7 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 
 	LOG_ALL(xlog) << "[XWindow] setting up X server connection" << endl;
 
-	_display = XOpenDisplay(0);
+	_display = DisplayConnection::getDisplay();
 	_screen  = DefaultScreen(_display);
 	_xfd     = ConnectionNumber(_display);
 
@@ -205,10 +206,6 @@ XWindow::~XWindow() {
 		XCloseIM(_inputMethod);
 		_inputMethod = 0;
 	}
-
-	// close X11 connection
-	XCloseDisplay(_display);
-	_display = 0;
 
 	// close interrupt pipe
 	::close(_interruptFds[0]);

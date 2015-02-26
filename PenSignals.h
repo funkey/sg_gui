@@ -32,15 +32,13 @@ public:
 
 	PenDown(
 			unsigned long timestamp,
-			const buttons::Button& button_,
+			const buttons::Button& button,
 			const util::point<double>& position,
 			double pressure_,
 			const Modifiers& modifiers) :
-		PointerDown(timestamp, position, modifiers),
-		button(button_),
+		PointerDown(timestamp, position, modifiers, button),
 		pressure(pressure_) {}
 
-	buttons::Button button;
 	double          pressure;
 };
 
@@ -52,15 +50,13 @@ public:
 
 	PenUp(
 			unsigned long timestamp,
-			const buttons::Button& button_,
+			const buttons::Button& button,
 			const util::point<double>& position,
 			double pressure_,
 			const Modifiers& modifiers) :
-		PointerUp(timestamp, position, modifiers),
-		button(button_),
+		PointerUp(timestamp, position, modifiers, button),
 		pressure(pressure_) {}
 
-	buttons::Button button;
 	double          pressure;
 };
 
