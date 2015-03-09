@@ -111,6 +111,18 @@ ZoomView::unfilterDown(PointerSignal& signal) {
 	signal.position += _shift;
 }
 
+bool
+ZoomView::filterDown(Resize& signal) {
+
+	_desiredSize = signal.getSize();
+
+	updateScaleAndShift();
+	send<ContentChanged>();
+
+	// don't pass on the signal -- we took care of it
+	return false;
+}
+
 void
 ZoomView::onSignal(PointerDown& signal) {
 
@@ -202,6 +214,12 @@ ZoomView::onSignal(PointerMove& signal) {
 }
 
 void
+ZoomView::onInnerSignal(ContentChanged&) {
+
+	updateScaleAndShift();
+}
+
+void
 ZoomView::zoom(double zoomChange, const util::point<double>& anchor) {
 
 	LOG_ALL(zoomviewlog) << "changing user zoom by " << zoomChange << " keeping " << anchor << " where it is" << std::endl;
@@ -233,8 +251,9 @@ ZoomView::updateScaleAndShift() {
 	// first, apply autoscale transformation (if wanted)
 	if (_autoscale) {
 
-		// TODO: get content size
-		util::rect<double> contentSize(0, 0, 1, 1);
+		QuerySize signal;
+		sendInner(signal);
+		const util::rect<double>& contentSize = signal.getSize();
 
 		// do we have to fit the width or height of the content?
 		bool fitHeight = (contentSize.width()/contentSize.height() < _desiredSize.width()/_desiredSize.height());
@@ -250,7 +269,7 @@ ZoomView::updateScaleAndShift() {
 				 util::point<double>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
 
 		// get the final shift relative to content upper left
-		_autoShift = (contentSize.upperLeft() - _desiredSize.upperLeft()) + centerShift;
+		_autoShift = (_desiredSize.upperLeft() - contentSize.upperLeft())*_autoScale + centerShift;
 	}
 
 	// append user scale and shift transformation
