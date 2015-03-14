@@ -2,7 +2,7 @@
 #define SG_GUI_MESH_H__
 
 #include <vector>
-#include "Volume.h"
+#include <util/Volume.h>
 #include <util/foreach.h>
 #include "Point3d.h"
 #include "Vector3d.h"
