@@ -2,8 +2,7 @@
 #define SG_GUI_MESH_H__
 
 #include <vector>
-#include <imageprocessing/Volume.h>
-#include <pipeline/Data.h>
+#include "Volume.h"
 #include <util/foreach.h>
 #include "Point3d.h"
 #include "Vector3d.h"
@@ -14,7 +13,7 @@ namespace sg_gui {
 /**
  * A 3D mesh as a list of triangles.
  */
-class Mesh : public pipeline::Data, public Volume {
+class Mesh : public Volume {
 
 public:
 

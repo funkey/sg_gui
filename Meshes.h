@@ -1,13 +1,12 @@
 #ifndef SG_GUI_MESHES_H__
 #define SG_GUI_MESHES_H__
 
-#include <pipeline/Data.h>
-#include <imageprocessing/Volume.h>
+#include <util/Volume.h>
 #include "Mesh.h"
 
 namespace sg_gui {
 
-class Meshes : public pipeline::Data, public Volume {
+class Meshes : public Volume {
 
 public:
 
