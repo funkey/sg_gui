@@ -12,7 +12,7 @@ public:
 
 	Meshes() {}
 
-	void add(unsigned int id, boost::shared_ptr<Mesh> mesh) {
+	void add(unsigned int id, std::shared_ptr<Mesh> mesh) {
 
 		_meshes[id] = mesh;
 		_ids.push_back(id);
@@ -20,12 +20,12 @@ public:
 		setBoundingBoxDirty();
 	}
 
-	boost::shared_ptr<Mesh> get(unsigned int id) {
+	std::shared_ptr<Mesh> get(unsigned int id) {
 
 		if (_meshes.count(id))
 			return _meshes[id];
 
-		return boost::shared_ptr<Mesh>();
+		return std::shared_ptr<Mesh>();
 	}
 
 	const std::vector<unsigned int>& getMeshIds() const {
@@ -41,14 +41,14 @@ private:
 
 		BoundingBox boundingBox;
 
-		std::map<unsigned int, boost::shared_ptr<Mesh> >::const_iterator i;
+		std::map<unsigned int, std::shared_ptr<Mesh> >::const_iterator i;
 		for (i = _meshes.begin(); i != _meshes.end(); i++)
 			boundingBox += i->second->getBoundingBox();
 
 		return boundingBox;
 	}
 
-	std::map<unsigned int, boost::shared_ptr<Mesh> > _meshes;
+	std::map<unsigned int, std::shared_ptr<Mesh> > _meshes;
 
 	std::vector<unsigned int> _ids;
 };

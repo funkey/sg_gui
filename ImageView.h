@@ -2,9 +2,9 @@
 #define SG_GUI_IMAGE_VIEW_H__
 
 #include <scopegraph/Agent.h>
+#include <imageprocessing/Image.h>
 #include "Texture.h"
 #include "GuiSignals.h"
-#include "Image.h"
 
 namespace sg_gui {
 

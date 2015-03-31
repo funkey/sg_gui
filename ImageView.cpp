@@ -23,10 +23,6 @@ ImageView::onSignal(Draw& /*signal*/) {
 	if (_needReload)
 		loadTexture();
 
-	// draw a rectangle
-	GLdouble width  = _texture->width();
-	GLdouble height = _texture->height();
-
 	glEnable(GL_TEXTURE_2D);
 
 	_texture->bind();
@@ -37,15 +33,24 @@ ImageView::onSignal(Draw& /*signal*/) {
 		glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
 	}
 
+	BoundingBox& bb = _image->getBoundingBox();
+	float minX = bb.getMinX();
+	float minY = bb.getMinY();
+	float maxX = bb.getMaxX();
+	float maxY = bb.getMaxY();
+	float z    = bb.getMinZ();
+
 	glBegin(GL_QUADS);
-	glTexCoord2d(0.0, 1.0); glVertex2d(0.0,   height); 
-	glTexCoord2d(1.0, 1.0); glVertex2d(width, height); 
-	glTexCoord2d(1.0, 0.0); glVertex2d(width, 0.0); 
-	glTexCoord2d(0.0, 0.0); glVertex2d(0.0,   0.0); 
+	glTexCoord2d(0.0, 1.0); glVertex3d(minX, maxY, z);
+	glTexCoord2d(1.0, 1.0); glVertex3d(maxX, maxY, z);
+	glTexCoord2d(1.0, 0.0); glVertex3d(maxX, minY, z);
+	glTexCoord2d(0.0, 0.0); glVertex3d(minX, minY, z);
 	glEnd();
 
 	if (_transparent)
 		glDisable(GL_BLEND);
+
+	glDisable(GL_TEXTURE_2D);
 
 	return;
 }

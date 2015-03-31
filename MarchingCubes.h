@@ -14,8 +14,7 @@
 
 #include <map>
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <util/Logger.h>
 #include "Point3d.h"
 #include "Vector3d.h"
@@ -138,7 +137,7 @@ public:
 	 *              The size of a cell in z to sample.
 	 */
 	template <typename InteriorTest>
-	boost::shared_ptr<Mesh> generateSurface(
+	std::shared_ptr<Mesh> generateSurface(
 			const Volume& volume,
 			const InteriorTest& interiorTest,
 			float cellSizeX,
@@ -218,7 +217,7 @@ private:
 	unsigned int _nNormals;
 
 	// the mesh that represents the surface
-	boost::shared_ptr<Mesh> _mesh;
+	std::shared_ptr<Mesh> _mesh;
 
 	// List of Point3ds which form the isosurface.
 	Id2Point3dId _i2pt3idVertices;
@@ -565,7 +564,7 @@ MarchingCubes<Volume>::~MarchingCubes()
 
 template <typename Volume>
 template <typename InteriorTest>
-boost::shared_ptr<Mesh>
+std::shared_ptr<Mesh>
 MarchingCubes<Volume>::generateSurface(
 		const Volume& volume,
 		const InteriorTest& interiorTest,
@@ -576,7 +575,7 @@ MarchingCubes<Volume>::generateSurface(
 	if (_bValidSurface)
 		deleteSurface();
 
-	_mesh = boost::make_shared<Mesh>();
+	_mesh = std::make_shared<Mesh>();
 
 	float width  = volume.getBoundingBox().width();
 	float height = volume.getBoundingBox().height();
