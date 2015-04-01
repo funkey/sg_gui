@@ -2,6 +2,7 @@
 #define SG_GUI_SIGNALS_H__
 
 #include <util/rect.hpp>
+#include <util/box.hpp>
 #include <scopegraph/Signals.h>
 
 namespace sg_gui {
@@ -50,8 +51,13 @@ public:
 
 	typedef GuiSignal parent_type;
 
-	QuerySize() :
-		_size(0, 0, 0, 0) {}
+	/**
+	 * Answer the size query. To be called by accepting agents.
+	 */
+	void setSize(const util::box<double>& size) {
+
+		_size.fit(size);
+	}
 
 	/**
 	 * Answer the size query. To be called by accepting agents.
@@ -64,14 +70,14 @@ public:
 	/**
 	 * Get the size of all downstream views combined.
 	 */
-	const util::rect<double>& getSize() const {
+	const util::box<double>& getSize() const {
 
 		return _size;
 	}
 
 private:
 
-	util::rect<double> _size;
+	util::box<double> _size;
 };
 
 /**

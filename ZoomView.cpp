@@ -253,7 +253,7 @@ ZoomView::updateScaleAndShift() {
 
 		QuerySize signal;
 		sendInner(signal);
-		const util::rect<double>& contentSize = signal.getSize();
+		const util::box<double>& contentSize = signal.getSize();
 
 		// do we have to fit the width or height of the content?
 		bool fitHeight = (contentSize.width()/contentSize.height() < _desiredSize.width()/_desiredSize.height());
@@ -269,7 +269,8 @@ ZoomView::updateScaleAndShift() {
 				 util::point<double>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
 
 		// get the final shift relative to content upper left
-		_autoShift = (_desiredSize.upperLeft() - contentSize.upperLeft())*_autoScale + centerShift;
+		util::point<double> ul(contentSize.minX, contentSize.minY);
+		_autoShift = (_desiredSize.upperLeft() - ul)*_autoScale + centerShift;
 	}
 
 	// append user scale and shift transformation

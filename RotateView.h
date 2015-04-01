@@ -53,7 +53,7 @@ private:
 	bool _dragging;
 
 	// the bounding box of all views below this scope
-	util::rect<double> _contentSize;
+	util::box<double> _contentSize;
 
 	// hightlight on mouse over
 	bool _highlight;

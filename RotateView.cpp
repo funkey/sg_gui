@@ -18,7 +18,6 @@ RotateView::RotateView() :
 	_prevW(0.0),
 	_buttonDown(0, 0),
 	_dragging(false),
-	_contentSize(0, 0, 0, 0),
 	_highlight(false) {}
 
 bool
@@ -31,12 +30,10 @@ RotateView::filterDown(Draw& /*signal*/) {
 		_contentSize = query.getSize();
 	}
 
-	util::point<double> ul = _contentSize.upperLeft();
-	util::point<double> lr = _contentSize.lowerRight();
+	util::point<double> ul(_contentSize.minX, _contentSize.minY);
+	util::point<double> lr(_contentSize.maxX, _contentSize.maxY);
 
-	double centerX = _contentSize.center().x;
-	double centerY = _contentSize.center().y;
-	double centerZ = 0;
+	util::point<double> center = (ul + lr)/2.0;
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -57,9 +54,9 @@ RotateView::filterDown(Draw& /*signal*/) {
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
 
 	// perform the rotation
-	glTranslated(centerX,  centerY,  centerZ);
+	glTranslated(center.x,  center.y, 0);
 	glRotated(_w/M_PI*180.0, _x, _y, _z);
-	glTranslated(-centerX, -centerY, -centerZ);
+	glTranslated(-center.x, -center.y, 0);
 
 	glColor4f((_highlight ? 0.88 : 0.1), 0.2, 0.05, 0.5);
 
