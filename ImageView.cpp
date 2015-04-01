@@ -33,12 +33,12 @@ ImageView::onSignal(Draw& /*signal*/) {
 		glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
 	}
 
-	BoundingBox& bb = _image->getBoundingBox();
-	float minX = bb.getMinX();
-	float minY = bb.getMinY();
-	float maxX = bb.getMaxX();
-	float maxY = bb.getMaxY();
-	float z    = bb.getMinZ();
+	util::box<float>& bb = _image->getBoundingBox();
+	float minX = bb.minX;
+	float minY = bb.minY;
+	float maxX = bb.maxX;
+	float maxY = bb.maxY;
+	float z    = bb.minZ;
 
 	glBegin(GL_QUADS);
 	glTexCoord2d(0.0, 1.0); glVertex3d(minX, maxY, z);

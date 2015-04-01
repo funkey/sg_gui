@@ -1,7 +1,7 @@
 #ifndef SG_GUI_MESHES_H__
 #define SG_GUI_MESHES_H__
 
-#include <util/Volume.h>
+#include <imageprocessing/Volume.h>
 #include "Mesh.h"
 
 namespace sg_gui {
@@ -37,9 +37,9 @@ public:
 
 private:
 
-	BoundingBox computeBoundingBox() const {
+	util::box<float> computeBoundingBox() const {
 
-		BoundingBox boundingBox;
+		util::box<float> boundingBox;
 
 		std::map<unsigned int, std::shared_ptr<Mesh> >::const_iterator i;
 		for (i = _meshes.begin(); i != _meshes.end(); i++)

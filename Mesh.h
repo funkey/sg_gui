@@ -2,7 +2,8 @@
 #define SG_GUI_MESH_H__
 
 #include <vector>
-#include <util/Volume.h>
+#include <limits>
+#include <imageprocessing/Volume.h>
 #include <util/foreach.h>
 #include "Point3d.h"
 #include "Vector3d.h"
@@ -106,7 +107,7 @@ public:
 
 private:
 
-	BoundingBox computeBoundingBox() const {
+	util::box<float> computeBoundingBox() const {
 
 		float minX, minY, minZ;
 		float maxX, maxY, maxZ;
@@ -124,7 +125,7 @@ private:
 			maxZ = std::max(p.z, maxZ);
 		}
 
-		return BoundingBox(
+		return util::box<float>(
 				minX, minY, minZ,
 				maxX, maxY, maxZ);
 	}
