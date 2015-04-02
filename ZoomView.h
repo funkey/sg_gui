@@ -14,7 +14,10 @@ class ZoomView :
 				sg::PassesUp<ContentChanged>,
 				sg::Accepts<PointerDown, PointerMove>,
 				sg::Provides<ContentChanged>,
-				sg::AcceptsInner<ContentChanged>,
+				sg::AcceptsInner<
+						ContentChanged,
+						sg::AgentAdded
+				>,
 				sg::ProvidesInner<QuerySize>
 		> {
 
@@ -47,6 +50,8 @@ public:
 	void onSignal(PointerMove& signal);
 
 	void onInnerSignal(ContentChanged& signal);
+
+	void onInnerSignal(sg::AgentAdded& signal);
 
 private:
 

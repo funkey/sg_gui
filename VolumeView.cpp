@@ -34,6 +34,15 @@ VolumeView::onSignal(MouseDown& signal) {
 }
 
 void
+VolumeView::onSignal(QuerySize& signal) {
+
+	if (!_volume)
+		return;
+
+	signal.setSize(_volume->getBoundingBox());
+}
+
+void
 VolumeView::updateImage() {
 
 	auto image = std::make_shared<Image>(_volume->width(), _volume->height());

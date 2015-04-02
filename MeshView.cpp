@@ -24,12 +24,7 @@ MeshView::onSignal(QuerySize& signal) {
 	if (!_meshes)
 		return;
 
-	signal.setSize(
-			util::rect<double>(
-					_meshes->getBoundingBox().minX,
-					_meshes->getBoundingBox().minY,
-					_meshes->getBoundingBox().maxX,
-					_meshes->getBoundingBox().maxY));
+	signal.setSize(_meshes->getBoundingBox());
 }
 
 void

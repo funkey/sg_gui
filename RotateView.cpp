@@ -103,6 +103,36 @@ RotateView::unfilterDown(Draw& /*signal*/) {
 	glPopMatrix();
 }
 
+bool
+RotateView::filterDown(QuerySize& signal) {
+
+	LOG_ALL(rotateviewlog) << "got size query..." << std::endl;
+
+	QuerySize query;
+	sendInner(query);
+
+	util::box<float> size = query.getSize();
+
+	LOG_ALL(rotateviewlog) << "content size is " << size << std::endl;
+
+	// bounding box of all possible rotations around (0, 0, 0)
+	size.minX = -std::max(std::abs(size.minX), std::abs(size.maxX));
+	size.maxX = -size.minX;
+	size.minY = -std::max(std::abs(size.minY), std::abs(size.maxY));
+	size.maxY = -size.minY;
+	size.minZ = -std::max(std::abs(size.minZ), std::abs(size.maxZ));
+	size.maxZ = -size.minZ;
+
+	LOG_ALL(rotateviewlog) << "max rotated content size is " << size << std::endl;
+
+	signal.setSize(size);
+
+	return false;
+}
+
+void
+RotateView::unfilterDown(QuerySize& draw) {}
+
 void
 RotateView::onSignal(MouseDown& signal) {
 

@@ -12,7 +12,8 @@ class VolumeView :
 		public sg::Scope<
 				VolumeView,
 				sg::Accepts<
-						MouseDown
+						MouseDown,
+						QuerySize
 				>,
 				sg::ProvidesInner<
 						SetImage
@@ -29,6 +30,8 @@ public:
 	void setVolume(std::shared_ptr<ExplicitVolume<float>> volume);
 
 	void onSignal(MouseDown& signal);
+
+	void onSignal(QuerySize& signal);
 
 private:
 

@@ -220,6 +220,12 @@ ZoomView::onInnerSignal(ContentChanged&) {
 }
 
 void
+ZoomView::onInnerSignal(sg::AgentAdded&) {
+
+	updateScaleAndShift();
+}
+
+void
 ZoomView::zoom(double zoomChange, const util::point<double>& anchor) {
 
 	LOG_ALL(zoomviewlog) << "changing user zoom by " << zoomChange << " keeping " << anchor << " where it is" << std::endl;
@@ -254,6 +260,10 @@ ZoomView::updateScaleAndShift() {
 		QuerySize signal;
 		sendInner(signal);
 		const util::box<double>& contentSize = signal.getSize();
+
+		_zClipNear = std::max(1.0,  _z2d + contentSize.minZ - 1.0);
+		_zClipFar  = std::max(10.0, _z2d + contentSize.maxZ + 1.0);
+		_z2d       = (_zClipFar + _zClipNear)/2.0;
 
 		// do we have to fit the width or height of the content?
 		bool fitHeight = (contentSize.width()/contentSize.height() < _desiredSize.width()/_desiredSize.height());
