@@ -10,7 +10,7 @@ namespace sg_gui {
 class ZoomView :
 		public sg::Scope<
 				ZoomView,
-				sg::FiltersDown<Draw, PointerSignal, Resize>,
+				sg::FiltersDown<RoiSignal, PointerSignal, Resize>,
 				sg::PassesUp<ContentChanged>,
 				sg::Accepts<PointerDown, PointerMove>,
 				sg::Provides<ContentChanged>,
@@ -33,9 +33,9 @@ public:
 	 */
 	ZoomView(bool autoscale = false);
 
-	bool filterDown(Draw& draw);
+	bool filterDown(RoiSignal& signal);
 
-	void unfilterDown(Draw& draw);
+	void unfilterDown(RoiSignal& signal);
 
 	bool filterDown(PointerSignal& signal);
 

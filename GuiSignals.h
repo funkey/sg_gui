@@ -127,38 +127,66 @@ public:
 };
 
 /*
- * Request drawing.
+ * Base class for signals limited to a certain region of interest. The 
+ * resolution of the region in terms of pixels per unit is passed along as well.
  */
-class Draw : public GuiSignal {
+class RoiSignal : public GuiSignal {
 
 public:
 
 	typedef GuiSignal parent_type;
 
-	Draw() :
+	RoiSignal() :
 		_roi(0, 0, 0, 0),
-		_resolution(0, 0),
-		_needsRedraw(false) {}
+		_resolution(0, 0) {}
 
-	Draw(
+	RoiSignal(
 			const util::rect<double>&  roi,
 			const util::point<double>& resolution) :
 		_roi(roi),
-		_resolution(resolution),
-		_needsRedraw(false) {}
+		_resolution(resolution) {}
 
 	util::rect<double>&  roi()        { return _roi; }
 	util::point<double>& resolution() { return _resolution; }
-
-	bool needsRedraw() { return _needsRedraw; }
 
 private:
 
 	util::rect<double>  _roi;
 	util::point<double> _resolution;
+};
+
+/**
+ * Base class for all draw signals.
+ */
+class DrawBase : public RoiSignal {
+
+public:
+
+	typedef RoiSignal parent_type;
+
+	DrawBase() : _needsRedraw(false) {}
+
+	bool needsRedraw() { return _needsRedraw; }
+
+private:
 
 	bool _needsRedraw;
 };
+
+/**
+ * Draw signal for drawing opaque content.
+ */
+class DrawOpaque : public DrawBase { public: typedef DrawBase parent_type; };
+
+/**
+ * Convenience typedef, if you don't care about opaque versus translucent.
+ */
+typedef DrawOpaque Draw;
+
+/**
+ * Draw signal for drawing translucent content.
+ */
+class DrawTranslucent : public DrawBase { public: typedef DrawBase parent_type; };
 
 } // namespace sg_gui
 

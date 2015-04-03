@@ -24,7 +24,7 @@ class RotateView : public sg::Scope<
 				ContentChanged
 		>,
 		sg::FiltersDown<
-				Draw,
+				DrawBase,
 				QuerySize
 		>> {
 
@@ -32,8 +32,8 @@ public:
 
 	RotateView();
 
-	bool filterDown(Draw& draw);
-	void unfilterDown(Draw& draw);
+	bool filterDown(DrawBase& draw);
+	void unfilterDown(DrawBase& draw);
 	bool filterDown(QuerySize& signal);
 	void unfilterDown(QuerySize& signal);
 	void onSignal(MouseDown& signal);

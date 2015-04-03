@@ -46,7 +46,8 @@ class Window :
 		public sg::Scope<
 				Window,
 				sg::ProvidesInner<
-						Draw,
+						DrawOpaque,
+						DrawTranslucent,
 						Resize,
 						KeyDown,
 						KeyUp,

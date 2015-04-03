@@ -13,7 +13,8 @@ class MeshView :
 		public sg::Agent<
 			MeshView,
 			sg::Accepts<
-					Draw,
+					DrawOpaque,
+					DrawTranslucent,
 					QuerySize,
 					ChangeAlpha
 			>,
@@ -29,7 +30,8 @@ public:
 
 	void setMeshes(std::shared_ptr<Meshes> meshes);
 
-	void onSignal(Draw& signal);
+	void onSignal(DrawOpaque& signal);
+	void onSignal(DrawTranslucent& signal);
 
 	void onSignal(QuerySize& signal);
 

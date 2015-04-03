@@ -13,7 +13,19 @@ MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 }
 
 void
-MeshView::onSignal(Draw& /*draw*/) {
+MeshView::onSignal(DrawOpaque& /*draw*/) {
+
+	if (_alpha < 1.0)
+		return;
+
+	draw();
+}
+
+void
+MeshView::onSignal(DrawTranslucent& /*draw*/) {
+
+	if (_alpha == 1.0 || _alpha == 0.0)
+		return;
 
 	draw();
 }
@@ -44,9 +56,6 @@ MeshView::updateRecording() {
 	startRecording();
 
 	foreach (unsigned int id, _meshes->getMeshIds()) {
-
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
 
 		// colorize the mesh according to its id
 		unsigned char r, g, b;

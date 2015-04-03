@@ -10,7 +10,25 @@ ImageView::~ImageView() {
 }
 
 void
-ImageView::onSignal(Draw& /*signal*/) {
+ImageView::onSignal(DrawOpaque& /*signal*/) {
+
+	if (_alpha < 1.0)
+		return;
+
+	draw();
+}
+
+void
+ImageView::onSignal(DrawTranslucent& /*signal*/) {
+
+	if (_alpha == 1.0)
+		return;
+
+	draw();
+}
+
+void
+ImageView::draw() {
 
 	// wait for image
 	if (!_image)
@@ -24,14 +42,11 @@ ImageView::onSignal(Draw& /*signal*/) {
 		loadTexture();
 
 	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_CULL_FACE);
 
 	_texture->bind();
 
-	glColor3f(_red, _green, _blue);
-	if (_transparent) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
-	}
+	glColor4f(_red, _green, _blue, _alpha);
 
 	util::box<float>& bb = _image->getBoundingBox();
 	float minX = bb.minX;
@@ -46,9 +61,6 @@ ImageView::onSignal(Draw& /*signal*/) {
 	glTexCoord2d(1.0, 0.0); glVertex3d(maxX, minY, z);
 	glTexCoord2d(0.0, 0.0); glVertex3d(minX, minY, z);
 	glEnd();
-
-	if (_transparent)
-		glDisable(GL_BLEND);
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -73,6 +85,14 @@ void
 ImageView::onSignal(SetImage& signal) {
 
 	_image = signal.getImage();
+
+	send<ContentChanged>();
+}
+
+void
+ImageView::onSignal(ChangeAlpha& signal) {
+
+	_alpha = signal.alpha;
 
 	send<ContentChanged>();
 }

@@ -102,10 +102,25 @@ Window::redraw() {
 
 	LOG_ALL(winlog) << "[" << getCaption() << "] redrawing my content" << endl;
 
-	Draw drawSignal(_region, point<double>(1.0, 1.0));
-	sendInner(drawSignal);
+	glDisable(GL_BLEND);
+	glDisable(GL_CULL_FACE);
 
-	if (drawSignal.needsRedraw()) {
+	// draw opaque content first...
+	DrawOpaque drawOpaqueSignal;
+	drawOpaqueSignal.roi() = _region;
+	drawOpaqueSignal.resolution() = point<double>(1.0, 1.0);
+	sendInner(drawOpaqueSignal);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// ...followed by translucent content
+	DrawTranslucent drawTranslucentSignal;
+	drawTranslucentSignal.roi() = _region;
+	drawTranslucentSignal.resolution() = point<double>(1.0, 1.0);
+	sendInner(drawTranslucentSignal);
+
+	if (drawOpaqueSignal.needsRedraw() || drawTranslucentSignal.needsRedraw()) {
 
 		LOG_ALL(winlog) << "[" << getCaption() << "] painter indicated redraw request -- set myself dirty again" << endl;
 		setDirty();

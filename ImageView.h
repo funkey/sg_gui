@@ -5,6 +5,7 @@
 #include <imageprocessing/Image.h>
 #include "Texture.h"
 #include "GuiSignals.h"
+#include "ViewSignals.h"
 
 namespace sg_gui {
 
@@ -28,9 +29,11 @@ class ImageView :
 		public sg::Agent<
 				ImageView,
 				sg::Accepts<
-						Draw,
+						DrawOpaque,
+						DrawTranslucent,
 						QuerySize,
-						SetImage
+						SetImage,
+						ChangeAlpha
 				>,
 				sg::Provides<
 						ContentChanged
@@ -41,33 +44,37 @@ public:
 
 	ImageView() :
 		_texture(0),
-		_transparent(false),
 		_red(1.0), _green(1.0), _blue(1.0),
-		_needReload(true) {}
+		_needReload(true),
+		_alpha(1.0) {}
 
 	~ImageView();
 
-	void onSignal(Draw& signal);
+	void onSignal(DrawOpaque& signal);
+	void onSignal(DrawTranslucent& signal);
 
 	void onSignal(QuerySize& signal);
 
 	void onSignal(SetImage& signal);
 
+	void onSignal(ChangeAlpha& signal);
+
 private:
 
 	void loadTexture();
+
+	void draw();
 
 	std::shared_ptr<Image> _image;
 
 	Texture* _texture;
 
-	// if set, dark = transparent
-	bool _transparent;
-
 	// colorization of intensity images
 	float _red, _green, _blue;
 
 	bool _needReload;
+
+	float _alpha;
 };
 
 } // namespace sg_gui

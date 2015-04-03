@@ -22,7 +22,7 @@ ZoomView::ZoomView(bool autoscale) :
 	_zClipFar(2000) {}
 
 bool
-ZoomView::filterDown(Draw& draw) {
+ZoomView::filterDown(RoiSignal& signal) {
 
 	/* Here, we configre the gl frustum to match the zoomed roi size. In the 
 	 * middle of the frustum, at z = _z2d, we have a plane where the x and y 
@@ -36,7 +36,7 @@ ZoomView::filterDown(Draw& draw) {
 
 	LOG_ALL(zoomviewlog) << "transforming with " << _shift << " and " << _scale << std::endl;
 
-	util::rect<double> zoomedRoi = (draw.roi() - _shift)/_scale;
+	util::rect<double> zoomedRoi = (signal.roi() - _shift)/_scale;
 
 	/* To obtain proper perspective deformations, we set the frustum such that 
 	 * the vanishing point is in the middle of the zoomed roi. During drawing, 
@@ -79,17 +79,17 @@ ZoomView::filterDown(Draw& draw) {
 	glTranslatef(-zoomedRoi.minX - zoomedRoi.width()/2, -zoomedRoi.minY - zoomedRoi.height()/2, -z2d);
 	glScalef(1, 1, -1);
 
-	draw.roi() = zoomedRoi;
-	draw.resolution() = draw.resolution()*_scale;
+	signal.roi() = zoomedRoi;
+	signal.resolution() = signal.resolution()*_scale;
 
 	return true;
 }
 
 void
-ZoomView::unfilterDown(Draw& draw) {
+ZoomView::unfilterDown(RoiSignal& signal) {
 
-	draw.roi() = draw.roi()*_scale + _shift;
-	draw.resolution() = draw.resolution()/_scale;
+	signal.roi() = signal.roi()*_scale + _shift;
+	signal.resolution() = signal.resolution()/_scale;
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

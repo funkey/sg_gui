@@ -21,7 +21,7 @@ RotateView::RotateView() :
 	_highlight(false) {}
 
 bool
-RotateView::filterDown(Draw& /*signal*/) {
+RotateView::filterDown(DrawBase& /*signal*/) {
 
 	if (_contentSize.isZero()) {
 
@@ -60,44 +60,57 @@ RotateView::filterDown(Draw& /*signal*/) {
 
 	glColor4f((_highlight ? 0.88 : 0.1), 0.2, 0.05, 0.5);
 
-	// draw 2d frame around content
-	glCheck(glEnable(GL_BLEND));
-	glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-	glLineWidth(2.0);
+	// draw box around content
+	glLineWidth(1.0);
 	glEnable(GL_LINE_SMOOTH);
 
 	glBegin(GL_LINES);
-	glVertex2f(ul.x, ul.y);
-	glVertex2f(lr.x, ul.y);
+	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.minZ);
+	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.maxZ);
 
-	glVertex2f(lr.x, ul.y);
-	glVertex2f(lr.x, lr.y);
+	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.maxZ);
+	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.maxZ);
 
-	glVertex2f(lr.x, lr.y);
-	glVertex2f(ul.x, lr.y);
+	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.maxZ);
+	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.minZ);
 
-	glVertex2f(ul.x, lr.y);
-	glVertex2f(ul.x, ul.y);
+	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.minZ);
+	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.minZ);
+
+	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.minZ);
+	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.maxZ);
+
+	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.maxZ);
+	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.maxZ);
+
+	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.maxZ);
+	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.minZ);
+
+	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.minZ);
+	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.minZ);
+
+	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.minZ);
+	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.minZ);
+
+	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.maxZ);
+	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.maxZ);
+
+	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.maxZ);
+	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.maxZ);
+
+	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.minZ);
+	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.minZ);
 	glEnd();
 
 	// draw solid backside
-	glCheck(glEnable(GL_CULL_FACE));
-	glCheck(glEnable(GL_LIGHTING));
-	glCheck(glEnable(GL_COLOR_MATERIAL));
-
-	glBegin(GL_QUADS);
-	glVertex2f(ul.x, ul.y);
-	glVertex2f(lr.x, ul.y);
-	glVertex2f(lr.x, lr.y);
-	glVertex2f(ul.x, lr.y);
-	glEnd();
+	glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
 
 	return true;
 }
 
 void
-RotateView::unfilterDown(Draw& /*signal*/) {
+RotateView::unfilterDown(DrawBase& /*signal*/) {
 
 	glDisable(GL_LIGHT1);
 	glPopMatrix();
