@@ -37,9 +37,9 @@ public:
 
 private:
 
-	util::box<float> computeBoundingBox() const {
+	util::box<float,3> computeBoundingBox() const {
 
-		util::box<float> boundingBox;
+		util::box<float,3> boundingBox;
 
 		std::map<unsigned int, std::shared_ptr<Mesh> >::const_iterator i;
 		for (i = _meshes.begin(); i != _meshes.end(); i++)

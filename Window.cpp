@@ -108,7 +108,7 @@ Window::redraw() {
 	// draw opaque content first...
 	DrawOpaque drawOpaqueSignal;
 	drawOpaqueSignal.roi() = _region;
-	drawOpaqueSignal.resolution() = point<double,2>(1.0, 1.0);
+	drawOpaqueSignal.resolution() = point<float,2>(1.0, 1.0);
 	sendInner(drawOpaqueSignal);
 
 	glEnable(GL_BLEND);
@@ -117,7 +117,7 @@ Window::redraw() {
 	// ...followed by translucent content
 	DrawTranslucent drawTranslucentSignal;
 	drawTranslucentSignal.roi() = _region;
-	drawTranslucentSignal.resolution() = point<double,2>(1.0, 1.0);
+	drawTranslucentSignal.resolution() = point<float,2>(1.0, 1.0);
 	sendInner(drawTranslucentSignal);
 
 	if (drawOpaqueSignal.needsRedraw() || drawTranslucentSignal.needsRedraw()) {
@@ -135,7 +135,7 @@ Window::redraw() {
 	LOG_ALL(winlog) << "[" << getCaption() << "] finished redrawing" << endl;
 }
 
-const point<double,2>&
+const point<float,2>&
 Window::getResolution() {
 
 	return _resolution;
@@ -145,11 +145,11 @@ bool
 Window::processResizeEvent(int width, int height) {
 
 	// did the size of the window change?
-	if (_region.maxX == width && _region.maxY == height && _resolution.x() == width && _resolution.y() == height)
+	if (_region.max().x() == width && _region.max().y() == height && _resolution.x() == width && _resolution.y() == height)
 		return false;
 
-	_region.maxX = width;
-	_region.maxY = height;
+	_region.max().x() = width;
+	_region.max().y() = height;
 	_resolution.x() = width;
 	_resolution.y() = height;
 
@@ -181,62 +181,62 @@ Window::processKeyDownEvent(const keys::Key& key, const Modifiers& modifiers) {
 
 void
 Window::processFingerUpEvent(
-		unsigned long                timestamp,
-		const util::point<double,2>& position,
-		int                          id,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const util::point<float,2>& position,
+		int                         id,
+		const Modifiers&            modifiers) {
 
 	sendInner<FingerUp>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processFingerDownEvent(
-		unsigned long                timestamp,
-		const util::point<double,2>& position,
-		int                          id,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const util::point<float,2>& position,
+		int                         id,
+		const Modifiers&            modifiers) {
 
 	sendInner<FingerDown>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processFingerMoveEvent(
-		unsigned long                timestamp,
-		const util::point<double,2>& position,
-		int                          id,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const util::point<float,2>& position,
+		int                         id,
+		const Modifiers&            modifiers) {
 
 	sendInner<FingerMove>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processPenUpEvent(
-		unsigned long                timestamp,
-		const buttons::Button&       button,
-		const util::point<double,2>& position,
-		double                       pressure,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const buttons::Button&      button,
+		const util::point<float,2>& position,
+		float                       pressure,
+		const Modifiers&            modifiers) {
 
 	sendInner<PenUp>(timestamp, button, position, pressure, modifiers);
 }
 
 void
 Window::processPenDownEvent(
-		unsigned long                timestamp,
-		const buttons::Button&       button,
-		const util::point<double,2>& position,
-		double                       pressure,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const buttons::Button&      button,
+		const util::point<float,2>& position,
+		float                       pressure,
+		const Modifiers&            modifiers) {
 
 	sendInner<PenDown>(timestamp, button, position, pressure, modifiers);
 }
 
 void
 Window::processPenMoveEvent(
-		unsigned long                timestamp,
-		const util::point<double,2>& position,
-		double                       pressure,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const util::point<float,2>& position,
+		float                       pressure,
+		const Modifiers&            modifiers) {
 
 	LOG_ALL(winlog) << "[Window] sending signal pen move" << std::endl;
 
@@ -263,29 +263,29 @@ Window::processPenAwayEvent(unsigned long timestamp) {
 
 void
 Window::processButtonUpEvent(
-		unsigned long                timestamp,
-		const buttons::Button&       button,
-		const util::point<double,2>& position,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const buttons::Button&      button,
+		const util::point<float,2>& position,
+		const Modifiers&            modifiers) {
 
 	sendInner<MouseUp>(timestamp, button, position, modifiers);
 }
 
 void
 Window::processButtonDownEvent(
-		unsigned long                timestamp,
-		const buttons::Button&       button,
-		const util::point<double,2>& position,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const buttons::Button&      button,
+		const util::point<float,2>& position,
+		const Modifiers&            modifiers) {
 
 	sendInner<MouseDown>(timestamp, button, position, modifiers);
 }
 
 void
 Window::processMouseMoveEvent(
-		unsigned long                timestamp,
-		const util::point<double,2>& position,
-		const Modifiers&             modifiers) {
+		unsigned long               timestamp,
+		const util::point<float,2>& position,
+		const Modifiers&            modifiers) {
 
 	sendInner<MouseMove>(timestamp, position, modifiers);
 }

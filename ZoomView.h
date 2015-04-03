@@ -59,12 +59,12 @@ private:
 	 * Zoom onto the given point. The current scale will be multiplied by 
 	 * 'zoomChange'.
 	 */
-	void zoom(double zoomChange, const util::point<double,2>& anchor);
+	void zoom(float zoomChange, const util::point<float,2>& anchor);
 
 	/**
 	 * Drag the content in the given direction.
 	 */
-	void drag(const util::point<double,2>& direction);
+	void drag(const util::point<float,2>& direction);
 
 	/**
 	 * Recalculate scale and shift.
@@ -72,10 +72,10 @@ private:
 	void updateScaleAndShift();
 
 	// the speed of zooming
-	double _zoomStep;
+	float _zoomStep;
 
 	// remember the last mouse position
-	util::point<double,2> _buttonDown;
+	util::point<float,2> _buttonDown;
 
 	// indicate that we are in dragging mode
 	bool _dragging;
@@ -85,28 +85,28 @@ private:
 	bool _autoscale;
 
 	// the scale and shift of this view as requested by the user
-	double _userScale;
-	util::point<double,2> _userShift;
+	float _userScale;
+	util::point<float,2> _userShift;
 
 	// the scale and shift of this view to fit the content to the desired 
 	// size
-	double _autoScale;
-	util::point<double,2> _autoShift;
+	float _autoScale;
+	util::point<float,2> _autoShift;
 
 	// the effective scale and shift, taking into account possible autoscaling
-	double _scale;
-	util::point<double,2> _shift;
+	float _scale;
+	util::point<float,2> _shift;
 
 	// the desired size of this view
-	util::rect<double> _desiredSize;
+	util::box<float,2> _desiredSize;
 
 	// the z-coordinate of the 2D viewing plane, where x and y eye coordinates 
 	// map to x and y screen pixel coordinates
-	double _z2d;
+	float _z2d;
 
 	// z-coordinates of the near and far clipping plane (should contain _z2d)
-	double _zClipNear;
-	double _zClipFar;
+	float _zClipNear;
+	float _zClipFar;
 };
 
 } // namespace sg_gui

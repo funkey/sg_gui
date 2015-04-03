@@ -41,22 +41,22 @@ public:
 
 private:
 
-	void rotate(const util::point<double,2>& moved);
+	void rotate(const util::point<float,2>& moved);
 
 	// the current rotation parameters
-	double _x, _y, _z, _w;
+	float _x, _y, _z, _w;
 
 	// the rotation parameters when the mouse was pressed
-	double _prevX, _prevY, _prevZ, _prevW;
+	float _prevX, _prevY, _prevZ, _prevW;
 
 	// remember the last mouse position
-	util::point<double,2> _buttonDown;
+	util::point<float,2> _buttonDown;
 
 	// indicate that we are in dragging mode
 	bool _dragging;
 
 	// the bounding box of all views below this scope
-	util::box<double> _contentSize;
+	util::box<float,3> _contentSize;
 
 	// hightlight on mouse over
 	bool _highlight;

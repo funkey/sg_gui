@@ -107,27 +107,14 @@ public:
 
 private:
 
-	util::box<float> computeBoundingBox() const {
+	util::box<float,3> computeBoundingBox() const {
 
-		float minX, minY, minZ;
-		float maxX, maxY, maxZ;
+		util::box<float,3> bb;
 
-		minX = minY = minZ = std::numeric_limits<float>::max();
-		maxX = maxY = maxZ = std::numeric_limits<float>::min();
+		for (const Point3d& p: _vertices)
+			bb.fit(util::point<float,3>(p.x, p.y, p.z));
 
-		foreach (const Point3d& p, _vertices) {
-
-			minX = std::min(p.x, minX);
-			minY = std::min(p.y, minY);
-			minZ = std::min(p.z, minZ);
-			maxX = std::max(p.x, maxX);
-			maxY = std::max(p.y, maxY);
-			maxZ = std::max(p.z, maxZ);
-		}
-
-		return util::box<float>(
-				minX, minY, minZ,
-				maxX, maxY, maxZ);
+		return bb;
 	}
 
 	/**

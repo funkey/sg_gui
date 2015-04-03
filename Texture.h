@@ -7,8 +7,8 @@
 
 #include "OpenGl.h"
 #include "OpenGlTraits.h"
-#include <util/rect.hpp>
 #include <util/Logger.h>
+#include <util/box.hpp>
 
 #include "Buffer.h"
 
@@ -75,7 +75,7 @@ public:
 	 *              An offset to be added to the scaled intensity values.
 	 */
 	template <typename PixelType>
-	void loadData(PixelType* data, const util::rect<unsigned int>& region, float scale = 1.0f, float bias = 0.0f);
+	void loadData(PixelType* data, const util::box<unsigned int,2>& region, float scale = 1.0f, float bias = 0.0f);
 
 	/**
 	 * Load texture data from a buffer.
@@ -186,10 +186,10 @@ Texture::loadData(PixelType* data, float scale, float bias) {
 
 template <typename PixelType>
 void
-Texture::loadData(PixelType* data, const util::rect<unsigned int>& region, float scale, float bias) {
+Texture::loadData(PixelType* data, const util::box<unsigned int,2>& region, float scale, float bias) {
 
-	int xoffset = region.minX;
-	int yoffset = region.minY;
+	int xoffset = region.min().x();
+	int yoffset = region.min().y();
 	int width   = region.width();
 	int height  = region.height();
 

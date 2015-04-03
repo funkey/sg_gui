@@ -168,9 +168,9 @@ private:
 	inline value_type getValue(const Volume& volume, int x, int y, int z) {
 
 		return volume(
-				volume.getBoundingBox().minX + (x-1)*_cellSizeX,
-				volume.getBoundingBox().minY + (y-1)*_cellSizeY,
-				volume.getBoundingBox().minZ + (z-1)*_cellSizeZ);
+				volume.getBoundingBox().min().x() + (x-1)*_cellSizeX,
+				volume.getBoundingBox().min().y() + (y-1)*_cellSizeY,
+				volume.getBoundingBox().min().z() + (z-1)*_cellSizeZ);
 	}
 
 	// Returns the edge Id.
@@ -791,12 +791,12 @@ Point3dId MarchingCubes<Volume>::CalculateIntersection(
 	}
 
 	// transform local coordinates back into volume space
-	p1.x = volume.getBoundingBox().minX + (v1x-1)*_cellSizeX;
-	p1.y = volume.getBoundingBox().minY + (v1y-1)*_cellSizeY;
-	p1.z = volume.getBoundingBox().minZ + (v1z-1)*_cellSizeZ;
-	p2.x = volume.getBoundingBox().minX + (v2x-1)*_cellSizeX;
-	p2.y = volume.getBoundingBox().minY + (v2y-1)*_cellSizeY;
-	p2.z = volume.getBoundingBox().minZ + (v2z-1)*_cellSizeZ;
+	p1.x = volume.getBoundingBox().min().x() + (v1x-1)*_cellSizeX;
+	p1.y = volume.getBoundingBox().min().y() + (v1y-1)*_cellSizeY;
+	p1.z = volume.getBoundingBox().min().z() + (v1z-1)*_cellSizeZ;
+	p2.x = volume.getBoundingBox().min().x() + (v2x-1)*_cellSizeX;
+	p2.y = volume.getBoundingBox().min().y() + (v2y-1)*_cellSizeY;
+	p2.z = volume.getBoundingBox().min().z() + (v2z-1)*_cellSizeZ;
 
 	value_type val1 = getValue(volume, v1x, v1y, v1z);
 	value_type val2 = getValue(volume, v2x, v2y, v2z);

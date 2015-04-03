@@ -48,12 +48,12 @@ ImageView::draw() {
 
 	glColor4f(_red, _green, _blue, _alpha);
 
-	util::box<float>& bb = _image->getBoundingBox();
-	float minX = bb.minX;
-	float minY = bb.minY;
-	float maxX = bb.maxX;
-	float maxY = bb.maxY;
-	float z    = bb.minZ;
+	util::box<float,3>& bb = _image->getBoundingBox();
+	float minX = bb.min().x();
+	float minY = bb.min().y();
+	float maxX = bb.max().x();
+	float maxY = bb.max().y();
+	float z    = bb.min().z();
 
 	glBegin(GL_QUADS);
 	glTexCoord2d(0.0, 1.0); glVertex3d(minX, maxY, z);
@@ -73,7 +73,7 @@ ImageView::onSignal(QuerySize& signal) {
 	if (!_image)
 		return;
 
-	util::rect<double> bb(
+	util::box<float,2> bb(
 			0, 0,
 			_image->width(),
 			_image->height());

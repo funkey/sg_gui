@@ -30,10 +30,10 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 		_contentSize = query.getSize();
 	}
 
-	util::point<double,2> ul(_contentSize.minX, _contentSize.minY);
-	util::point<double,2> lr(_contentSize.maxX, _contentSize.maxY);
+	util::point<float,2> ul(_contentSize.min().x(), _contentSize.min().y());
+	util::point<float,2> lr(_contentSize.max().x(), _contentSize.max().y());
 
-	util::point<double,2> center = (ul + lr)/2.0;
+	util::point<float,2> center = (ul + lr)/2.0;
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -65,41 +65,41 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 	glEnable(GL_LINE_SMOOTH);
 
 	glBegin(GL_LINES);
-	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.minZ);
-	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.maxZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.min().y(), _contentSize.min().z());
+	glVertex3f(_contentSize.min().x(), _contentSize.min().y(), _contentSize.max().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.maxZ);
-	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.maxZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.min().y(), _contentSize.max().z());
+	glVertex3f(_contentSize.min().x(), _contentSize.max().y(), _contentSize.max().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.maxZ);
-	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.minZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.max().y(), _contentSize.max().z());
+	glVertex3f(_contentSize.min().x(), _contentSize.max().y(), _contentSize.min().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.minZ);
-	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.minZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.max().y(), _contentSize.min().z());
+	glVertex3f(_contentSize.min().x(), _contentSize.min().y(), _contentSize.min().z());
 
-	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.minZ);
-	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.maxZ);
+	glVertex3f(_contentSize.max().x(), _contentSize.min().y(), _contentSize.min().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.min().y(), _contentSize.max().z());
 
-	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.maxZ);
-	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.maxZ);
+	glVertex3f(_contentSize.max().x(), _contentSize.min().y(), _contentSize.max().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.max().y(), _contentSize.max().z());
 
-	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.maxZ);
-	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.minZ);
+	glVertex3f(_contentSize.max().x(), _contentSize.max().y(), _contentSize.max().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.max().y(), _contentSize.min().z());
 
-	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.minZ);
-	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.minZ);
+	glVertex3f(_contentSize.max().x(), _contentSize.max().y(), _contentSize.min().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.min().y(), _contentSize.min().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.minZ);
-	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.minZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.min().y(), _contentSize.min().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.min().y(), _contentSize.min().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.minY, _contentSize.maxZ);
-	glVertex3f(_contentSize.maxX, _contentSize.minY, _contentSize.maxZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.min().y(), _contentSize.max().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.min().y(), _contentSize.max().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.maxZ);
-	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.maxZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.max().y(), _contentSize.max().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.max().y(), _contentSize.max().z());
 
-	glVertex3f(_contentSize.minX, _contentSize.maxY, _contentSize.minZ);
-	glVertex3f(_contentSize.maxX, _contentSize.maxY, _contentSize.minZ);
+	glVertex3f(_contentSize.min().x(), _contentSize.max().y(), _contentSize.min().z());
+	glVertex3f(_contentSize.max().x(), _contentSize.max().y(), _contentSize.min().z());
 	glEnd();
 
 	// draw solid backside
@@ -124,17 +124,17 @@ RotateView::filterDown(QuerySize& signal) {
 	QuerySize query;
 	sendInner(query);
 
-	util::box<float> size = query.getSize();
+	util::box<float,3> size = query.getSize();
 
 	LOG_ALL(rotateviewlog) << "content size is " << size << std::endl;
 
 	// bounding box of all possible rotations around (0, 0, 0)
-	size.minX = -std::max(std::abs(size.minX), std::abs(size.maxX));
-	size.maxX = -size.minX;
-	size.minY = -std::max(std::abs(size.minY), std::abs(size.maxY));
-	size.maxY = -size.minY;
-	size.minZ = -std::max(std::abs(size.minZ), std::abs(size.maxZ));
-	size.maxZ = -size.minZ;
+	size.min().x() = -std::max(std::abs(size.min().x()), std::abs(size.max().x()));
+	size.max().x() = -size.min().x();
+	size.min().y() = -std::max(std::abs(size.min().y()), std::abs(size.max().y()));
+	size.max().y() = -size.min().y();
+	size.min().z() = -std::max(std::abs(size.min().z()), std::abs(size.max().z()));
+	size.max().z() = -size.min().z();
 
 	LOG_ALL(rotateviewlog) << "max rotated content size is " << size << std::endl;
 
@@ -149,7 +149,7 @@ RotateView::unfilterDown(QuerySize& draw) {}
 void
 RotateView::onSignal(MouseDown& signal) {
 
-	util::point<double,2> position = signal.position;
+	util::point<float,2> position = signal.position;
 
 	LOG_ALL(rotateviewlog) << "mouse button " << signal.button << " down, position is " << position << std::endl;
 
@@ -192,7 +192,7 @@ RotateView::onSignal(MouseMove& signal) {
 
 		LOG_ALL(rotateviewlog) << "left button is still pressed" << std::endl;
 
-		util::point<double,2> moved = signal.position - _buttonDown;
+		util::point<float,2> moved = signal.position - _buttonDown;
 
 		// scale movement with inverse size of content
 		moved.x() /= _contentSize.width();
@@ -212,14 +212,14 @@ RotateView::onSignal(MouseMove& signal) {
 }
 
 void
-RotateView::rotate(const util::point<double,2>& moved) {
+RotateView::rotate(const util::point<float,2>& moved) {
 
 	LOG_ALL(rotateviewlog) << "current rotation: " << _w << ", (" << _x << ", " << _y << ", " << _z << ")" << std::endl;
 
 	LOG_ALL(rotateviewlog) << "moved by: " << moved << std::endl;
 
 	// previous rotation to quaternion
-	double qx, qy, qz, qw;
+	float qx, qy, qz, qw;
 
 	qx = _prevX*sin(_prevW/2.0);
 	qy = _prevY*sin(_prevW/2.0);
@@ -227,10 +227,10 @@ RotateView::rotate(const util::point<double,2>& moved) {
 	qw =        cos(_prevW/2.0);
 
 	// difference rotation as angle-axis
-	double dx, dy, dz, dw;
+	float dx, dy, dz, dw;
 
 	// ensure numerical stability
-	double dnorm = sqrt(moved.y()*moved.y() + moved.x()*moved.x());
+	float dnorm = sqrt(moved.y()*moved.y() + moved.x()*moved.x());
 	if (dnorm <= 0.0001)
 		return;
 
@@ -242,7 +242,7 @@ RotateView::rotate(const util::point<double,2>& moved) {
 	LOG_ALL(rotateviewlog) << "add rotation: " << dw << ", (" << dx << ", " << dy << ", " << dz << ")" << std::endl;
 
 	// difference rotation to quaternion
-	double qdx, qdy, qdz, qdw;
+	float qdx, qdy, qdz, qdw;
 
 	qdx = dx*sin(dw/2.0);
 	qdy = dy*sin(dw/2.0);
@@ -250,7 +250,7 @@ RotateView::rotate(const util::point<double,2>& moved) {
 	qdw =    cos(dw/2.0);
 
 	// composition of both quaternions
-	double cx, cy, cz, cw;
+	float cx, cy, cz, cw;
 
 	cw = (qdw*qw - qdx*qx - qdy*qy - qdz*qz);
 	cx = (qdw*qx + qdx*qw + qdy*qz - qdz*qy);
@@ -266,7 +266,7 @@ RotateView::rotate(const util::point<double,2>& moved) {
 	_z = cz/sin(_w/2.0);
 
 	// normalize rotation vector
-	double norm = sqrt(_x*_x + _y*_y + _z*_z);
+	float norm = sqrt(_x*_x + _y*_y + _z*_z);
 	_x = _x/norm;
 	_y = _y/norm;
 	_z = _z/norm;

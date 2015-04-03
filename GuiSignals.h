@@ -1,7 +1,6 @@
 #ifndef SG_GUI_SIGNALS_H__
 #define SG_GUI_SIGNALS_H__
 
-#include <util/rect.hpp>
 #include <util/box.hpp>
 #include <scopegraph/Signals.h>
 
@@ -29,17 +28,17 @@ public:
 
 	SizeChanged() {}
 
-	SizeChanged(const util::rect<double>& newSize) :
+	SizeChanged(const util::box<float,2>& newSize) :
 		_newSize(newSize) {}
 
-	const util::rect<double>& getNewSize() {
+	const util::box<float,2>& getNewSize() {
 
 		return _newSize;
 	}
 
 private:
 
-	util::rect<double> _newSize;
+	util::box<float,2> _newSize;
 };
 
 /**
@@ -54,7 +53,7 @@ public:
 	/**
 	 * Answer the size query. To be called by accepting agents.
 	 */
-	void setSize(const util::box<double>& size) {
+	void setSize(const util::box<float,3>& size) {
 
 		_size.fit(size);
 	}
@@ -62,7 +61,7 @@ public:
 	/**
 	 * Answer the size query. To be called by accepting agents.
 	 */
-	void setSize(const util::rect<double>& size) {
+	void setSize(const util::box<float,2>& size) {
 
 		_size.fit(size);
 	}
@@ -70,14 +69,14 @@ public:
 	/**
 	 * Get the size of all downstream views combined.
 	 */
-	const util::box<double>& getSize() const {
+	const util::box<float,3>& getSize() const {
 
 		return _size;
 	}
 
 private:
 
-	util::box<double> _size;
+	util::box<float,3> _size;
 };
 
 /**
@@ -91,17 +90,17 @@ public:
 
 	Resize() {}
 
-	Resize(const util::rect<double>& toSize) :
+	Resize(const util::box<float,2>& toSize) :
 		_toSize(toSize) {}
 
-	const util::rect<double>& getSize() const {
+	const util::box<float,2>& getSize() const {
 
 		return _toSize;
 	}
 
 private:
 
-	util::rect<double> _toSize;
+	util::box<float,2> _toSize;
 };
 
 /**
@@ -141,18 +140,18 @@ public:
 		_resolution(0, 0) {}
 
 	RoiSignal(
-			const util::rect<double>&    roi,
-			const util::point<double,2>& resolution) :
+			const util::box<float,2>&    roi,
+			const util::point<float,2>& resolution) :
 		_roi(roi),
 		_resolution(resolution) {}
 
-	util::rect<double>&  roi()        { return _roi; }
-	util::point<double,2>& resolution() { return _resolution; }
+	util::box<float,2>&   roi()        { return _roi; }
+	util::point<float,2>& resolution() { return _resolution; }
 
 private:
 
-	util::rect<double>  _roi;
-	util::point<double,2> _resolution;
+	util::box<float,2>   _roi;
+	util::point<float,2> _resolution;
 };
 
 /**

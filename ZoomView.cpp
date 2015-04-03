@@ -36,7 +36,7 @@ ZoomView::filterDown(RoiSignal& signal) {
 
 	LOG_ALL(zoomviewlog) << "transforming with " << _shift << " and " << _scale << std::endl;
 
-	util::rect<double> zoomedRoi = (signal.roi() - _shift)/_scale;
+	util::box<float,2> zoomedRoi = (signal.roi() - _shift)/_scale;
 
 	/* To obtain proper perspective deformations, we set the frustum such that 
 	 * the vanishing point is in the middle of the zoomed roi. During drawing, 
@@ -48,14 +48,14 @@ ZoomView::filterDown(RoiSignal& signal) {
 	 * the world coordinates, we inversely scale the frustum by using the width 
 	 * and height of the zoomed roi.
 	 */
-	double l2d = - zoomedRoi.width()/2;
-	double r2d = l2d + zoomedRoi.width();
-	double t2d = - zoomedRoi.height()/2;
-	double b2d = t2d + zoomedRoi.height();
+	float l2d = - zoomedRoi.width()/2;
+	float r2d = l2d + zoomedRoi.width();
+	float t2d = - zoomedRoi.height()/2;
+	float b2d = t2d + zoomedRoi.height();
 
-	double z2d   = _z2d/_scale;
-	double zNear = _zClipNear/_scale;
-	double zFar  = _zClipFar/_scale;
+	float z2d   = _z2d/_scale;
+	float zNear = _zClipNear/_scale;
+	float zFar  = _zClipFar/_scale;
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -76,7 +76,7 @@ ZoomView::filterDown(RoiSignal& signal) {
 	 */
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(-zoomedRoi.minX - zoomedRoi.width()/2, -zoomedRoi.minY - zoomedRoi.height()/2, -z2d);
+	glTranslatef(-zoomedRoi.min().x() - zoomedRoi.width()/2, -zoomedRoi.min().y() - zoomedRoi.height()/2, -z2d);
 	glScalef(1, 1, -1);
 
 	signal.roi() = zoomedRoi;
@@ -134,7 +134,7 @@ ZoomView::onSignal(PointerDown& signal) {
 	// that is for us!
 	signal.processed = true;
 
-	util::point<double,2> position = signal.position;
+	util::point<float,2> position = signal.position;
 
 	LOG_ALL(zoomviewlog) << "mouse button " << signal.button << " down, position is " << position << std::endl;
 
@@ -149,7 +149,7 @@ ZoomView::onSignal(PointerDown& signal) {
 	}
 
 	// if shift is pressed, increase zoom speed
-	double zoomStep = _zoomStep;
+	float zoomStep = _zoomStep;
 	if (signal.modifiers & keys::ShiftDown)
 		zoomStep *= 2;
 
@@ -188,7 +188,7 @@ ZoomView::onSignal(PointerMove& signal) {
 
 	LOG_ALL(zoomviewlog) << "I am in dragging mode" << std::endl;
 
-	double amp = 1.0;
+	float amp = 1.0;
 	if (signal.modifiers & keys::ShiftDown)
 		amp = 10.0;
 
@@ -197,7 +197,7 @@ ZoomView::onSignal(PointerMove& signal) {
 
 		LOG_ALL(zoomviewlog) << "left button is still pressed" << std::endl;
 
-		util::point<double,2> moved = signal.position - _buttonDown;
+		util::point<float,2> moved = signal.position - _buttonDown;
 
 		drag(moved*amp);
 
@@ -226,7 +226,7 @@ ZoomView::onInnerSignal(sg::AgentAdded&) {
 }
 
 void
-ZoomView::zoom(double zoomChange, const util::point<double,2>& anchor) {
+ZoomView::zoom(float zoomChange, const util::point<float,2>& anchor) {
 
 	LOG_ALL(zoomviewlog) << "changing user zoom by " << zoomChange << " keeping " << anchor << " where it is" << std::endl;
 
@@ -241,7 +241,7 @@ ZoomView::zoom(double zoomChange, const util::point<double,2>& anchor) {
 }
 
 void
-ZoomView::drag(const util::point<double,2>& direction) {
+ZoomView::drag(const util::point<float,2>& direction) {
 
 	_userShift += direction/_autoScale;
 
@@ -252,17 +252,17 @@ void
 ZoomView::updateScaleAndShift() {
 
 	_autoScale = 1.0;
-	_autoShift = util::point<double,2>(0, 0);
+	_autoShift = util::point<float,2>(0, 0);
 
 	// first, apply autoscale transformation (if wanted)
 	if (_autoscale) {
 
 		QuerySize signal;
 		sendInner(signal);
-		const util::box<double>& contentSize = signal.getSize();
+		const util::box<float,3>& contentSize = signal.getSize();
 
-		_zClipNear = std::max(1.0,  _z2d + contentSize.minZ - 1.0);
-		_zClipFar  = std::max(10.0, _z2d + contentSize.maxZ + 1.0);
+		_zClipNear = std::max(1.0,  _z2d + contentSize.min().z() - 1.0);
+		_zClipFar  = std::max(10.0, _z2d + contentSize.max().z() + 1.0);
 		_z2d       = (_zClipFar + _zClipNear)/2.0;
 
 		// do we have to fit the width or height of the content?
@@ -273,14 +273,14 @@ ZoomView::updateScaleAndShift() {
 
 		// get the shift to center the content in the desired area relative to 
 		// desired upper left
-		util::point<double,2> centerShift =
+		util::point<float,2> centerShift =
 				(fitHeight ?
-				 util::point<double,2>(1, 0)*0.5*(_desiredSize.width()  - contentSize.width() *_autoScale) :
-				 util::point<double,2>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
+				 util::point<float,2>(1, 0)*0.5*(_desiredSize.width()  - contentSize.width() *_autoScale) :
+				 util::point<float,2>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
 
 		// get the final shift relative to content upper left
-		util::point<double,2> ul(contentSize.minX, contentSize.minY);
-		_autoShift = (_desiredSize.upperLeft() - ul)*_autoScale + centerShift;
+		util::point<float,2> ul(contentSize.min().x(), contentSize.min().y());
+		_autoShift = (_desiredSize.min() - ul)*_autoScale + centerShift;
 	}
 
 	// append user scale and shift transformation

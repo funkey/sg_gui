@@ -51,7 +51,7 @@ public:
 	 *
 	 * @return The resolution of this window.
 	 */
-	virtual const util::point<double,2>& getResolution() = 0;
+	virtual const util::point<float,2>& getResolution() = 0;
 
 	/**
 	 * Process window manager events and redraw. If this call blocks for events, 
@@ -90,7 +90,7 @@ public:
 	 */
 	virtual void processFingerUpEvent(
 			unsigned long                timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			int                          id,
 			const Modifiers&             modifiers) = 0;
 
@@ -101,7 +101,7 @@ public:
 	 */
 	virtual void processFingerDownEvent(
 			unsigned long                timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			int                          id,
 			const Modifiers&             modifiers) = 0;
 
@@ -112,7 +112,7 @@ public:
 	 */
 	virtual void processFingerMoveEvent(
 			unsigned long                timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			int                          id,
 			const Modifiers&             modifiers) = 0;
 
@@ -124,8 +124,8 @@ public:
 	virtual void processPenUpEvent(
 			unsigned long                timestamp,
 			const buttons::Button&       button,
-			const util::point<double,2>& position,
-			double                       pressure,
+			const util::point<float,2>& position,
+			float                       pressure,
 			const Modifiers&             modifiers) = 0;
 
 	/**
@@ -136,8 +136,8 @@ public:
 	virtual void processPenDownEvent(
 			unsigned long                timestamp,
 			const buttons::Button&       button,
-			const util::point<double,2>& position,
-			double                       pressure,
+			const util::point<float,2>& position,
+			float                       pressure,
 			const Modifiers&             modifiers) = 0;
 
 	/**
@@ -147,8 +147,8 @@ public:
 	 */
 	virtual void processPenMoveEvent(
 			unsigned long                timestamp,
-			const util::point<double,2>& position,
-			double                       pressure,
+			const util::point<float,2>& position,
+			float                       pressure,
 			const Modifiers&             modifiers) = 0;
 
 	/**
@@ -183,7 +183,7 @@ public:
 	virtual void processButtonUpEvent(
 			unsigned long                timestamp,
 			const buttons::Button&       button,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			const Modifiers&             modifiers) = 0;
 
 	/**
@@ -194,7 +194,7 @@ public:
 	virtual void processButtonDownEvent(
 			unsigned long                timestamp,
 			const buttons::Button&       button,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			const Modifiers&             modifiers) = 0;
 
 	/**
@@ -204,7 +204,7 @@ public:
 	 */
 	virtual void processMouseMoveEvent(
 			unsigned long                timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			const Modifiers&             modifiers) = 0;
 
 	/**
