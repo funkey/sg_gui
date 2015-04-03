@@ -17,14 +17,14 @@ public:
 	typedef InputSignal parent_type;
 
 	PointerSignal(
-			unsigned long              timestamp,
-			const util::point<double>& position_,
-			const Modifiers&           modifiers_) :
+			unsigned long                timestamp,
+			const util::point<double,2>& position_,
+			const Modifiers&             modifiers_) :
 		InputSignal(timestamp),
 		position(position_),
 		modifiers(modifiers_) {}
 
-	util::point<double> position;
+	util::point<double,2> position;
 
 	Modifiers modifiers;
 };
@@ -36,9 +36,9 @@ public:
 	typedef PointerSignal parent_type;
 
 	PointerMove(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			const Modifiers&           modifiers) :
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers) :
 		PointerSignal(timestamp, position, modifiers) {}
 };
 
@@ -49,10 +49,10 @@ public:
 	typedef PointerSignal parent_type;
 
 	PointerDown(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			const Modifiers&           modifiers,
-			const buttons::Button&     button_) :
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers,
+			const buttons::Button&       button_) :
 		PointerSignal(timestamp, position, modifiers),
 		button(button_) {}
 
@@ -66,10 +66,10 @@ public:
 	typedef PointerSignal parent_type;
 
 	PointerUp(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			const Modifiers&           modifiers,
-			const buttons::Button&     button_) :
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers,
+			const buttons::Button&       button_) :
 		PointerSignal(timestamp, position, modifiers),
 		button(button_) {}
 

@@ -24,18 +24,18 @@ struct WindowMode {
 		hideCursor(hideCursor_) {}
 
 	WindowMode(
-			const point<int>& size_,
-			const point<int>& position_ = point<int>(0, 0),
-			int   depth_                = 32,
-			bool  fullscreen_           = false) :
+			const point<int,2>& size_,
+			const point<int,2>& position_ = point<int,2>(0, 0),
+			int   depth_                  = 32,
+			bool  fullscreen_             = false) :
 		size(size_),
-		position(fullscreen_ ? point<int>(0, 0) : position_),
+		position(fullscreen_ ? point<int,2>(0, 0) : position_),
 		depth(depth_),
 		fullscreen(fullscreen_) {}
 
-	point<int> size;
+	point<int,2> size;
 
-	point<int> position;
+	point<int,2> position;
 
 	int depth;
 

@@ -51,7 +51,7 @@ public:
 	 *
 	 * @return The resolution of this window.
 	 */
-	virtual const util::point<double>& getResolution() = 0;
+	virtual const util::point<double,2>& getResolution() = 0;
 
 	/**
 	 * Process window manager events and redraw. If this call blocks for events, 
@@ -89,10 +89,10 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processFingerUpEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			int                        id,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			int                          id,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -100,10 +100,10 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processFingerDownEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			int                        id,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			int                          id,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -111,10 +111,10 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processFingerMoveEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			int                        id,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			int                          id,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -122,11 +122,11 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processPenUpEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			double                     pressure,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			double                       pressure,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -134,11 +134,11 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processPenDownEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			double                     pressure,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			double                       pressure,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -146,10 +146,10 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processPenMoveEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			double                     pressure,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			double                       pressure,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -181,10 +181,10 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processButtonUpEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -192,10 +192,10 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processButtonDownEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Callback for input events.
@@ -203,9 +203,9 @@ public:
 	 * @param event The input event.
 	 */
 	virtual void processMouseMoveEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			const Modifiers&           modifiers) = 0;
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers) = 0;
 
 	/**
 	 * Get the caption of this window as assigned by the constructor.

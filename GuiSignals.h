@@ -141,18 +141,18 @@ public:
 		_resolution(0, 0) {}
 
 	RoiSignal(
-			const util::rect<double>&  roi,
-			const util::point<double>& resolution) :
+			const util::rect<double>&    roi,
+			const util::point<double,2>& resolution) :
 		_roi(roi),
 		_resolution(resolution) {}
 
 	util::rect<double>&  roi()        { return _roi; }
-	util::point<double>& resolution() { return _resolution; }
+	util::point<double,2>& resolution() { return _resolution; }
 
 private:
 
 	util::rect<double>  _roi;
-	util::point<double> _resolution;
+	util::point<double,2> _resolution;
 };
 
 /**

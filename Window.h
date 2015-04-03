@@ -90,7 +90,7 @@ public:
 	 *
 	 * @return The resolution of this window.
 	 */
-	const point<double>& getResolution();
+	const point<double,2>& getResolution();
 
 	/**
 	 * Set the background color of this window.
@@ -172,10 +172,10 @@ private:
 	 * @param event The input event.
 	 */
 	void processFingerUpEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			int                        id,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			int                          id,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -183,10 +183,10 @@ private:
 	 * @param event The input event.
 	 */
 	void processFingerDownEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			int                        id,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			int                          id,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -194,10 +194,10 @@ private:
 	 * @param event The input event.
 	 */
 	void processFingerMoveEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			int                        id,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			int                          id,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -205,11 +205,11 @@ private:
 	 * @param event The input event.
 	 */
 	void processPenUpEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			double                     pressure,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			double                       pressure,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -217,11 +217,11 @@ private:
 	 * @param event The input event.
 	 */
 	void processPenDownEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			double                     pressure,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			double                       pressure,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -229,10 +229,10 @@ private:
 	 * @param event The input event.
 	 */
 	void processPenMoveEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			double                     pressure,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			double                       pressure,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -264,10 +264,10 @@ private:
 	 * @param event The input event.
 	 */
 	void processButtonUpEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -275,10 +275,10 @@ private:
 	 * @param event The input event.
 	 */
 	void processButtonDownEvent(
-			unsigned long              timestamp,
-			const buttons::Button&     button,
-			const util::point<double>& position,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const buttons::Button&       button,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Callback for input events.
@@ -286,9 +286,9 @@ private:
 	 * @param event The input event.
 	 */
 	void processMouseMoveEvent(
-			unsigned long              timestamp,
-			const util::point<double>& position,
-			const Modifiers&           modifiers);
+			unsigned long                timestamp,
+			const util::point<double,2>& position,
+			const Modifiers&             modifiers);
 
 	/**
 	 * Redraw the content of the window.
@@ -329,7 +329,7 @@ private:
 	rect<double>  _region;
 
 	// the resolution of the region in pixels
-	point<double> _resolution;
+	point<double,2> _resolution;
 
 	// set to true if the next frame should be saved to file
 	bool          _saveFrameRequest;

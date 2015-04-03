@@ -40,8 +40,8 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 	_screen  = DefaultScreen(_display);
 	_xfd     = ConnectionNumber(_display);
 
-	_screenResolution.x = DisplayWidth(_display, _screen);
-	_screenResolution.y = DisplayHeight(_display, _screen);
+	_screenResolution.x() = DisplayWidth(_display, _screen);
+	_screenResolution.y() = DisplayHeight(_display, _screen);
 
 	if (_display == 0)
 		throw "[XWindow] Unable to open display";
@@ -61,8 +61,8 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 	_window = XCreateWindow(
 			_display,
 			RootWindow(_display, _screen),
-			mode.position.x, mode.position.y,
-			mode.size.x, mode.size.y,
+			mode.position.x(), mode.position.y(),
+			mode.size.x(), mode.size.y(),
 			0,
 			DefaultDepth(_display, _screen),
 			InputOutput,
@@ -381,7 +381,7 @@ XWindow::processEvent(XEvent& event) {
 
 					processFingerDownEvent(
 								deviceEvent->time,
-								point<double>(deviceEvent->event_x, deviceEvent->event_y),
+								point<double,2>(deviceEvent->event_x, deviceEvent->event_y),
 								deviceEvent->detail,
 								modifiers);
 				}
@@ -396,7 +396,7 @@ XWindow::processEvent(XEvent& event) {
 
 					processFingerMoveEvent(
 								deviceEvent->time,
-								point<double>(deviceEvent->event_x, deviceEvent->event_y),
+								point<double,2>(deviceEvent->event_x, deviceEvent->event_y),
 								deviceEvent->detail,
 								modifiers);
 				}
@@ -411,7 +411,7 @@ XWindow::processEvent(XEvent& event) {
 
 					processFingerUpEvent(
 								deviceEvent->time,
-								point<double>(deviceEvent->event_x, deviceEvent->event_y),
+								point<double,2>(deviceEvent->event_x, deviceEvent->event_y),
 								deviceEvent->detail,
 								modifiers);
 				}
@@ -432,7 +432,7 @@ XWindow::processEvent(XEvent& event) {
 					processButtonDownEvent(
 							deviceEvent->time,
 							button,
-							point<double>(deviceEvent->event_x, deviceEvent->event_y),
+							point<double,2>(deviceEvent->event_x, deviceEvent->event_y),
 							modifiers);
 
 				} else if (inputType == Pen) {
@@ -461,7 +461,7 @@ XWindow::processEvent(XEvent& event) {
 					processButtonUpEvent(
 							deviceEvent->time,
 							button,
-							point<double>(deviceEvent->event_x, deviceEvent->event_y),
+							point<double,2>(deviceEvent->event_x, deviceEvent->event_y),
 							modifiers);
 
 				} else if (inputType == Pen) {
@@ -488,7 +488,7 @@ XWindow::processEvent(XEvent& event) {
 
 					processMouseMoveEvent(
 							deviceEvent->time,
-							point<double>(deviceEvent->event_x, deviceEvent->event_y),
+							point<double,2>(deviceEvent->event_x, deviceEvent->event_y),
 							modifiers);
 
 				} else if (inputType == Pen) {
@@ -667,16 +667,16 @@ XWindow::configureTabletArea(int deviceId) {
 		area[i] = *((int32_t*)ptr);
 	}
 
-	util::point<int> resolution = getResolution();
+	util::point<int,2> resolution = getResolution();
 
-	_penSlopeX = (double)resolution.x/(area[2]-area[0]);
-	_penSlopeY = (double)resolution.y/(area[3]-area[1]);
+	_penSlopeX = (double)resolution.x()/(area[2]-area[0]);
+	_penSlopeY = (double)resolution.y()/(area[3]-area[1]);
 	_penOffsetX = -_penSlopeX*area[0];
 	_penOffsetY = -_penSlopeY*area[1];
 
 	LOG_DEBUG(xlog) << "tablet area changed to " << area[0] << ", " << area[1] << ", " << area[2] << ", " << area[3] << std::endl;
 	LOG_DEBUG(xlog)
-			<< "for resolution " << resolution.x << "x" << resolution.y
+			<< "for resolution " << resolution
 			<< " pen multiplier is " << _penSlopeX << "x" << _penSlopeY
 			<< ", offset is (" << _penOffsetX << ", " << _penOffsetY << ")"
 			<< std::endl;
@@ -965,13 +965,13 @@ XWindow::getInputType(int deviceid) {
 	return Ignored;
 }
 
-util::point<double>
+util::point<double,2>
 XWindow::getPenPosition(XIDeviceEvent* event) {
 
-	util::point<double> position;
+	util::point<double,2> position;
 
-	position.x = event->valuators.values[0]*_penSlopeX + _penOffsetX;
-	position.y = event->valuators.values[1]*_penSlopeY + _penOffsetY;
+	position.x() = event->valuators.values[0]*_penSlopeX + _penOffsetX;
+	position.y() = event->valuators.values[1]*_penSlopeY + _penOffsetY;
 
 	return position;
 }

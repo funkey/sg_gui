@@ -134,7 +134,7 @@ ZoomView::onSignal(PointerDown& signal) {
 	// that is for us!
 	signal.processed = true;
 
-	util::point<double> position = signal.position;
+	util::point<double,2> position = signal.position;
 
 	LOG_ALL(zoomviewlog) << "mouse button " << signal.button << " down, position is " << position << std::endl;
 
@@ -197,7 +197,7 @@ ZoomView::onSignal(PointerMove& signal) {
 
 		LOG_ALL(zoomviewlog) << "left button is still pressed" << std::endl;
 
-		util::point<double> moved = signal.position - _buttonDown;
+		util::point<double,2> moved = signal.position - _buttonDown;
 
 		drag(moved*amp);
 
@@ -226,7 +226,7 @@ ZoomView::onInnerSignal(sg::AgentAdded&) {
 }
 
 void
-ZoomView::zoom(double zoomChange, const util::point<double>& anchor) {
+ZoomView::zoom(double zoomChange, const util::point<double,2>& anchor) {
 
 	LOG_ALL(zoomviewlog) << "changing user zoom by " << zoomChange << " keeping " << anchor << " where it is" << std::endl;
 
@@ -241,7 +241,7 @@ ZoomView::zoom(double zoomChange, const util::point<double>& anchor) {
 }
 
 void
-ZoomView::drag(const util::point<double>& direction) {
+ZoomView::drag(const util::point<double,2>& direction) {
 
 	_userShift += direction/_autoScale;
 
@@ -252,7 +252,7 @@ void
 ZoomView::updateScaleAndShift() {
 
 	_autoScale = 1.0;
-	_autoShift = util::point<double>(0, 0);
+	_autoShift = util::point<double,2>(0, 0);
 
 	// first, apply autoscale transformation (if wanted)
 	if (_autoscale) {
@@ -273,13 +273,13 @@ ZoomView::updateScaleAndShift() {
 
 		// get the shift to center the content in the desired area relative to 
 		// desired upper left
-		util::point<double> centerShift =
+		util::point<double,2> centerShift =
 				(fitHeight ?
-				 util::point<double>(1, 0)*0.5*(_desiredSize.width()  - contentSize.width() *_autoScale) :
-				 util::point<double>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
+				 util::point<double,2>(1, 0)*0.5*(_desiredSize.width()  - contentSize.width() *_autoScale) :
+				 util::point<double,2>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
 
 		// get the final shift relative to content upper left
-		util::point<double> ul(contentSize.minX, contentSize.minY);
+		util::point<double,2> ul(contentSize.minX, contentSize.minY);
 		_autoShift = (_desiredSize.upperLeft() - ul)*_autoScale + centerShift;
 	}
 

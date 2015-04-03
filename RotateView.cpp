@@ -30,10 +30,10 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 		_contentSize = query.getSize();
 	}
 
-	util::point<double> ul(_contentSize.minX, _contentSize.minY);
-	util::point<double> lr(_contentSize.maxX, _contentSize.maxY);
+	util::point<double,2> ul(_contentSize.minX, _contentSize.minY);
+	util::point<double,2> lr(_contentSize.maxX, _contentSize.maxY);
 
-	util::point<double> center = (ul + lr)/2.0;
+	util::point<double,2> center = (ul + lr)/2.0;
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -54,9 +54,9 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
 
 	// perform the rotation
-	glTranslated(center.x,  center.y, 0);
+	glTranslated(center.x(),  center.y(), 0);
 	glRotated(_w/M_PI*180.0, _x, _y, _z);
-	glTranslated(-center.x, -center.y, 0);
+	glTranslated(-center.x(), -center.y(), 0);
 
 	glColor4f((_highlight ? 0.88 : 0.1), 0.2, 0.05, 0.5);
 
@@ -149,7 +149,7 @@ RotateView::unfilterDown(QuerySize& draw) {}
 void
 RotateView::onSignal(MouseDown& signal) {
 
-	util::point<double> position = signal.position;
+	util::point<double,2> position = signal.position;
 
 	LOG_ALL(rotateviewlog) << "mouse button " << signal.button << " down, position is " << position << std::endl;
 
@@ -192,11 +192,11 @@ RotateView::onSignal(MouseMove& signal) {
 
 		LOG_ALL(rotateviewlog) << "left button is still pressed" << std::endl;
 
-		util::point<double> moved = signal.position - _buttonDown;
+		util::point<double,2> moved = signal.position - _buttonDown;
 
 		// scale movement with inverse size of content
-		moved.x /= _contentSize.width();
-		moved.y /= _contentSize.height();
+		moved.x() /= _contentSize.width();
+		moved.y() /= _contentSize.height();
 
 		// change the current rotation according to mouse movement
 		rotate(moved);
@@ -212,11 +212,11 @@ RotateView::onSignal(MouseMove& signal) {
 }
 
 void
-RotateView::rotate(const util::point<double>& moved) {
+RotateView::rotate(const util::point<double,2>& moved) {
 
 	LOG_ALL(rotateviewlog) << "current rotation: " << _w << ", (" << _x << ", " << _y << ", " << _z << ")" << std::endl;
 
-	LOG_ALL(rotateviewlog) << "moved by: (" << moved.x << ", " << moved.y << ")" << std::endl;
+	LOG_ALL(rotateviewlog) << "moved by: " << moved << std::endl;
 
 	// previous rotation to quaternion
 	double qx, qy, qz, qw;
@@ -230,12 +230,12 @@ RotateView::rotate(const util::point<double>& moved) {
 	double dx, dy, dz, dw;
 
 	// ensure numerical stability
-	double dnorm = sqrt(moved.y*moved.y + moved.x*moved.x);
+	double dnorm = sqrt(moved.y()*moved.y() + moved.x()*moved.x());
 	if (dnorm <= 0.0001)
 		return;
 
-	dx =  moved.y/dnorm;
-	dy = -moved.x/dnorm;
+	dx =  moved.y()/dnorm;
+	dy = -moved.x()/dnorm;
 	dz = 0.0;
 	dw = dnorm*M_PI;
 

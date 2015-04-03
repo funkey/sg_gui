@@ -26,8 +26,8 @@ Window::Window(
 		string caption,
 		const WindowMode& mode) :
 	WindowType(caption, mode),
-	_region(0, 0, mode.size.x, mode.size.y),
-	_resolution(mode.size.x, mode.size.y),
+	_region(0, 0, mode.size.x(), mode.size.y()),
+	_resolution(mode.size.x(), mode.size.y()),
 	_saveFrameRequest(false),
 #ifdef HAVE_PNG
 	_frameNumber(0),
@@ -57,7 +57,7 @@ Window::createFrameBuffer() {
 
 	deleteFrameBuffer();
 
-	_frameBuffer = new unsigned char[(int)_resolution.x*(int)_resolution.y*3];
+	_frameBuffer = new unsigned char[(int)_resolution.x()*(int)_resolution.y()*3];
 }
 
 void
@@ -77,16 +77,16 @@ Window::configureViewport() {
 	glViewport(
 			0,
 			0,
-			_resolution.x,
-			_resolution.y);
+			_resolution.x(),
+			_resolution.y());
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	gluOrtho2D(
 			0,
-			_resolution.x,
-			_resolution.y,
+			_resolution.x(),
+			_resolution.y(),
 			0);
 
 	GL_ASSERT;
@@ -108,7 +108,7 @@ Window::redraw() {
 	// draw opaque content first...
 	DrawOpaque drawOpaqueSignal;
 	drawOpaqueSignal.roi() = _region;
-	drawOpaqueSignal.resolution() = point<double>(1.0, 1.0);
+	drawOpaqueSignal.resolution() = point<double,2>(1.0, 1.0);
 	sendInner(drawOpaqueSignal);
 
 	glEnable(GL_BLEND);
@@ -117,7 +117,7 @@ Window::redraw() {
 	// ...followed by translucent content
 	DrawTranslucent drawTranslucentSignal;
 	drawTranslucentSignal.roi() = _region;
-	drawTranslucentSignal.resolution() = point<double>(1.0, 1.0);
+	drawTranslucentSignal.resolution() = point<double,2>(1.0, 1.0);
 	sendInner(drawTranslucentSignal);
 
 	if (drawOpaqueSignal.needsRedraw() || drawTranslucentSignal.needsRedraw()) {
@@ -135,7 +135,7 @@ Window::redraw() {
 	LOG_ALL(winlog) << "[" << getCaption() << "] finished redrawing" << endl;
 }
 
-const point<double>&
+const point<double,2>&
 Window::getResolution() {
 
 	return _resolution;
@@ -145,13 +145,13 @@ bool
 Window::processResizeEvent(int width, int height) {
 
 	// did the size of the window change?
-	if (_region.maxX == width && _region.maxY == height && _resolution.x == width && _resolution.y == height)
+	if (_region.maxX == width && _region.maxY == height && _resolution.x() == width && _resolution.y() == height)
 		return false;
 
 	_region.maxX = width;
 	_region.maxY = height;
-	_resolution.x = width;
-	_resolution.y = height;
+	_resolution.x() = width;
+	_resolution.y() = height;
 
 	{
 		// ensure that our context is active
@@ -181,62 +181,62 @@ Window::processKeyDownEvent(const keys::Key& key, const Modifiers& modifiers) {
 
 void
 Window::processFingerUpEvent(
-		unsigned long              timestamp,
-		const util::point<double>& position,
-		int                        id,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const util::point<double,2>& position,
+		int                          id,
+		const Modifiers&             modifiers) {
 
 	sendInner<FingerUp>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processFingerDownEvent(
-		unsigned long              timestamp,
-		const util::point<double>& position,
-		int                        id,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const util::point<double,2>& position,
+		int                          id,
+		const Modifiers&             modifiers) {
 
 	sendInner<FingerDown>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processFingerMoveEvent(
-		unsigned long              timestamp,
-		const util::point<double>& position,
-		int                        id,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const util::point<double,2>& position,
+		int                          id,
+		const Modifiers&             modifiers) {
 
 	sendInner<FingerMove>(timestamp, position, id, modifiers);
 }
 
 void
 Window::processPenUpEvent(
-		unsigned long              timestamp,
-		const buttons::Button&     button,
-		const util::point<double>& position,
-		double                     pressure,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const buttons::Button&       button,
+		const util::point<double,2>& position,
+		double                       pressure,
+		const Modifiers&             modifiers) {
 
 	sendInner<PenUp>(timestamp, button, position, pressure, modifiers);
 }
 
 void
 Window::processPenDownEvent(
-		unsigned long              timestamp,
-		const buttons::Button&     button,
-		const util::point<double>& position,
-		double                     pressure,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const buttons::Button&       button,
+		const util::point<double,2>& position,
+		double                       pressure,
+		const Modifiers&             modifiers) {
 
 	sendInner<PenDown>(timestamp, button, position, pressure, modifiers);
 }
 
 void
 Window::processPenMoveEvent(
-		unsigned long              timestamp,
-		const util::point<double>& position,
-		double                     pressure,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const util::point<double,2>& position,
+		double                       pressure,
+		const Modifiers&             modifiers) {
 
 	LOG_ALL(winlog) << "[Window] sending signal pen move" << std::endl;
 
@@ -263,29 +263,29 @@ Window::processPenAwayEvent(unsigned long timestamp) {
 
 void
 Window::processButtonUpEvent(
-		unsigned long              timestamp,
-		const buttons::Button&     button,
-		const util::point<double>& position,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const buttons::Button&       button,
+		const util::point<double,2>& position,
+		const Modifiers&             modifiers) {
 
 	sendInner<MouseUp>(timestamp, button, position, modifiers);
 }
 
 void
 Window::processButtonDownEvent(
-		unsigned long              timestamp,
-		const buttons::Button&     button,
-		const util::point<double>& position,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const buttons::Button&       button,
+		const util::point<double,2>& position,
+		const Modifiers&             modifiers) {
 
 	sendInner<MouseDown>(timestamp, button, position, modifiers);
 }
 
 void
 Window::processMouseMoveEvent(
-		unsigned long              timestamp,
-		const util::point<double>& position,
-		const Modifiers&           modifiers) {
+		unsigned long                timestamp,
+		const util::point<double,2>& position,
+		const Modifiers&             modifiers) {
 
 	sendInner<MouseMove>(timestamp, position, modifiers);
 }
@@ -345,16 +345,16 @@ Window::saveFrame() {
 
 	glReadPixels(
 			0, 0,
-			_resolution.x, _resolution.y,
+			_resolution.x(), _resolution.y(),
 			GL_RGB, GL_UNSIGNED_BYTE,
 			_frameBuffer);
 	GL_ASSERT;
 
 	rgb8c_view_t frameView =
 			interleaved_view(
-					_resolution.x, _resolution.y,
+					_resolution.x(), _resolution.y(),
 					(const rgb8_pixel_t*)_frameBuffer,
-					_resolution.x*3);
+					_resolution.x()*3);
 
 	png_write_view(
 			"./shots/" + getCaption() + to_string_with_leading_zeros(_frameNumber, 8) + ".png",

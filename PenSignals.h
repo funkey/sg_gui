@@ -15,7 +15,7 @@ public:
 
 	PenMove(
 			unsigned long timestamp,
-			const util::point<double>& position,
+			const util::point<double,2>& position,
 			double pressure_,
 			const Modifiers& modifiers) :
 		PointerMove(timestamp, position, modifiers),
@@ -33,7 +33,7 @@ public:
 	PenDown(
 			unsigned long timestamp,
 			const buttons::Button& button,
-			const util::point<double>& position,
+			const util::point<double,2>& position,
 			double pressure_,
 			const Modifiers& modifiers) :
 		PointerDown(timestamp, position, modifiers, button),
@@ -51,7 +51,7 @@ public:
 	PenUp(
 			unsigned long timestamp,
 			const buttons::Button& button,
-			const util::point<double>& position,
+			const util::point<double,2>& position,
 			double pressure_,
 			const Modifiers& modifiers) :
 		PointerUp(timestamp, position, modifiers, button),
@@ -69,7 +69,7 @@ public:
 	PenIn(unsigned long timestamp) :
 		PointerSignal(
 				timestamp,
-				util::point<double>(0, 0),
+				util::point<double,2>(0, 0),
 				sg_gui::NoModifier) {}
 };
 
@@ -82,7 +82,7 @@ public:
 	PenOut(unsigned long timestamp) :
 		PointerSignal(
 				timestamp,
-				util::point<double>(0, 0),
+				util::point<double,2>(0, 0),
 				sg_gui::NoModifier) {}
 };
 
@@ -95,7 +95,7 @@ public:
 	PenAway(unsigned long timestamp) :
 		PointerSignal(
 				timestamp,
-				util::point<double>(0, 0),
+				util::point<double,2>(0, 0),
 				sg_gui::NoModifier) {}
 };
 

@@ -41,7 +41,7 @@ public:
 
 private:
 
-	void rotate(const util::point<double>& moved);
+	void rotate(const util::point<double,2>& moved);
 
 	// the current rotation parameters
 	double _x, _y, _z, _w;
@@ -50,7 +50,7 @@ private:
 	double _prevX, _prevY, _prevZ, _prevW;
 
 	// remember the last mouse position
-	util::point<double> _buttonDown;
+	util::point<double,2> _buttonDown;
 
 	// indicate that we are in dragging mode
 	bool _dragging;

@@ -145,7 +145,7 @@ private:
 	 * Transform the pen device coordinates to screen coordinates according to 
 	 * the calibration.
 	 */
-	util::point<double> getPenPosition(XIDeviceEvent* event);
+	util::point<double,2> getPenPosition(XIDeviceEvent* event);
 
 	/**
 	 * Assuming the input device is a pen, get the pressure level.
@@ -186,7 +186,7 @@ private:
 	bool     _fullscreen;
 
 	// the current resolution of the screen
-	util::point<int> _screenResolution;
+	util::point<int,2> _screenResolution;
 
 	// map from device ID to input type
 	std::map<int, InputType> _inputTypes;

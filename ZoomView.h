@@ -59,12 +59,12 @@ private:
 	 * Zoom onto the given point. The current scale will be multiplied by 
 	 * 'zoomChange'.
 	 */
-	void zoom(double zoomChange, const util::point<double>& anchor);
+	void zoom(double zoomChange, const util::point<double,2>& anchor);
 
 	/**
 	 * Drag the content in the given direction.
 	 */
-	void drag(const util::point<double>& direction);
+	void drag(const util::point<double,2>& direction);
 
 	/**
 	 * Recalculate scale and shift.
@@ -75,7 +75,7 @@ private:
 	double _zoomStep;
 
 	// remember the last mouse position
-	util::point<double> _buttonDown;
+	util::point<double,2> _buttonDown;
 
 	// indicate that we are in dragging mode
 	bool _dragging;
@@ -86,16 +86,16 @@ private:
 
 	// the scale and shift of this view as requested by the user
 	double _userScale;
-	util::point<double> _userShift;
+	util::point<double,2> _userShift;
 
 	// the scale and shift of this view to fit the content to the desired 
 	// size
 	double _autoScale;
-	util::point<double> _autoShift;
+	util::point<double,2> _autoShift;
 
 	// the effective scale and shift, taking into account possible autoscaling
 	double _scale;
-	util::point<double> _shift;
+	util::point<double,2> _shift;
 
 	// the desired size of this view
 	util::rect<double> _desiredSize;
