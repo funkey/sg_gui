@@ -37,7 +37,7 @@ struct Point3dId {
 
 	// construction from Point3d
 	Point3dId(const Point3d& p) :
-		newId(0), x(p.x), y(p.y), z(p.z) {};
+		newId(0), x(p.x()), y(p.y()), z(p.z()) {};
 
 	// conversion to regular Point3d
 	operator Point3d () {
@@ -791,12 +791,12 @@ Point3dId MarchingCubes<Volume>::CalculateIntersection(
 	}
 
 	// transform local coordinates back into volume space
-	p1.x = volume.getBoundingBox().min().x() + (v1x-1)*_cellSizeX;
-	p1.y = volume.getBoundingBox().min().y() + (v1y-1)*_cellSizeY;
-	p1.z = volume.getBoundingBox().min().z() + (v1z-1)*_cellSizeZ;
-	p2.x = volume.getBoundingBox().min().x() + (v2x-1)*_cellSizeX;
-	p2.y = volume.getBoundingBox().min().y() + (v2y-1)*_cellSizeY;
-	p2.z = volume.getBoundingBox().min().z() + (v2z-1)*_cellSizeZ;
+	p1.x() = volume.getBoundingBox().min().x() + (v1x-1)*_cellSizeX;
+	p1.y() = volume.getBoundingBox().min().y() + (v1y-1)*_cellSizeY;
+	p1.z() = volume.getBoundingBox().min().z() + (v1z-1)*_cellSizeZ;
+	p2.x() = volume.getBoundingBox().min().x() + (v2x-1)*_cellSizeX;
+	p2.y() = volume.getBoundingBox().min().y() + (v2y-1)*_cellSizeY;
+	p2.z() = volume.getBoundingBox().min().z() + (v2z-1)*_cellSizeZ;
 
 	value_type val1 = getValue(volume, v1x, v1y, v1z);
 	value_type val2 = getValue(volume, v2x, v2y, v2z);
@@ -982,15 +982,11 @@ void MarchingCubes<Volume>::CalculateNormals()
 		id0 = _mesh->getTriangle(i).v0;
 		id1 = _mesh->getTriangle(i).v1;
 		id2 = _mesh->getTriangle(i).v2;
-		vec1.x = _mesh->getVertex(id1).x - _mesh->getVertex(id0).x;
-		vec1.y = _mesh->getVertex(id1).y - _mesh->getVertex(id0).y;
-		vec1.z = _mesh->getVertex(id1).z - _mesh->getVertex(id0).z;
-		vec2.x = _mesh->getVertex(id2).x - _mesh->getVertex(id0).x;
-		vec2.y = _mesh->getVertex(id2).y - _mesh->getVertex(id0).y;
-		vec2.z = _mesh->getVertex(id2).z - _mesh->getVertex(id0).z;
-		normal.x = vec1.z*vec2.y - vec1.y*vec2.z;
-		normal.y = vec1.x*vec2.z - vec1.z*vec2.x;
-		normal.z = vec1.y*vec2.x - vec1.x*vec2.y;
+		vec1 = _mesh->getVertex(id1) - _mesh->getVertex(id0);
+		vec2 = _mesh->getVertex(id2) - _mesh->getVertex(id0);
+		normal.x() = vec1.z()*vec2.y() - vec1.y()*vec2.z();
+		normal.y() = vec1.x()*vec2.z() - vec1.z()*vec2.x();
+		normal.z() = vec1.y()*vec2.x() - vec1.x()*vec2.y();
 		_mesh->getNormal(id0) += normal;
 		_mesh->getNormal(id1) += normal;
 		_mesh->getNormal(id2) += normal;
@@ -999,12 +995,10 @@ void MarchingCubes<Volume>::CalculateNormals()
 	// Normalize normals.
 	for (unsigned int i = 0; i < _nNormals; i++) {
 		float length = sqrt(
-				_mesh->getNormal(i).x*_mesh->getNormal(i).x +
-				_mesh->getNormal(i).y*_mesh->getNormal(i).y +
-				_mesh->getNormal(i).z*_mesh->getNormal(i).z);
-		_mesh->getNormal(i).x /= length;
-		_mesh->getNormal(i).y /= length;
-		_mesh->getNormal(i).z /= length;
+				_mesh->getNormal(i).x()*_mesh->getNormal(i).x() +
+				_mesh->getNormal(i).y()*_mesh->getNormal(i).y() +
+				_mesh->getNormal(i).z()*_mesh->getNormal(i).z());
+		_mesh->getNormal(i) /= length;
 	}
 }
 

@@ -78,9 +78,9 @@ MeshView::updateRecording() {
 			const Vector3d& n1 = _meshes->get(id)->getNormal(triangle.v1);
 			const Vector3d& n2 = _meshes->get(id)->getNormal(triangle.v2);
 
-			glNormal3f(n0.x, n0.y, n0.z); glVertex3f(v0.x, v0.y, v0.z);
-			glNormal3f(n1.x, n1.y, n1.z); glVertex3f(v1.x, v1.y, v1.z);
-			glNormal3f(n2.x, n2.y, n2.z); glVertex3f(v2.x, v2.y, v2.z);
+			glNormal3f(n0.x(), n0.y(), n0.z()); glVertex3f(v0.x(), v0.y(), v0.z());
+			glNormal3f(n1.x(), n1.y(), n1.z()); glVertex3f(v1.x(), v1.y(), v1.z());
+			glNormal3f(n2.x(), n2.y(), n2.z()); glVertex3f(v2.x(), v2.y(), v2.z());
 		}
 		glEnd();
 	}

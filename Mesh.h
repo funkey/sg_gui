@@ -112,7 +112,7 @@ private:
 		util::box<float,3> bb;
 
 		for (const Point3d& p: _vertices)
-			bb.fit(util::point<float,3>(p.x, p.y, p.z));
+			bb.fit(p);
 
 		return bb;
 	}
