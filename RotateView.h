@@ -17,6 +17,9 @@ class RotateView : public sg::Scope<
 		sg::Provides<
 				ContentChanged
 		>,
+		sg::AcceptsInner<
+				ContentChanged
+		>,
 		sg::ProvidesInner<
 				QuerySize
 		>,
@@ -25,7 +28,8 @@ class RotateView : public sg::Scope<
 		>,
 		sg::FiltersDown<
 				DrawBase,
-				QuerySize
+				QuerySize,
+				PointerSignal
 		>> {
 
 public:
@@ -36,10 +40,15 @@ public:
 	void unfilterDown(DrawBase& draw);
 	bool filterDown(QuerySize& signal);
 	void unfilterDown(QuerySize& signal);
+	bool filterDown(PointerSignal& signal);
+	void unfilterDown(PointerSignal& signal);
 	void onSignal(MouseDown& signal);
 	void onSignal(MouseMove& signal);
+	void onInnerSignal(ContentChanged& signal);
 
 private:
+
+	void updateContentSize();
 
 	void rotate(const util::point<float,2>& moved);
 

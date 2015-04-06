@@ -100,6 +100,9 @@ private:
 	// the desired size of this view
 	util::box<float,2> _desiredSize;
 
+	// the zoomed roi of the last draw
+	util::box<float,2> _zoomedRoi;
+
 	// the z-coordinate of the 2D viewing plane, where x and y eye coordinates 
 	// map to x and y screen pixel coordinates
 	float _z2d;

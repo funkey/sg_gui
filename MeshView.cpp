@@ -8,8 +8,9 @@ void
 MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 
 	_meshes = meshes;
-
 	updateRecording();
+
+	send<ContentChanged>();
 }
 
 void
@@ -86,8 +87,6 @@ MeshView::updateRecording() {
 	}
 
 	stopRecording();
-
-	send<ContentChanged>();
 }
 
 } // namespace sg_gui

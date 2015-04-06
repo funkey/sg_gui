@@ -36,7 +36,7 @@ ZoomView::filterDown(RoiSignal& signal) {
 
 	LOG_ALL(zoomviewlog) << "transforming with " << _shift << " and " << _scale << std::endl;
 
-	util::box<float,2> zoomedRoi = (signal.roi() - _shift)/_scale;
+	_zoomedRoi = (signal.roi() - _shift)/_scale;
 
 	/* To obtain proper perspective deformations, we set the frustum such that 
 	 * the vanishing point is in the middle of the zoomed roi. During drawing, 
@@ -48,10 +48,10 @@ ZoomView::filterDown(RoiSignal& signal) {
 	 * the world coordinates, we inversely scale the frustum by using the width 
 	 * and height of the zoomed roi.
 	 */
-	float l2d = - zoomedRoi.width()/2;
-	float r2d = l2d + zoomedRoi.width();
-	float t2d = - zoomedRoi.height()/2;
-	float b2d = t2d + zoomedRoi.height();
+	float l2d = - _zoomedRoi.width()/2;
+	float r2d = l2d + _zoomedRoi.width();
+	float t2d = - _zoomedRoi.height()/2;
+	float b2d = t2d + _zoomedRoi.height();
 
 	float z2d   = _z2d/_scale;
 	float zNear = _zClipNear/_scale;
@@ -69,6 +69,14 @@ ZoomView::filterDown(RoiSignal& signal) {
 			zFar           // far
 	);
 
+	std::cout << "near " << zNear << ", far " << zFar << ", z2d " << z2d << std::endl;
+	std::cout
+			<< "left "     << (l2d*zNear/z2d)
+			<< ", right "  << (r2d*zNear/z2d)
+			<< ", bottom " << (b2d*zNear/z2d)
+			<< ", top "    << (t2d*zNear/z2d)
+			<< std::endl;
+
 	/* It remains to invert the z-axis to obtain the coordinate system as 
 	 * described above. This is done here, together with translating the world 
 	 * coordinates z=0 to z=_z2d and compensating for the upper left of the 
@@ -76,10 +84,10 @@ ZoomView::filterDown(RoiSignal& signal) {
 	 */
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(-zoomedRoi.min().x() - zoomedRoi.width()/2, -zoomedRoi.min().y() - zoomedRoi.height()/2, -z2d);
+	glTranslatef(-_zoomedRoi.min().x() - _zoomedRoi.width()/2, -_zoomedRoi.min().y() - _zoomedRoi.height()/2, -z2d);
 	glScalef(1, 1, -1);
 
-	signal.roi() = zoomedRoi;
+	signal.roi() = _zoomedRoi;
 	signal.resolution() = signal.resolution()*_scale;
 
 	return true;
@@ -98,8 +106,29 @@ ZoomView::unfilterDown(RoiSignal& signal) {
 bool
 ZoomView::filterDown(PointerSignal& signal) {
 
-	signal.position -= _shift;
-	signal.position /= _scale;
+	signal.ray.position() -= _shift.project<3>();
+	signal.ray.position() /= _scale;
+
+	// in 3D on 2d plane
+	util::point<float,3> p3d = signal.ray.position();
+
+	std::cout << "on 2D plane: " << p3d << std::endl;
+
+	// relative to roi center
+	p3d -= _zoomedRoi.center().project<3>();
+	p3d.z() = _z2d/_scale;
+
+	std::cout << "on 2D plane, rel to roi center: " << p3d << std::endl;
+
+	util::point<float,3> direction = p3d;
+	direction /= sqrt(
+			direction.x()*direction.x() +
+			direction.y()*direction.y() +
+			direction.z()*direction.z());
+
+	std::cout << "direction: " << direction << std::endl;
+
+	signal.ray.direction() = direction;
 
 	return true;
 }
@@ -107,8 +136,8 @@ ZoomView::filterDown(PointerSignal& signal) {
 void
 ZoomView::unfilterDown(PointerSignal& signal) {
 
-	signal.position *= _scale;
-	signal.position += _shift;
+	signal.ray.position() *= _scale;
+	signal.ray.position() += _shift.project<3>();
 }
 
 bool
@@ -134,7 +163,7 @@ ZoomView::onSignal(PointerDown& signal) {
 	// that is for us!
 	signal.processed = true;
 
-	util::point<float,2> position = signal.position;
+	util::point<float,2> position = signal.ray.position().project<2>();
 
 	LOG_ALL(zoomviewlog) << "mouse button " << signal.button << " down, position is " << position << std::endl;
 
@@ -197,11 +226,11 @@ ZoomView::onSignal(PointerMove& signal) {
 
 		LOG_ALL(zoomviewlog) << "left button is still pressed" << std::endl;
 
-		util::point<float,2> moved = signal.position - _buttonDown;
+		util::point<float,2> moved = signal.ray.position().project<2>() - _buttonDown;
 
 		drag(moved*amp);
 
-		_buttonDown = signal.position;
+		_buttonDown = signal.ray.position().project<2>();
 
 		send<ContentChanged>();
 
@@ -261,8 +290,8 @@ ZoomView::updateScaleAndShift() {
 		sendInner(signal);
 		const util::box<float,3>& contentSize = signal.getSize();
 
-		_zClipNear = std::max(1.0,  _z2d + contentSize.min().z() - 1.0);
-		_zClipFar  = std::max(10.0, _z2d + contentSize.max().z() + 1.0);
+		_zClipNear = std::max(1.0,  contentSize.min().z() - 1.0);
+		_zClipFar  = std::max(10.0, contentSize.max().z() + 1.0);
 		_z2d       = (_zClipFar + _zClipNear)/2.0;
 
 		// do we have to fit the width or height of the content?
