@@ -69,14 +69,6 @@ ZoomView::filterDown(RoiSignal& signal) {
 			zFar           // far
 	);
 
-	std::cout << "near " << zNear << ", far " << zFar << ", z2d " << z2d << std::endl;
-	std::cout
-			<< "left "     << (l2d*zNear/z2d)
-			<< ", right "  << (r2d*zNear/z2d)
-			<< ", bottom " << (b2d*zNear/z2d)
-			<< ", top "    << (t2d*zNear/z2d)
-			<< std::endl;
-
 	/* It remains to invert the z-axis to obtain the coordinate system as 
 	 * described above. This is done here, together with translating the world 
 	 * coordinates z=0 to z=_z2d and compensating for the upper left of the 
@@ -112,21 +104,15 @@ ZoomView::filterDown(PointerSignal& signal) {
 	// in 3D on 2d plane
 	util::point<float,3> p3d = signal.ray.position();
 
-	std::cout << "on 2D plane: " << p3d << std::endl;
-
 	// relative to roi center
 	p3d -= _zoomedRoi.center().project<3>();
 	p3d.z() = _z2d/_scale;
-
-	std::cout << "on 2D plane, rel to roi center: " << p3d << std::endl;
 
 	util::point<float,3> direction = p3d;
 	direction /= sqrt(
 			direction.x()*direction.x() +
 			direction.y()*direction.y() +
 			direction.z()*direction.z());
-
-	std::cout << "direction: " << direction << std::endl;
 
 	signal.ray.direction() = direction;
 
