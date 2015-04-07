@@ -53,20 +53,16 @@ ZoomView::filterDown(RoiSignal& signal) {
 	float t2d = - _zoomedRoi.height()/2;
 	float b2d = t2d + _zoomedRoi.height();
 
-	float z2d   = _z2d/_scale;
-	float zNear = _zClipNear/_scale;
-	float zFar  = _zClipFar/_scale;
-
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
 	glFrustum(
-			l2d*zNear/z2d, // left
-			r2d*zNear/z2d, // right
-			b2d*zNear/z2d, // bottom
-			t2d*zNear/z2d, // top
-			zNear,         // near
-			zFar           // far
+			l2d*_zClipNear/_z2d, // left
+			r2d*_zClipNear/_z2d, // right
+			b2d*_zClipNear/_z2d, // bottom
+			t2d*_zClipNear/_z2d, // top
+			_zClipNear,          // near
+			_zClipFar            // far
 	);
 
 	/* It remains to invert the z-axis to obtain the coordinate system as 
@@ -76,7 +72,7 @@ ZoomView::filterDown(RoiSignal& signal) {
 	 */
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(-_zoomedRoi.min().x() - _zoomedRoi.width()/2, -_zoomedRoi.min().y() - _zoomedRoi.height()/2, -z2d);
+	glTranslatef(-_zoomedRoi.min().x() - _zoomedRoi.width()/2, -_zoomedRoi.min().y() - _zoomedRoi.height()/2, -_z2d);
 	glScalef(1, 1, -1);
 
 	signal.roi() = _zoomedRoi;
@@ -106,7 +102,7 @@ ZoomView::filterDown(PointerSignal& signal) {
 
 	// relative to roi center
 	p3d -= _zoomedRoi.center().project<3>();
-	p3d.z() = _z2d/_scale;
+	p3d.z() = _z2d;
 
 	util::point<float,3> direction = p3d;
 	direction /= sqrt(
@@ -231,13 +227,17 @@ ZoomView::onSignal(PointerMove& signal) {
 void
 ZoomView::onInnerSignal(ContentChanged&) {
 
+	updateContentSize();
 	updateScaleAndShift();
+	updateClippingPlanes();
 }
 
 void
 ZoomView::onInnerSignal(sg::AgentAdded&) {
 
+	updateContentSize();
 	updateScaleAndShift();
+	updateClippingPlanes();
 }
 
 void
@@ -264,6 +264,14 @@ ZoomView::drag(const util::point<float,2>& direction) {
 }
 
 void
+ZoomView::updateContentSize() {
+
+	QuerySize signal;
+	sendInner(signal);
+	_contentSize = signal.getSize();
+}
+
+void
 ZoomView::updateScaleAndShift() {
 
 	_autoScale = 1.0;
@@ -272,35 +280,44 @@ ZoomView::updateScaleAndShift() {
 	// first, apply autoscale transformation (if wanted)
 	if (_autoscale) {
 
-		QuerySize signal;
-		sendInner(signal);
-		const util::box<float,3>& contentSize = signal.getSize();
-
-		_zClipNear = std::max(1.0,  contentSize.min().z() - 1.0);
-		_zClipFar  = std::max(10.0, contentSize.max().z() + 1.0);
-		_z2d       = (_zClipFar + _zClipNear)/2.0;
-
 		// do we have to fit the width or height of the content?
-		bool fitHeight = (contentSize.width()/contentSize.height() < _desiredSize.width()/_desiredSize.height());
+		bool fitHeight = (_contentSize.width()/_contentSize.height() < _desiredSize.width()/_desiredSize.height());
 
 		// get the scale to fit the width or height to the desired size
-		_autoScale = (fitHeight ? _desiredSize.height()/contentSize.height() : _desiredSize.width()/contentSize.width());
+		_autoScale = (fitHeight ? _desiredSize.height()/_contentSize.height() : _desiredSize.width()/_contentSize.width());
 
 		// get the shift to center the content in the desired area relative to 
 		// desired upper left
 		util::point<float,2> centerShift =
 				(fitHeight ?
-				 util::point<float,2>(1, 0)*0.5*(_desiredSize.width()  - contentSize.width() *_autoScale) :
-				 util::point<float,2>(0, 1)*0.5*(_desiredSize.height() - contentSize.height()*_autoScale));
+				 util::point<float,2>(1, 0)*0.5*(_desiredSize.width()  - _contentSize.width() *_autoScale) :
+				 util::point<float,2>(0, 1)*0.5*(_desiredSize.height() - _contentSize.height()*_autoScale));
 
 		// get the final shift relative to content upper left
-		util::point<float,2> ul(contentSize.min().x(), contentSize.min().y());
+		util::point<float,2> ul(_contentSize.min().x(), _contentSize.min().y());
 		_autoShift = (_desiredSize.min() - ul)*_autoScale + centerShift;
 	}
 
 	// append user scale and shift transformation
 	_shift = _autoScale*_userShift + _autoShift;
 	_scale = _autoScale*_userScale;
+}
+
+void
+ZoomView::updateClippingPlanes() {
+
+	/**
+	 * Setting the clipping planes determines our field-of-view. Here, we set 
+	 * them such that the non-user-scaled perspective has a field-of-view of 
+	 * 90°. For that, we require maxExtent = max(top, left) = max(bottom, right) 
+	 * = 0.5*_zClipNear.
+	 */
+
+	float maxExtent = std::max(_contentSize.width(), _contentSize.height())/2.0;
+
+	_zClipNear = 2*maxExtent;
+	_zClipFar  = _zClipNear + std::max(10.0, 2*_contentSize.max().z() + 1.0);
+	_z2d       = (_zClipFar + _zClipNear)/2.0;
 }
 
 } // namespace sg_gui

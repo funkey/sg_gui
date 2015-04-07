@@ -67,9 +67,19 @@ private:
 	void drag(const util::point<float,2>& direction);
 
 	/**
+	 * Query the size of all content combined.
+	 */
+	void updateContentSize();
+
+	/**
 	 * Recalculate scale and shift.
 	 */
 	void updateScaleAndShift();
+
+	/**
+	 * Find clipping planes based on content size.
+	 */
+	void updateClippingPlanes();
 
 	// the speed of zooming
 	float _zoomStep;
@@ -110,6 +120,8 @@ private:
 	// z-coordinates of the near and far clipping plane (should contain _z2d)
 	float _zClipNear;
 	float _zClipFar;
+
+	util::box<float,3> _contentSize;
 };
 
 } // namespace sg_gui
