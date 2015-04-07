@@ -120,12 +120,12 @@ RotateView::filterDown(QuerySize& signal) {
 	LOG_ALL(rotateviewlog) << "content size is " << _contentSize << std::endl;
 
 	// bounding box of all possible rotations around center
-	float maxSideLength = std::max(_contentSize.width(), std::max(_contentSize.height(), _contentSize.depth()));
+	float maxDiameter = util::length(_contentSize.max() - _contentSize.min());
 	util::point<float,3> center = _contentSize.center();
 
 	util::box<float,3> size(
-			center - util::point<float,3>(maxSideLength/2, maxSideLength/2, maxSideLength/2),
-			center + util::point<float,3>(maxSideLength/2, maxSideLength/2, maxSideLength/2));
+			center - util::point<float,3>(maxDiameter/2, maxDiameter/2, maxDiameter/2),
+			center + util::point<float,3>(maxDiameter/2, maxDiameter/2, maxDiameter/2));
 
 	LOG_ALL(rotateviewlog) << "max rotated content size is " << size << std::endl;
 
