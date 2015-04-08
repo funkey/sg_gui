@@ -156,8 +156,6 @@ RotateView::filterDown(PointerSignal& signal) {
 			-_w,
 			signal.ray.direction());
 
-	std::cout << "transformed ray " << signal.ray << std::endl;
-
 	return true;
 }
 

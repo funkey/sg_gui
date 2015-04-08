@@ -2,6 +2,7 @@
 #define SG_GUI_MESHES_H__
 
 #include <imageprocessing/Volume.h>
+#include <tubes/TubeId.h>
 #include "Mesh.h"
 
 namespace sg_gui {
@@ -20,6 +21,14 @@ public:
 		setBoundingBoxDirty();
 	}
 
+	void remove(unsigned int id) {
+
+		_meshes.erase(id);
+		_ids.erase(std::find(_ids.begin(), _ids.end(), id));
+
+		setBoundingBoxDirty();
+	}
+
 	std::shared_ptr<Mesh> get(unsigned int id) {
 
 		if (_meshes.count(id))
@@ -34,6 +43,8 @@ public:
 	}
 
 	void clear() { _meshes.clear(); _ids.clear(); resetBoundingBox(); }
+
+	bool contains(TubeId id) const { return _meshes.count(id); }
 
 private:
 

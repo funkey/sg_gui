@@ -9,10 +9,27 @@
 
 namespace sg_gui {
 
+class SetMeshes : public SetContent {
+
+public:
+
+	typedef GuiSignal parent_type;
+
+	SetMeshes(std::shared_ptr<Meshes> meshes) :
+			_meshes(meshes) {}
+
+	std::shared_ptr<Meshes> getMeshes() { return _meshes; }
+
+private:
+
+	std::shared_ptr<Meshes> _meshes;
+};
+
 class MeshView :
 		public sg::Agent<
 			MeshView,
 			sg::Accepts<
+					SetMeshes,
 					DrawOpaque,
 					DrawTranslucent,
 					QuerySize,
@@ -30,7 +47,10 @@ public:
 
 	void setMeshes(std::shared_ptr<Meshes> meshes);
 
+	void onSignal(SetMeshes& signal) { setMeshes(signal.getMeshes()); }
+
 	void onSignal(DrawOpaque& signal);
+
 	void onSignal(DrawTranslucent& signal);
 
 	void onSignal(QuerySize& signal);

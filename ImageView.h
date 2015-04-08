@@ -9,11 +9,11 @@
 
 namespace sg_gui {
 
-class SetImage : public GuiSignal {
+class SetImage : public SetContent {
 
 public:
 
-	typedef GuiSignal parent_type;
+	typedef SetContent parent_type;
 
 	SetImage(std::shared_ptr<Image> image) :
 		_image(image) {}

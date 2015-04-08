@@ -8,12 +8,29 @@
 
 namespace sg_gui {
 
+class VolumePointSelected {
+
+public:
+
+	VolumePointSelected(const util::point<float,3>& position) :
+			_position(position) {}
+
+	const util::point<float,3>& position() { return _position; }
+
+private:
+
+	util::point<float,3> _position;
+};
+
 class VolumeView :
 		public sg::Scope<
 				VolumeView,
 				sg::Accepts<
-						MouseDown,
+						PointerDown,
 						QuerySize
+				>,
+				sg::Provides<
+						VolumePointSelected
 				>,
 				sg::ProvidesInner<
 						SetImage
@@ -29,7 +46,7 @@ public:
 
 	void setVolume(std::shared_ptr<ExplicitVolume<float>> volume);
 
-	void onSignal(MouseDown& signal);
+	void onSignal(PointerDown& signal);
 
 	void onSignal(QuerySize& signal);
 
@@ -42,6 +59,8 @@ private:
 	std::shared_ptr<ExplicitVolume<float>> _volume;
 
 	int _index;
+
+	util::point<float,3> _prevPointerDown;
 };
 
 } // namespace sg_gui

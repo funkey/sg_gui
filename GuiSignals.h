@@ -187,6 +187,11 @@ typedef DrawOpaque Draw;
  */
 class DrawTranslucent : public DrawBase { public: typedef DrawBase parent_type; };
 
+/**
+ * Base class for signals used to set the content of views.
+ */
+class SetContent : public GuiSignal { public: typedef GuiSignal parent_type; };
+
 } // namespace sg_gui
 
 #endif // SG_GUI_SIGNALS_H__
