@@ -135,7 +135,7 @@ RotateView::filterDown(QuerySize& signal) {
 }
 
 void
-RotateView::unfilterDown(QuerySize& draw) {}
+RotateView::unfilterDown(QuerySize&) {}
 
 bool
 RotateView::filterDown(PointerSignal& signal) {

@@ -73,12 +73,7 @@ ImageView::onSignal(QuerySize& signal) {
 	if (!_image)
 		return;
 
-	util::box<float,2> bb(
-			0, 0,
-			_image->width(),
-			_image->height());
-
-	signal.setSize(bb);
+	signal.setSize(_image->getBoundingBox());
 }
 
 void
