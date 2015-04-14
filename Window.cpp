@@ -104,6 +104,7 @@ Window::redraw() {
 
 	glDisable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 	// draw opaque content first...
 	DrawOpaque drawOpaqueSignal;

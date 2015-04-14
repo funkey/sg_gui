@@ -37,8 +37,6 @@ MeshView::onSignal(QuerySize& signal) {
 	if (!_meshes)
 		return;
 
-	std::cout << "[MeshView] content: " << _meshes->getBoundingBox() << std::endl;
-
 	signal.setSize(_meshes->getBoundingBox());
 }
 
