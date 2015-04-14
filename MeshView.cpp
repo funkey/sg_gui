@@ -52,6 +52,9 @@ MeshView::onSignal(ChangeAlpha& signal) {
 void
 MeshView::updateRecording() {
 
+	if (!_meshes)
+		return;
+
 	OpenGl::Guard guard;
 
 	startRecording();

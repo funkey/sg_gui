@@ -48,7 +48,7 @@ ImageView::draw() {
 
 	glColor4f(_red, _green, _blue, _alpha);
 
-	util::box<float,3>& bb = _image->getBoundingBox();
+	const util::box<float,3>& bb = _image->getBoundingBox();
 	float minX = bb.min().x();
 	float minY = bb.min().y();
 	float maxX = bb.max().x();

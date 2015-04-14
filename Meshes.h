@@ -42,7 +42,7 @@ public:
 		return _ids;
 	}
 
-	void clear() { _meshes.clear(); _ids.clear(); resetBoundingBox(); }
+	void clear() { _meshes.clear(); _ids.clear(); setBoundingBoxDirty(); }
 
 	bool contains(TubeId id) const { return _meshes.count(id); }
 
