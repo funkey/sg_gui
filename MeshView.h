@@ -13,7 +13,7 @@ class SetMeshes : public SetContent {
 
 public:
 
-	typedef GuiSignal parent_type;
+	typedef SetContent parent_type;
 
 	SetMeshes(std::shared_ptr<Meshes> meshes) :
 			_meshes(meshes) {}
