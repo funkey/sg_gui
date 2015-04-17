@@ -25,6 +25,9 @@ VolumeView::onSignal(PointerDown& signal) {
 	if (signal.processed)
 		return;
 
+	if (signal.modifiers != sg_gui::NoModifier)
+		return;
+
 	if (signal.button == sg_gui::buttons::WheelUp)
 		_index = std::min((int)_volume->depth() - 1, _index + 1);
 	else if (signal.button == sg_gui::buttons::WheelDown)

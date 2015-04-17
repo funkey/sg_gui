@@ -1,6 +1,7 @@
 #ifndef GUI_TRIANGLE_H__
 #define GUI_TRIANGLE_H__
 
+namespace sg_gui {
 /**
  * A triangle represented by vertex indices.
  */
@@ -22,6 +23,8 @@ struct Triangle {
 	unsigned int v0, v1, v2;
 
 };
+
+} // namespace sg_gui
 
 #endif // GUI_TRIANGLE_H__
 
