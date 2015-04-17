@@ -50,7 +50,12 @@ private:
 
 	void updateContentSize();
 
-	void rotate(const util::point<float,2>& moved);
+	void updateRotationFrom2D(const util::point<float,2>& moved);
+
+	util::ray<float,3> rotate(const util::ray<float,3>& ray);
+	util::ray<float,3> unrotate(const util::ray<float,3>& ray);
+
+	bool intersectsContent(const util::ray<float,3>& ray);
 
 	// the current rotation parameters
 	float _x, _y, _z, _w;

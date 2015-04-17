@@ -140,21 +140,7 @@ RotateView::unfilterDown(QuerySize&) {}
 bool
 RotateView::filterDown(PointerSignal& signal) {
 
-	// rotate ray position around content center
-	signal.ray.position() = util::rotate3d(
-			util::ray<float,3>(
-					_contentSize.center(),
-					util::point<float,3>(_x, _y, _z)),
-			-_w,
-			signal.ray.position());
-
-	// rotate ray direction around (0,0,0)
-	signal.ray.direction() = util::rotate3d(
-			util::ray<float,3>(
-					util::point<float,3>( 0,  0,  0),
-					util::point<float,3>(_x, _y, _z)),
-			-_w,
-			signal.ray.direction());
+	signal.ray = unrotate(signal.ray);
 
 	return true;
 }
@@ -162,21 +148,7 @@ RotateView::filterDown(PointerSignal& signal) {
 void
 RotateView::unfilterDown(PointerSignal& signal) {
 
-	// inversely rotate ray position around content center
-	signal.ray.position() = util::rotate3d(
-			util::ray<float,3>(
-					_contentSize.center(),
-					util::point<float,3>(_x, _y, _z)),
-			_w,
-			signal.ray.position());
-
-	// inversely rotate ray direction around (0,0,0)
-	signal.ray.direction() = util::rotate3d(
-			util::ray<float,3>(
-					util::point<float,3>( 0,  0,  0),
-					util::point<float,3>(_x, _y, _z)),
-			_w,
-			signal.ray.direction());
+	signal.ray = rotate(signal.ray);
 }
 
 void
@@ -186,7 +158,7 @@ RotateView::onSignal(MouseDown& signal) {
 
 	LOG_ALL(rotateviewlog) << "mouse button " << signal.button << " down, position is " << position << std::endl;
 
-	if (signal.button == buttons::Left && _contentSize.contains(position)) {
+	if (signal.button == buttons::Left && intersectsContent(unrotate(signal.ray))) {
 
 		LOG_ALL(rotateviewlog) << "it's the left mouse button -- start dragging mode" << std::endl;
 
@@ -209,7 +181,7 @@ RotateView::onSignal(MouseMove& signal) {
 
 		bool wasHighlighted = _highlight;
 
-		_highlight = _contentSize.contains(signal.ray.position().project<2>());
+		_highlight = intersectsContent(unrotate(signal.ray));
 
 		if (wasHighlighted != _highlight)
 			send<ContentChanged>();
@@ -232,7 +204,7 @@ RotateView::onSignal(MouseMove& signal) {
 		moved.y() /= _contentSize.height();
 
 		// change the current rotation according to mouse movement
-		rotate(moved);
+		updateRotationFrom2D(moved);
 
 		send<ContentChanged>();
 
@@ -265,7 +237,7 @@ RotateView::updateContentSize() {
 }
 
 void
-RotateView::rotate(const util::point<float,2>& moved) {
+RotateView::updateRotationFrom2D(const util::point<float,2>& moved) {
 
 	LOG_ALL(rotateviewlog) << "current rotation: " << _w << ", (" << _x << ", " << _y << ", " << _z << ")" << std::endl;
 
@@ -325,6 +297,61 @@ RotateView::rotate(const util::point<float,2>& moved) {
 	_z = _z/norm;
 
 	LOG_ALL(rotateviewlog) << "new rotation: " << _w << ", (" << _x << ", " << _y << ", " << _z << ")" << std::endl;
+}
+
+util::ray<float,3>
+RotateView::rotate(const util::ray<float,3>& ray) {
+
+	util::ray<float,3> rotated;
+
+	// inversely rotate ray position around content center
+	rotated.position() = util::rotate3d(
+			util::ray<float,3>(
+					_contentSize.center(),
+					util::point<float,3>(_x, _y, _z)),
+			_w,
+			ray.position());
+
+	// inversely rotate ray direction around (0,0,0)
+	rotated.direction() = util::rotate3d(
+			util::ray<float,3>(
+					util::point<float,3>( 0,  0,  0),
+					util::point<float,3>(_x, _y, _z)),
+			_w,
+			ray.direction());
+
+	return rotated;
+}
+
+util::ray<float,3>
+RotateView::unrotate(const util::ray<float,3>& ray) {
+
+	util::ray<float,3> unrotated;
+
+	// rotate ray position around content center
+	unrotated.position() = util::rotate3d(
+			util::ray<float,3>(
+					_contentSize.center(),
+					util::point<float,3>(_x, _y, _z)),
+			-_w,
+			ray.position());
+
+	// rotate ray direction around (0,0,0)
+	unrotated.direction() = util::rotate3d(
+			util::ray<float,3>(
+					util::point<float,3>( 0,  0,  0),
+					util::point<float,3>(_x, _y, _z)),
+			-_w,
+			ray.direction());
+
+	return unrotated;
+}
+
+bool
+RotateView::intersectsContent(const util::ray<float,3>& ray) {
+
+	float _;
+	return intersect(_contentSize, ray, _);
 }
 
 } // namespace sg_gui
