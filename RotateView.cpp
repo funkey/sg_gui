@@ -43,7 +43,7 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 	glLightfv(GL_LIGHT1, GL_POSITION, lightpos);
 	GLfloat ambient[] = {0.5, 0.5, 0.5, 1.0};
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
-	GLfloat specular[] = {0.3, 0.3, 0.3, 1.0};
+	GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
 	glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
 	GLfloat diffuse[] = {0.5, 0.5, 0.5, 1.0};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
@@ -99,6 +99,9 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
+
+	GLfloat material[] = {1.0, 1.0, 1.0, 1.0};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material);
 
 	return true;
 }
