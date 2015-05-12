@@ -2,7 +2,6 @@
 #define SG_GUI_MESHES_H__
 
 #include <imageprocessing/Volume.h>
-#include <tubes/TubeId.h>
 #include "Mesh.h"
 
 namespace sg_gui {
@@ -44,7 +43,7 @@ public:
 
 	void clear() { _meshes.clear(); _ids.clear(); setBoundingBoxDirty(); }
 
-	bool contains(TubeId id) const { return _meshes.count(id); }
+	bool contains(unsigned int id) const { return _meshes.count(id); }
 
 private:
 
