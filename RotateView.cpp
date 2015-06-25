@@ -100,9 +100,6 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 	glEnable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 
-	GLfloat material[] = {1.0, 1.0, 1.0, 1.0};
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material);
-
 	return true;
 }
 
