@@ -47,6 +47,8 @@ public:
 
 	void setMeshes(std::shared_ptr<Meshes> meshes);
 
+	void setOffset(util::point<float, 3> offset);
+
 	void onSignal(SetMeshes& signal) { setMeshes(signal.getMeshes()); }
 
 	void onSignal(DrawOpaque& signal);
@@ -64,6 +66,8 @@ private:
 	std::shared_ptr<Meshes> _meshes;
 
 	double _alpha;
+
+	util::point<float, 3> _offset;
 };
 
 } // namespace sg_gui

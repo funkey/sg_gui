@@ -14,6 +14,13 @@ MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
 }
 
 void
+MeshView::setOffset(util::point<float, 3> offset) {
+
+	_offset = offset;
+	send<ContentChanged>();
+}
+
+void
 MeshView::onSignal(DrawOpaque& /*draw*/) {
 
 	if (_alpha < 1.0)
@@ -37,7 +44,7 @@ MeshView::onSignal(QuerySize& signal) {
 	if (!_meshes)
 		return;
 
-	signal.setSize(_meshes->getBoundingBox());
+	signal.setSize(_meshes->getBoundingBox() + _offset);
 }
 
 void
@@ -59,11 +66,14 @@ MeshView::updateRecording() {
 
 	startRecording();
 
+	glPushMatrix();
+	glTranslatef(_offset.x(), _offset.y(), _offset.z());
+
 	foreach (unsigned int id, _meshes->getMeshIds()) {
 
 		// colorize the mesh according to its id
 		unsigned char r, g, b;
-		idToRgb(id, r, g, b);
+		idToRgb(_meshes->getColor(id), r, g, b);
 		glColor4f(
 				static_cast<float>(r)/255.0,
 				static_cast<float>(g)/255.0,
@@ -88,6 +98,8 @@ MeshView::updateRecording() {
 		}
 		glEnd();
 	}
+
+	glPopMatrix();
 
 	stopRecording();
 }
