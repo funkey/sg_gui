@@ -61,9 +61,13 @@ hsvToRgb(double h, double s, double v, unsigned char& r, unsigned char& g, unsig
 void
 idToRgb(unsigned int id, unsigned char& r, unsigned char& g, unsigned char& b) {
 
-	float h = fmod(static_cast<float>(id)*M_PI, 1.0);
-	float s = 0.5 + fmod(static_cast<float>(id)*M_PI*2, 0.5);
-	float v = (id == 0 ? 0.0 : 0.75 + fmod(static_cast<float>(id)*M_PI*3, 0.25));
+	float x = fmod(0.4671057256451202*id, 1.0);
+	float y = fmod(0.6262286337141059*id, 1.0);
+	float z = fmod(0.9424373277692188*id, 1.0);
+
+	float h = x;
+	float s = 0.25 + y*0.75;
+	float v = (id == 0 ? 0.0 : 0.5 + z*0.5);
 	hsvToRgb(h, s, v, r, g, b);
 }
 
