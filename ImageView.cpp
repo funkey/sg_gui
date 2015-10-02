@@ -80,6 +80,7 @@ void
 ImageView::onSignal(SetImage& signal) {
 
 	_image = signal.getImage();
+	_needReload = true;
 
 	send<ContentChanged>();
 }
@@ -154,6 +155,8 @@ ImageView::loadTexture() {
 		// non-intensity images are just loaded
 		_texture->loadData(&(*_image->begin()));
 	}
+
+	_needReload = false;
 }
 
 } // namespace sg_gui
