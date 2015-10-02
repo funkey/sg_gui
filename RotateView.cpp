@@ -217,6 +217,20 @@ RotateView::onSignal(MouseMove& signal) {
 }
 
 void
+RotateView::onSignal(KeyDown& signal) {
+
+	if (signal.key == keys::R) {
+
+		_x = 0;
+		_y = 1;
+		_z = 0;
+		_w = 0;
+
+		send<ContentChanged>();
+	}
+}
+
+void
 RotateView::onInnerSignal(ContentChanged&) {
 
 	_contentSize = util::box<float,3>();

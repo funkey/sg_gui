@@ -12,7 +12,8 @@ class RotateView : public sg::Scope<
 		RotateView,
 		sg::Accepts<
 				MouseDown,
-				MouseMove
+				MouseMove,
+				KeyDown
 		>,
 		sg::Provides<
 				ContentChanged
@@ -44,6 +45,7 @@ public:
 	void unfilterDown(PointerSignal& signal);
 	void onSignal(MouseDown& signal);
 	void onSignal(MouseMove& signal);
+	void onSignal(KeyDown& signal);
 	void onInnerSignal(ContentChanged& signal);
 
 private:

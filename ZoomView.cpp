@@ -225,6 +225,20 @@ ZoomView::onSignal(PointerMove& signal) {
 }
 
 void
+ZoomView::onSignal(KeyDown& signal) {
+
+	if (signal.key == keys::R) {
+
+		_userScale = 1;
+		_userShift = util::point<float, 2>(0, 0);
+
+		updateScaleAndShift();
+
+		send<ContentChanged>();
+	}
+}
+
+void
 ZoomView::onInnerSignal(ContentChanged&) {
 
 	updateContentSize();

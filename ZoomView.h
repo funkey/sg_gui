@@ -4,6 +4,7 @@
 #include <scopegraph/Scope.h>
 #include "GuiSignals.h"
 #include "PointerSignals.h"
+#include "KeySignals.h"
 
 namespace sg_gui {
 
@@ -12,7 +13,7 @@ class ZoomView :
 				ZoomView,
 				sg::FiltersDown<RoiSignal, PointerSignal, Resize>,
 				sg::PassesUp<ContentChanged>,
-				sg::Accepts<PointerDown, PointerMove>,
+				sg::Accepts<PointerDown, PointerMove, KeyDown>,
 				sg::Provides<ContentChanged>,
 				sg::AcceptsInner<
 						ContentChanged,
@@ -48,6 +49,8 @@ public:
 	void onSignal(PointerDown& signal);
 
 	void onSignal(PointerMove& signal);
+
+	void onSignal(KeyDown& signal);
 
 	void onInnerSignal(ContentChanged& signal);
 
