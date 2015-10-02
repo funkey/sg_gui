@@ -119,7 +119,9 @@ Window::redraw() {
 	DrawTranslucent drawTranslucentSignal;
 	drawTranslucentSignal.roi() = _region;
 	drawTranslucentSignal.resolution() = point<float,2>(1.0, 1.0);
+	glDepthMask(false);
 	sendInner(drawTranslucentSignal);
+	glDepthMask(true);
 
 	if (drawOpaqueSignal.needsRedraw() || drawTranslucentSignal.needsRedraw()) {
 
