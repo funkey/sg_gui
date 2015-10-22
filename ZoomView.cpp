@@ -1,3 +1,4 @@
+#include <sstream>
 #include <util/Logger.h>
 #include "OpenGl.h"
 #include "ZoomView.h"
@@ -235,6 +236,37 @@ ZoomView::onSignal(KeyDown& signal) {
 		updateScaleAndShift();
 
 		send<ContentChanged>();
+	}
+
+	if (signal.key == keys::T) {
+
+		if (signal.modifiers & keys::ShiftDown) {
+
+			LOG_USER(zoomviewlog) << "enter zoom and shift values as \"<zoom> (<shift_x>, <shift_y>)\": " << std::flush;
+
+			char input[256];
+			std::cin.getline(input, 256);
+			std::stringstream ss(input);
+
+			float z, sx, sy;
+			char c;
+			ss >> z;
+			ss >> c; if (c != '(') { LOG_USER(zoomviewlog) << "expected '('" << std::endl; return; }
+			ss >> sx;
+			ss >> c; if (c != ',') { LOG_USER(zoomviewlog) << "expected ','" << std::endl; return; }
+			ss >> sy;
+			ss >> c; if (c != ')') { LOG_USER(zoomviewlog) << "expected ')'" << std::endl; return; }
+
+			_userScale = z;
+			_userShift.x() = sx;
+			_userShift.y() = sy;
+
+			updateScaleAndShift();
+
+			send<ContentChanged>();
+
+		} else
+			LOG_USER(zoomviewlog) << "zoom transformation: " << _userScale << " " << _userShift << std::endl;
 	}
 }
 

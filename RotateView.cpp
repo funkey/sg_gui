@@ -228,6 +228,39 @@ RotateView::onSignal(KeyDown& signal) {
 
 		send<ContentChanged>();
 	}
+
+	if (signal.key == keys::T) {
+
+		if (signal.modifiers & keys::ShiftDown) {
+
+			LOG_USER(rotateviewlog) << "enter rotation values as \"<x> <y> <z> <w>\": " << std::flush;
+
+			char input[256];
+			std::cin.getline(input, 256);
+			std::stringstream ss(input);
+
+			float x, y, z, w;
+			ss >> x;
+			ss >> y;
+			ss >> z;
+			ss >> w;
+
+			if (x == 0 && y == 0 && z == 0) {
+
+				LOG_USER(rotateviewlog) << "rotation axis can not be null" << std::endl;
+				return;
+			}
+
+			_x = x;
+			_y = y;
+			_z = z;
+			_w = w;
+
+			send<ContentChanged>();
+
+		} else
+			LOG_USER(rotateviewlog) << "rotation transformation: " << _x << " " << _y << " " << _z << " " << _w << std::endl;
+	}
 }
 
 void
