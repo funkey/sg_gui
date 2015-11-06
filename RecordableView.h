@@ -33,10 +33,26 @@ protected:
 	 */
 	void draw();
 
+	/**
+	 * Start the recording of OpenGl commands.
+	 */
+	void startRecordingTranslucent();
+
+	/**
+	 * Stop the recording of OpenGl commands.
+	 */
+	void stopRecordingTranslucent();
+
+	/**
+	 * Draws the recorded content of this painter.
+	 */
+	void drawTranslucent();
+
 private:
 
 	// the display list holding the OpenGl commands
 	GLuint _displayList;
+	GLuint _displayListTranslucent;
 };
 
 } // namespace sg_gui

@@ -3,12 +3,15 @@
 namespace sg_gui {
 
 RecordableView::RecordableView() :
-	_displayList(0) /* glGenLists will never create list with number 0 */ {}
+	_displayList(0), /* glGenLists will never create list with number 0 */
+	_displayListTranslucent(0) {}
 
 RecordableView::~RecordableView() {
 
 	if (glIsList(_displayList))
 		glCheck(glDeleteLists(_displayList, 1));
+	if (glIsList(_displayListTranslucent))
+		glCheck(glDeleteLists(_displayListTranslucent, 1));
 }
 
 void
@@ -39,6 +42,38 @@ RecordableView::startRecording() {
 
 void
 RecordableView::stopRecording() {
+
+	glCheck(glEndList());
+}
+
+void
+RecordableView::drawTranslucent() {
+
+	if (!glIsList(_displayListTranslucent))
+		return;
+
+	glCallList(_displayListTranslucent);
+}
+
+void
+RecordableView::startRecordingTranslucent() {
+
+	// create a new display list, if needed
+	if (!glIsList(_displayListTranslucent)) {
+
+		_displayListTranslucent = glGenLists(1);
+
+		if (!glIsList(_displayListTranslucent))
+			UTIL_THROW_EXCEPTION(
+					OpenGlError,
+					"Couldn't create display list");
+	}
+
+	glCheck(glNewList(_displayListTranslucent, GL_COMPILE));
+}
+
+void
+RecordableView::stopRecordingTranslucent() {
 
 	glCheck(glEndList());
 }
