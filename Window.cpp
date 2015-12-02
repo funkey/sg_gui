@@ -26,8 +26,8 @@ Window::Window(
 		string caption,
 		const WindowMode& mode) :
 	WindowType(caption, mode),
-	_region(0, 0, mode.size.x(), mode.size.y()),
-	_resolution(mode.size.x(), mode.size.y()),
+	_region(0, 0, 1, 1), // region and resolution will be set with the first resize event
+	_resolution(1, 1),
 	_saveFrameRequest(false),
 #ifdef HAVE_PNG
 	_frameNumber(0),
@@ -73,6 +73,8 @@ Window::deleteFrameBuffer() {
 void
 Window::configureViewport() {
 
+	LOG_DEBUG(winlog) << "[" << getCaption() << "] configuring viewport" << endl;
+
 	// we want to draw in the entire window
 	glViewport(
 			0,
@@ -107,6 +109,7 @@ Window::redraw() {
 	glEnable(GL_DEPTH_TEST);
 
 	// draw opaque content first...
+	LOG_ALL(winlog) << "[" << getCaption() << "] drawing opaque content" << std::endl;
 	DrawOpaque drawOpaqueSignal;
 	drawOpaqueSignal.roi() = _region;
 	drawOpaqueSignal.resolution() = point<float,2>(1.0, 1.0);
@@ -116,6 +119,7 @@ Window::redraw() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// ...followed by translucent content
+	LOG_ALL(winlog) << "[" << getCaption() << "] drawing translucent content" << std::endl;
 	DrawTranslucent drawTranslucentSignal;
 	drawTranslucentSignal.roi() = _region;
 	drawTranslucentSignal.resolution() = point<float,2>(1.0, 1.0);
@@ -146,6 +150,8 @@ Window::getResolution() {
 
 bool
 Window::processResizeEvent(int width, int height) {
+
+	LOG_ALL(winlog) << "[" << getCaption() << "] got a resize event " << width << "x" << height << endl;
 
 	// did the size of the window change?
 	if (_region.max().x() == width && _region.max().y() == height && _resolution.x() == width && _resolution.y() == height)
