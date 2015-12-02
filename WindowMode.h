@@ -10,8 +10,8 @@ namespace sg_gui {
 struct WindowMode {
 
 	WindowMode(
-			int  width  = 320,
-			int  height = 240,
+			int  width  = 800,
+			int  height = 600,
 			int  x = 0,
 			int  y = 0,
 			int  depth_      = 32,
