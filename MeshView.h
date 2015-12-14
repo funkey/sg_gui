@@ -33,7 +33,8 @@ class MeshView :
 					DrawOpaque,
 					DrawTranslucent,
 					QuerySize,
-					ChangeAlpha
+					ChangeAlpha,
+					SetAlphaPlane
 			>,
 			sg::Provides<
 					ContentChanged
@@ -43,7 +44,7 @@ class MeshView :
 
 public:
 
-	MeshView() : _alpha(1.0) {}
+	MeshView() : _alpha(1.0), _haveAlphaPlane(false) {}
 
 	void setMeshes(std::shared_ptr<Meshes> meshes);
 
@@ -59,13 +60,20 @@ public:
 
 	void onSignal(ChangeAlpha& signal);
 
+	void onSignal(SetAlphaPlane& signal);
+
 private:
 
 	void updateRecording();
 
+	void setVertexAlpha(const Point3d& p, float r, float g, float b);
+
 	std::shared_ptr<Meshes> _meshes;
 
 	double _alpha;
+	util::plane<float, 3> _alphaPlane;
+	double _alphaFalloff;
+	bool _haveAlphaPlane;
 
 	util::point<float, 3> _offset;
 };

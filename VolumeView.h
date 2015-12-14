@@ -50,6 +50,13 @@ public:
 
 	void onSignal(QuerySize& signal);
 
+	/**
+	 * Get the index of the currently displayed z-section.
+	 */
+	int getCurrentZ() const { return _index; }
+
+	std::shared_ptr<ExplicitVolume<float>> getVolume() const { return _volume; }
+
 private:
 
 	void updateImage();
