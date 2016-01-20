@@ -28,6 +28,21 @@ ImageView::onSignal(DrawTranslucent& /*signal*/) {
 }
 
 void
+ImageView::onSignal(MouseDown& signal) {
+
+	if (signal.button == buttons::Left) {
+
+		util::point<float, 2> p = signal.ray.position().project<2>();
+		if (!_image->getBoundingBox().contains(p))
+			return;
+
+		unsigned int x, y, z;
+		_image->getDiscreteCoordinates(p.x(), p.y(), 0, x, y, z);
+		LOG_USER(logger::out) << "value at position " << p << " is " << (*_image)(x, y, z) << std::endl;
+	}
+}
+
+void
 ImageView::draw() {
 
 	// wait for image

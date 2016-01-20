@@ -5,6 +5,7 @@
 #include <imageprocessing/Image.h>
 #include "Texture.h"
 #include "GuiSignals.h"
+#include "MouseSignals.h"
 #include "ViewSignals.h"
 
 namespace sg_gui {
@@ -33,7 +34,8 @@ class ImageView :
 						DrawTranslucent,
 						QuerySize,
 						SetImage,
-						ChangeAlpha
+						ChangeAlpha,
+						MouseDown
 				>,
 				sg::Provides<
 						ContentChanged
@@ -58,6 +60,8 @@ public:
 	void onSignal(SetImage& signal);
 
 	void onSignal(ChangeAlpha& signal);
+
+	void onSignal(MouseDown& signal);
 
 private:
 
