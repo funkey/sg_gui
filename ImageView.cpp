@@ -36,9 +36,9 @@ ImageView::onSignal(MouseDown& signal) {
 		if (!_image->getBoundingBox().contains(p))
 			return;
 
-		unsigned int x, y, z;
-		_image->getDiscreteCoordinates(p.x(), p.y(), 0, x, y, z);
-		LOG_USER(logger::out) << "value at position " << p << " is " << (*_image)(x, y, z) << std::endl;
+		unsigned int x, y, _;
+		_image->getDiscreteCoordinates(p.x(), p.y(), 0, x, y, _);
+		LOG_USER(logger::out) << "value at position " << p << " is " << (*_image)(x, y, 0) << std::endl;
 	}
 }
 
