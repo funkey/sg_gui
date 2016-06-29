@@ -745,6 +745,36 @@ XWindow::keycodeToKey(unsigned int keycode) {
 
 	switch (keycode) {
 
+		case 10:
+			return keys::_1;
+
+		case 11:
+			return keys::_2;
+
+		case 12:
+			return keys::_3;
+
+		case 13:
+			return keys::_4;
+
+		case 14:
+			return keys::_5;
+
+		case 15:
+			return keys::_6;
+
+		case 16:
+			return keys::_7;
+
+		case 17:
+			return keys::_8;
+
+		case 18:
+			return keys::_9;
+
+		case 19:
+			return keys::_0;
+
 		case 24:
 			return keys::Q;
 
