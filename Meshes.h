@@ -16,7 +16,6 @@ public:
 
 		_meshes[id] = mesh;
 		_colors[id] = (color < 0 ? id : color);
-		_ids.push_back(id);
 
 		setBoundingBoxDirty();
 	}
@@ -25,7 +24,6 @@ public:
 
 		_meshes.erase(id);
 		_colors.erase(id);
-		_ids.erase(std::find(_ids.begin(), _ids.end(), id));
 
 		setBoundingBoxDirty();
 	}
@@ -43,12 +41,15 @@ public:
 		return _colors[id];
 	}
 
-	const std::vector<unsigned int>& getMeshIds() const {
+	const std::vector<unsigned int> getMeshIds() const {
 
-		return _ids;
+		std::vector<unsigned int> ids;
+		for (auto& p : _meshes)
+			ids.push_back(p.first);
+		return ids;
 	}
 
-	void clear() { _meshes.clear(); _colors.clear(); _ids.clear(); setBoundingBoxDirty(); }
+	void clear() { _meshes.clear(); _colors.clear(); setBoundingBoxDirty(); }
 
 	bool contains(unsigned int id) const { return _meshes.count(id); }
 
@@ -67,8 +68,6 @@ private:
 
 	std::map<unsigned int, std::shared_ptr<Mesh> > _meshes;
 	std::map<unsigned int, int >                   _colors;
-
-	std::vector<unsigned int> _ids;
 };
 
 } // namespace sg_gui
