@@ -1,1 +1,5 @@
-define_module(sg_gui OBJECT LINKS util cohear imageprocessing x11 opengl glew glut boost INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
+if (WIN32)
+  define_module(sg_gui OBJECT LINKS util cohear imageprocessing opengl glew glut boost INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
+else()
+  define_module(sg_gui OBJECT LINKS util cohear imageprocessing x11 opengl glew glut boost INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
+endif()
