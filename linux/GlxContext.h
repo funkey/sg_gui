@@ -2,7 +2,6 @@
 #define SG_GUI_GLX_CONTEXT_H__
 
 #include <GL/glew.h>
-#include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glx.h>
