@@ -13,6 +13,8 @@
 
 #include <util/exceptions.h>
 
+#include "GlContext.h"
+
 namespace sg_gui {
 
 namespace priv {
@@ -36,7 +38,6 @@ void glCheckError(const char* file, const char* function, unsigned int line);
 } // namespace priv
 
 // forward declaration
-class GlContext;
 class GlContextCreator;
 
 // exceptions

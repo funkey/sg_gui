@@ -1,10 +1,9 @@
 #ifndef SG_GUI_GL_CONTEXT_CREATOR_H__
 #define SG_GUI_GL_CONTEXT_CREATOR_H__
 
-namespace sg_gui {
+#include "GlContext.h"
 
-// forward declaration
-class GlContext;
+namespace sg_gui {
 
 /**
  * Interface for classes that are able to create GlContexts.

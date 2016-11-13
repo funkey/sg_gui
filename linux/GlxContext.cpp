@@ -5,16 +5,17 @@
 #include <util/Logger.h>
 
 #include <sg_gui/linux/GlxContext.h>
+#include <sg_gui/OpenGl.h>
 #include <sg_gui/Window.h>
 #include "DisplayConnection.h"
 
 using namespace logger;
 
-LogChannel glxlog("glxlog", "[GlContext] ");
+LogChannel glxlog("glxlog", "[GlxContext] ");
 
 namespace sg_gui {
 
-GlContext::GlContext(ContextSettings& settings, GlContext* share) :
+GlxContext::GlxContext(const ContextSettings& settings, GlxContext* share) :
 	_window(0),
 	_ownWindow(true),
 	_context(0),
@@ -38,7 +39,7 @@ GlContext::GlContext(ContextSettings& settings, GlContext* share) :
 	createContext(settings, share);
 }
 
-GlContext::GlContext(Window* window, ContextSettings& settings, GlContext* share) :
+GlxContext::GlxContext(Window* window, const ContextSettings& settings, GlxContext* share) :
 	_window(0),
 	_ownWindow(false),
 	_context(0) {
@@ -51,9 +52,9 @@ GlContext::GlContext(Window* window, ContextSettings& settings, GlContext* share
 		createContext(settings, share);
 }
 
-GlContext::~GlContext() {
+GlxContext::~GlxContext() {
 
-	LOG_DEBUG(glxlog) << "destructing GlContext " << this << std::endl;
+	LOG_DEBUG(glxlog) << "destructing GlxContext " << this << std::endl;
 
 	// destroy the context
 	if (_context) {
@@ -77,7 +78,7 @@ GlContext::~GlContext() {
 }
 
 bool
-GlContext::activate(bool active) {
+GlxContext::activate(bool active) {
 
 	if (active) {
 
@@ -114,20 +115,20 @@ GlContext::activate(bool active) {
 }
 
 bool
-GlContext::isActive() {
+GlxContext::isActive() {
 
 	return _active;
 }
 
 void
-GlContext::flush() {
+GlxContext::flush() {
 
 	if (_window)
 		glXSwapBuffers(_display, _window);
 }
 
 void
-GlContext::enableVerticalSync(bool enable) {
+GlxContext::enableVerticalSync(bool enable) {
 
 	const GLubyte* name =
 			reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
@@ -140,7 +141,7 @@ GlContext::enableVerticalSync(bool enable) {
 }
 
 void
-GlContext::createContext(ContextSettings& settings, GlContext* share) {
+GlxContext::createContext(const ContextSettings& settings, GlxContext* share) {
 
 	_settings = settings;
 

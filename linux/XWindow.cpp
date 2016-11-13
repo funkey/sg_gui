@@ -5,21 +5,17 @@
 
 #include <X11/extensions/Xrandr.h>
 
+#include <sg_gui/OpenGl.h>
 #include <sg_gui/linux/XWindow.h>
 #include <sg_gui/Modifiers.h>
 #include <util/Logger.h>
-#include <util/foreach.h>
 #include "DisplayConnection.h"
-
-using std::endl;
-using std::abs;
-using namespace logger;
 
 namespace sg_gui {
 
-LogChannel xlog("xlog", "[XWindow] ");
+logger::LogChannel xlog("xlog", "[XWindow] ");
 
-XWindow::XWindow(string caption, const WindowMode& mode) :
+XWindow::XWindow(std::string caption, const WindowMode& mode) :
 	WindowBase(caption),
 	_closed(false),
 	_fullscreen(false),
@@ -32,9 +28,9 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 	// to enable X multithreading here -- even if the user does not need it
 	if (!XInitThreads())
 		LOG_ERROR(xlog) << "[XWindow] set up X multithreading was not successful"
-		                << endl;
+		                << std::endl;
 
-	LOG_ALL(xlog) << "[XWindow] setting up X server connection" << endl;
+	LOG_ALL(xlog) << "[XWindow] setting up X server connection" << std::endl;
 
 	_display = DisplayConnection::getDisplay();
 	_screen  = DefaultScreen(_display);
@@ -72,12 +68,12 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 
 	XStoreName(_display, _window, caption.c_str());
 
-	LOG_ALL(xlog) << "[XWindow] registering for delete events" << endl;
+	LOG_ALL(xlog) << "[XWindow] registering for delete events" << std::endl;
 
 	_deleteWindow = XInternAtom(_display, "WM_DELETE_WINDOW", 0);
 	XSetWMProtocols(_display, _window, &_deleteWindow, 1);
 
-	LOG_ALL(xlog) << "[XWindow] creating input context" << endl;
+	LOG_ALL(xlog) << "[XWindow] creating input context" << std::endl;
 
 	_inputMethod = XOpenIM(_display, 0, 0, 0);
 
@@ -92,7 +88,7 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 				NULL);
 
 	} else
-		LOG_ERROR(xlog) << "[XWindow] could not create input context" << endl;
+		LOG_ERROR(xlog) << "[XWindow] could not create input context" << std::endl;
 
 	// init xinput2
 
@@ -154,14 +150,14 @@ XWindow::XWindow(string caption, const WindowMode& mode) :
 	}
 
 	// now we are ready to show the window
-	LOG_ALL(xlog) << "[XWindow] mapping window" << endl;
+	LOG_ALL(xlog) << "[XWindow] mapping window" << std::endl;
 
 	XMapWindow(_display, _window);
 	XFlush(_display);
 
 	free(eventmask.mask);
 
-	LOG_ALL(xlog) << "[XWindow] initialized" << endl;
+	LOG_ALL(xlog) << "[XWindow] initialized" << std::endl;
 
 	// setup fullscreen
 	setFullscreen(mode.fullscreen);
@@ -257,12 +253,7 @@ XWindow::processEvents() {
 			}
 		}
 
-		// redraw only if needed
-		if (isDirty() && !closed()) {
-
-			setDirty(false);
-			redraw();
-		}
+		redraw();
 	}
 }
 
@@ -338,10 +329,16 @@ XWindow::interrupt() {
 	}
 }
 
+GlxContext*
+XWindow::createSharedGlContext(const ContextSettings& settings, GlxContext* globalContext) {
+
+	return new GlContext(this, settings, globalContext);
+}
+
 void
 XWindow::processEvent(XEvent& event) {
 
-	Modifiers       modifiers;
+	Modifiers       modifiers = Modifiers::NoModifier;
 	keys::Key       key;
 	buttons::Button button;
 
@@ -427,7 +424,7 @@ XWindow::processEvent(XEvent& event) {
 
 					LOG_ALL(xlog) << "[XWindow] window "
 								  << " received a mouse down event at "
-								  << deviceEvent->event_x << ", " << deviceEvent->event_y << endl;
+								  << deviceEvent->event_x << ", " << deviceEvent->event_y << std::endl;
 
 					processButtonDownEvent(
 							deviceEvent->time,
@@ -456,7 +453,7 @@ XWindow::processEvent(XEvent& event) {
 
 					LOG_ALL(xlog) << "[XWindow] window "
 								  << " received a mouse up event at "
-								  << deviceEvent->event_x << ", " << deviceEvent->event_y << endl;
+								  << deviceEvent->event_x << ", " << deviceEvent->event_y << std::endl;
 
 					processButtonUpEvent(
 							deviceEvent->time,
@@ -484,7 +481,7 @@ XWindow::processEvent(XEvent& event) {
 
 					LOG_ALL(xlog) << "[XWindow] window "
 								  << " received a mouse motion event at "
-								  << deviceEvent->event_x << ", " << deviceEvent->event_y << endl;
+								  << deviceEvent->event_x << ", " << deviceEvent->event_y << std::endl;
 
 					processMouseMoveEvent(
 							deviceEvent->time,
@@ -515,23 +512,22 @@ XWindow::processEvent(XEvent& event) {
 			case ConfigureNotify:
 				// resize
 				LOG_ALL(xlog) << "[XWindow] window "
-							  << " received a configure notification" << endl;
+							  << " received a configure notification" << std::endl;
 				if (processResizeEvent(event.xconfigure.width, event.xconfigure.height)) {
-					foreach (int deviceId, _penDevices)
+					for (int deviceId : _penDevices)
 						configureTabletArea(deviceId);
-					setDirty(true, false);
 				}
 				break;
 
 			case Expose:
 				LOG_ALL(xlog) << "[XWindow] window "
-							  << " received an expose notification" << endl;
+							  << " received an expose notification" << std::endl;
 				setDirty(true, false);
 				break;
 
 			case ClientMessage:
 				LOG_ALL(xlog) << "[XWindow] window "
-							  << " received a client message" << endl;
+							  << " received a client message" << std::endl;
 				if ((Atom)event.xclient.data.l[0] == _deleteWindow) {
 
 					processCloseEvent();
@@ -544,7 +540,7 @@ XWindow::processEvent(XEvent& event) {
 
 			case DestroyNotify:
 				LOG_ALL(xlog) << "[XWindow] window "
-							  << " received a destroy notification" << endl;
+							  << " received a destroy notification" << std::endl;
 
 				processCloseEvent();
 
@@ -553,7 +549,7 @@ XWindow::processEvent(XEvent& event) {
 
 			case KeyPress:
 				LOG_ALL(xlog) << "[XWindow] window "
-							  << " received a key press notification" << endl;
+							  << " received a key press notification" << std::endl;
 
 				key       = keycodeToKey(event.xkey.keycode);
 				modifiers = stateToModifiers(event.xkey.state);
@@ -564,7 +560,7 @@ XWindow::processEvent(XEvent& event) {
 
 			case KeyRelease:
 				LOG_ALL(xlog) << "[XWindow] window "
-							  << " received a key release notification" << endl;
+							  << " received a key release notification" << std::endl;
 
 				key       = keycodeToKey(event.xkey.keycode);
 				modifiers = stateToModifiers(event.xkey.state);
@@ -597,7 +593,7 @@ XWindow::processEvent(XEvent& event) {
 			default:
 				LOG_ERROR(xlog) << "[XWindow] window "
 								<< " received unknown event notification: "
-								<< event.type << endl;
+								<< event.type << std::endl;
 				break;
 		}
 	}

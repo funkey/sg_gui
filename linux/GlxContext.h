@@ -1,66 +1,70 @@
 #ifndef SG_GUI_GLX_CONTEXT_H__
 #define SG_GUI_GLX_CONTEXT_H__
 
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glx.h>
 #include <X11/Xlib.h>
 
 #include <sg_gui/GlContextBase.h>
-#include <sg_gui/OpenGl.h>
 
 namespace sg_gui {
 
 // forward declaration
-class Window;
+class XWindow;
 
-class GlContext : public GlContextBase {
+class GlxContext : public GlContextBase {
 
 public:
 
 	/**
 	 * Create an OpenGL context that is not attached to any window.
 	 *
-	 * @param share A GlContext to share display lists with.
+	 * @param share A GlxContext to share display lists with.
 	 */
-	GlContext(ContextSettings& settings, GlContext* share = 0);
+	GlxContext(const ContextSettings& settings, GlxContext* share = 0);
 
 	/**
 	 * Create an OpenGL context that renders into the specified window.
 	 *
 	 * @param window The owner of this context.
 	 * @param settings The desired settings of the context.
-	 * @param share A GlContext to share display lists with.
+	 * @param share A GlxContext to share display lists with.
 	 */
-	GlContext(Window* window, ContextSettings& settings, GlContext* shared = 0);
+	GlxContext(XWindow* window, const ContextSettings& settings, GlxContext* shared = 0);
 
 	/**
 	 * Release this context.
 	 */
-	virtual ~GlContext();
+	virtual ~GlxContext();
 
 	/**
 	 * Make this context the active context of the calling thread. If called
 	 * with <code>false</code> as argument, deactivates this context (if it was
 	 * active) and makes the offline context active for the calling thread.
 	 */
-	bool activate(bool active = true);
+	bool activate(bool active = true) override;
 
 	/**
 	 * Report whether this context is currently active.
 	 *
 	 * @return True, if this context is active.
 	 */
-	bool isActive();
+	bool isActive() override;
 
 	/**
 	 * Make visible whatever was rendered using this context.
 	 */
-	void flush();
+	void flush() override;
 
 private:
 
 	/**
 	 * Create a context for the current window and display.
 	 */
-	void createContext(ContextSettings& settings, GlContext* share);
+	void createContext(const ContextSettings& settings, GlxContext* share);
 
 	/**
 	 * Enables vertical sync if desired by ContextSettings.
