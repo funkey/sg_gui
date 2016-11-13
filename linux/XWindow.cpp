@@ -1,3 +1,6 @@
+#include <config.h>
+#ifdef SYSTEM_UNIX
+
 #include <cstdlib>
 #include <fcntl.h>
 
@@ -1017,3 +1020,5 @@ XWindow::getPressure(XIDeviceEvent* event) {
 }
 
 } // namespace sg_gui
+
+#endif

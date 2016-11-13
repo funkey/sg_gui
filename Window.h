@@ -3,7 +3,7 @@
 
 #include <config.h>
 
-#if defined(SYSTEM_LINUX) || defined(SYSTEM_FREEBSD)
+#if defined(SYSTEM_UNIX)
 #include <sg_gui/linux/XWindow.h>
 #elif defined(SYSTEM_WINDOWS)
 #include <sg_gui/windows/WinWindow.h>
@@ -13,7 +13,7 @@
 
 namespace sg_gui {
 
-#if defined(SYSTEM_LINUX) || defined(SYSTEM_FREEBSD)
+#if defined(SYSTEM_UNIX)
 
 	typedef XWindow Window;
 

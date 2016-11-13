@@ -1,3 +1,5 @@
+#include <config.h>
+#ifdef SYSTEM_UNIX
 /* Parts of the source code of this file have been taken from the great SFML
  * project: http://www.sfml-dev.org/.
  */
@@ -351,3 +353,5 @@ GlxContext::createContext(const ContextSettings& settings, GlxContext* share) {
 }
 
 } // namespace sg_gui
+
+#endif

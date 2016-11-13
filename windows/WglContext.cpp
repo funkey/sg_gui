@@ -1,6 +1,5 @@
-/* Parts of the source code of this file have been taken from the great SFML
- * project: http://www.sfml-dev.org/.
- */
+#include <config.h>
+#ifdef SYSTEM_WINDOWS
 
 #include <util/Logger.h>
 
@@ -55,3 +54,5 @@ WglContext::createContext(const ContextSettings& settings, WglContext* share) {
 }
 
 } // namespace sg_gui
+
+#endif

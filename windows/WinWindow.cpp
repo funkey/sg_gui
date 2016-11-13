@@ -1,3 +1,6 @@
+#include <config.h>
+#ifdef SYSTEM_WINDOWS
+
 #include <cstdlib>
 #include <fcntl.h>
 
@@ -74,3 +77,5 @@ WinWindow::closed(){
 }
 
 } // namespace sg_gui
+
+#endif
