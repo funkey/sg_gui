@@ -1,6 +1,9 @@
 #ifndef SG_GUI_GLX_CONTEXT_H__
 #define SG_GUI_GLX_CONTEXT_H__
 
+#define NOMINMAX
+#include <windows.h>
+
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -61,21 +64,24 @@ private:
 	/**
 	 * Create a context for the current window and display.
 	 */
-	void createContext(const ContextSettings& settings, WglContext* share);
+	void createContext(WglContext* share);
 
 	/**
 	 * Enables vertical sync if desired by ContextSettings.
 	 */
 	void enableVerticalSync(bool enable);
 
-	// the X11 window this context renders to
-	//::Window   _window;
+	// the window this context renders to
+	HWND _window;
+
+	// the device context of the window
+	HDC _hdc;
 
 	// have we created the window?
-	bool       _ownWindow;
+	bool _ownWindow;
 
 	// the true OpenGl context
-	//GLXContext _context;
+	HGLRC _context;
 
 	// the settings according to this context
 	ContextSettings _settings;

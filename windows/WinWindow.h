@@ -4,6 +4,9 @@
 #include <map>
 #include <string>
 
+#define NOMINMAX
+#include <windows.h>
+
 #include <sg_gui/WindowBase.h>
 #include <sg_gui/WindowMode.h>
 
@@ -53,6 +56,8 @@ public:
 	 */
 	void processEvents() override;
 
+	HWND getWindowHandle() const { return _windowHandle; }
+
 private:
 
 	/**
@@ -61,6 +66,22 @@ private:
 	WglContext* createSharedGlContext(
 			const ContextSettings& settings,
 			GlContext*             globalContext) override;
+
+	/**
+	 * Static WndProc callback for window class, forwards to non-static windowProc.
+	 */
+	static LRESULT CALLBACK staticWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	/**
+	 * The message callback.
+	 */
+	LRESULT CALLBACK windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+	HWND _windowHandle;
+
+	bool _closed;
+
+	bool _fullscreen;
 };
 
 } // namespace sg_gui
