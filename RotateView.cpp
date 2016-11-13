@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <util/Logger.h>
 #include <util/geometry.hpp>

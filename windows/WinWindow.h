@@ -4,9 +4,6 @@
 #include <map>
 #include <string>
 
-#include <X11/Xlib.h>
-#include <X11/extensions/XInput2.h>
-
 #include <sg_gui/WindowBase.h>
 #include <sg_gui/WindowMode.h>
 

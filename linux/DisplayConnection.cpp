@@ -1,3 +1,6 @@
+#include <config.h>
+#ifdef SYSTEM_UNIX
+
 #include <util/Logger.h>
 #include "DisplayConnection.h"
 
@@ -30,3 +33,5 @@ DisplayConnection::~DisplayConnection() {
 }
 
 } // namespace sg_gui
+
+#endif

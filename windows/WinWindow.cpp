@@ -1,27 +1,17 @@
 #include <config.h>
 #ifdef SYSTEM_WINDOWS
 
-#include <cstdlib>
-#include <fcntl.h>
-
-#include <boost/timer/timer.hpp>
-
-#include <X11/extensions/Xrandr.h>
-
 #include <sg_gui/OpenGl.h>
-#include <sg_gui/linux/WinWindow.h>
+#include <sg_gui/windows/WinWindow.h>
 #include <sg_gui/Modifiers.h>
 #include <util/Logger.h>
-#include "DisplayConnection.h"
 
 namespace sg_gui {
 
 logger::LogChannel winwinlog("winwinlog", "[WinWindow] ");
 
 WinWindow::WinWindow(std::string caption, const WindowMode& mode) :
-	WindowBase(caption),
-	_closed(false),
-	_fullscreen(false) {
+	WindowBase(caption) {
 
 }
 
@@ -37,7 +27,6 @@ WinWindow::~WinWindow() {
 void
 WinWindow::setFullscreen(bool fullscreen) {
 
-	_fullscreen = fullscreen;
 }
 
 void
@@ -65,15 +54,13 @@ WinWindow::close() {
 	if (closed())
 		return;
 
-	_closed = true;
-
 	LOG_DEBUG(winwinlog) << "unmapping window " << getCaption() << std::endl;
 }
 
 bool
 WinWindow::closed(){
 
-	return _closed;
+	return false;
 }
 
 } // namespace sg_gui

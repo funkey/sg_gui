@@ -30,6 +30,7 @@ WglContext::~WglContext() {
 bool
 WglContext::activate(bool active) {
 
+	return true;
 }
 
 bool
