@@ -73,11 +73,11 @@ WinWindow::WinWindow(std::string caption, const WindowMode& mode) :
 
 WinWindow::~WinWindow() {
 
-	LOG_ALL(winwinlog) << "[" << getCaption() << "] destructing..." << std::endl;
+	LOG_DEBUG(winwinlog) << "[" << getCaption() << "] destructing..." << std::endl;
 
 	close();
 
-	LOG_ALL(winwinlog) << "[" << getCaption() << "] destructed" << std::endl;
+	LOG_DEBUG(winwinlog) << "[" << getCaption() << "] destructed" << std::endl;
 }
 
 void
@@ -100,11 +100,9 @@ WinWindow::processEvents() {
 			break;
 		}
 
-		LOG_USER(winwinlog) << "got a message!" << std::endl;
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 
-		// TODO: actually do something with the events
 		redraw();
 	}
 }
@@ -163,11 +161,33 @@ WinWindow::windowProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	case WM_DESTROY:
 
+		LOG_DEBUG(winwinlog) << "got WM_DESTROY" << std::endl;
 		PostQuitMessage(0);
-		close();
+		processCloseEvent();
 		break;
 
+	case WM_PAINT:
+
+		LOG_DEBUG(winwinlog) << "got WM_PAINT" << std::endl;
+		processExposeEvent();
+		// we take care of redrawing, tell windows everything is good
+		ValidateRect(_windowHandle, NULL);
+		break;
+
+	case WM_SIZE:
+
+	{
+		int width = LOWORD(lParam);
+		int height = HIWORD(lParam);
+
+		LOG_DEBUG(winwinlog) << "got WM_SIZE with " << width << ", " << height << std::endl;
+		processResizeEvent(width, height);
+		break;
+	}
+
 	default:
+
+		LOG_ALL(winwinlog) << "got message " << msg << std::endl;
 		return DefWindowProc(_windowHandle, msg, wParam, lParam);
 	}
 
