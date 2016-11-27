@@ -4,6 +4,7 @@
 #include <util/Logger.h>
 
 #include <sg_gui/windows/WglContext.h>
+#include <sg_gui/windows/WindowClass.h>
 #include <sg_gui/OpenGl.h>
 #include <sg_gui/Window.h>
 
@@ -20,26 +21,8 @@ WglContext::WglContext(const ContextSettings& settings, WglContext* share) :
 	_settings(settings),
 	_active(false) {
 
-	WNDCLASS dummyClass;
-	dummyClass.style = 0;
-	dummyClass.lpfnWndProc = DefWindowProc;
-	dummyClass.cbClsExtra = 0;
-	dummyClass.cbWndExtra = 0;
-	dummyClass.hInstance = GetModuleHandle(NULL);
-	dummyClass.hIcon = NULL;
-	dummyClass.hCursor = LoadCursor(0, IDC_ARROW);
-	dummyClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	dummyClass.lpszMenuName = NULL;
-	dummyClass.lpszClassName = TEXT("dummy");
-
-	if (!RegisterClass(&dummyClass)) {
-
-		LOG_ERROR(wgllog) << "could not register window class, error code " << GetLastError() << std::endl;
-		return;
-	}
-
 	_window = CreateWindow(
-		TEXT("dummy"),
+		WindowClass::getDummyWindowClass(),
 		TEXT("dummy"),
 		WS_POPUP,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -124,7 +107,7 @@ WglContext::activate(bool active) {
 
 		_active = false;
 
-		return wglMakeCurrent(0, 0);
+		return (wglMakeCurrent(0, 0) != 0);
 	}
 }
 
