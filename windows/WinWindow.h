@@ -58,7 +58,23 @@ public:
 
 	HWND getWindowHandle() const { return _windowHandle; }
 
+	/**
+	 * Static WndProc callback for window class, forwards to non-static windowProc.
+	 */
+	static LRESULT CALLBACK staticWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 private:
+
+	struct PointerEvent {
+
+		POINTER_INPUT_TYPE type;
+		unsigned long timestamp;
+		unsigned int id;
+		util::point<float, 2> position;
+		buttons::Button button;
+		Modifiers modifiers;
+		float pressure;
+	};
 
 	/**
 	 * Create a GlContext that is shared with the given global context.
@@ -68,14 +84,15 @@ private:
 			GlContext*             globalContext) override;
 
 	/**
-	 * Static WndProc callback for window class, forwards to non-static windowProc.
-	 */
-	static LRESULT CALLBACK staticWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-	/**
 	 * The message callback.
 	 */
 	LRESULT CALLBACK windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+	PointerEvent parsePointerEvent(WPARAM wParam, LPARAM lParam);
+
+	Modifiers getModifiers(DWORD keyStates);
+
+	buttons::Button getButton(POINTER_FLAGS flags);
 
 	HWND _windowHandle;
 

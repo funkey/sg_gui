@@ -1,6 +1,7 @@
 #include <config.h>
 #ifdef SYSTEM_WINDOWS
 
+#include <sg_gui/windows/WindowClass.h>
 #include <sg_gui/OpenGl.h>
 #include <sg_gui/windows/WinWindow.h>
 #include <sg_gui/Modifiers.h>
@@ -14,24 +15,6 @@ WinWindow::WinWindow(std::string caption, const WindowMode& mode) :
 	WindowBase(caption),
 	_closed(false),
 	_fullscreen(false) {
-
-	WNDCLASS windowClass;
-	windowClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-	windowClass.lpfnWndProc = &WinWindow::staticWindowProc;
-	windowClass.cbClsExtra = 0;
-	windowClass.cbWndExtra = sizeof(WinWindow*); // user data
-	windowClass.hInstance = GetModuleHandle(NULL);
-	windowClass.hIcon = NULL;
-	windowClass.hCursor = NULL;
-	windowClass.hbrBackground = NULL;
-	windowClass.lpszMenuName = NULL;
-	windowClass.lpszClassName = TEXT("window");
-
-	if (!RegisterClass(&windowClass)) {
-
-		LOG_ERROR(winwinlog) << "could not register window class, error code " << GetLastError() << std::endl;
-		return;
-	}
 
 	int left, top, width, height;
 	left = top = width = height = CW_USEDEFAULT;
@@ -52,7 +35,7 @@ WinWindow::WinWindow(std::string caption, const WindowMode& mode) :
 	}
 
 	_windowHandle = CreateWindow(
-		TEXT("window"),
+		WindowClass::getDefaultWindowClass(),
 		TEXT(caption.c_str()),
 		WS_OVERLAPPEDWINDOW,
 		left, top, width, height,
@@ -185,6 +168,130 @@ WinWindow::windowProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 		break;
 	}
 
+	case WM_POINTERDOWN:
+	{
+
+		PointerEvent pointerEvent = parsePointerEvent(lParam, wParam);
+
+		switch (pointerEvent.type) {
+
+		case PT_TOUCH:
+
+			processFingerDownEvent(
+				pointerEvent.timestamp,
+				pointerEvent.position,
+				pointerEvent.id,
+				pointerEvent.modifiers
+			);
+			break;
+
+		case PT_PEN:
+
+			processPenDownEvent(
+				pointerEvent.timestamp,
+				pointerEvent.button,
+				pointerEvent.position,
+				pointerEvent.pressure,
+				pointerEvent.modifiers
+			);
+			break;
+
+		default:
+
+			processButtonDownEvent(
+				pointerEvent.timestamp,
+				pointerEvent.button,
+				pointerEvent.position,
+				pointerEvent.modifiers
+			);
+			break;
+		}
+
+		break;
+	}
+
+	case WM_POINTERUPDATE:
+	{
+
+		PointerEvent pointerEvent = parsePointerEvent(lParam, wParam);
+
+		switch (pointerEvent.type) {
+
+		case PT_TOUCH:
+
+			processFingerMoveEvent(
+				pointerEvent.timestamp,
+				pointerEvent.position,
+				pointerEvent.id,
+				pointerEvent.modifiers
+			);
+			break;
+
+		case PT_PEN:
+
+			processPenMoveEvent(
+				pointerEvent.timestamp,
+				pointerEvent.position,
+				pointerEvent.pressure,
+				pointerEvent.modifiers
+			);
+			break;
+
+		default:
+
+			processMouseMoveEvent(
+				pointerEvent.timestamp,
+				pointerEvent.position,
+				pointerEvent.modifiers
+			);
+			break;
+		}
+
+		break;
+	}
+
+	case WM_POINTERUP:
+	{
+
+		PointerEvent pointerEvent = parsePointerEvent(lParam, wParam);
+
+		switch (pointerEvent.type) {
+
+		case PT_TOUCH:
+
+			processFingerUpEvent(
+				pointerEvent.timestamp,
+				pointerEvent.position,
+				pointerEvent.id,
+				pointerEvent.modifiers
+			);
+			break;
+
+		case PT_PEN:
+
+			processPenUpEvent(
+				pointerEvent.timestamp,
+				pointerEvent.button,
+				pointerEvent.position,
+				pointerEvent.pressure,
+				pointerEvent.modifiers
+			);
+			break;
+
+		default:
+
+			processButtonUpEvent(
+				pointerEvent.timestamp,
+				pointerEvent.button,
+				pointerEvent.position,
+				pointerEvent.modifiers
+			);
+			break;
+		}
+
+		break;
+	}
+
 	default:
 
 		LOG_ALL(winwinlog) << "got message " << msg << std::endl;
@@ -211,6 +318,70 @@ bool
 WinWindow::closed(){
 
 	return _closed;
+}
+
+WinWindow::PointerEvent
+WinWindow::parsePointerEvent(WPARAM lParam, LPARAM wParam) {
+
+	PointerEvent pointerEvent;
+	pointerEvent.id = GET_POINTERID_WPARAM(wParam);
+
+	LOG_DEBUG(winwinlog) << "got pointer event: " << pointerEvent.id << std::endl;
+
+	// get generic pointer info
+	POINTER_INFO pointerInfo;
+	GetPointerInfo(pointerEvent.id, &pointerInfo);
+
+	pointerEvent.timestamp = pointerInfo.dwTime;
+	pointerEvent.position = util::point<float, 2>(
+		(float)pointerInfo.ptPixelLocation.x,
+		(float)pointerInfo.ptPixelLocation.y);
+	pointerEvent.modifiers = getModifiers(pointerInfo.dwKeyStates);
+	pointerEvent.button = getButton(pointerInfo.pointerFlags);
+
+	if (!GetPointerType(pointerEvent.id, &pointerEvent.type)) {
+
+		LOG_ERROR(winwinlog) << "could not get pointer type" << std::endl;
+		pointerEvent.type = PT_POINTER;
+	}
+
+	// get pointer type specifc info
+	if (pointerEvent.type == PT_PEN) {
+
+		POINTER_PEN_INFO penInfo;
+		if (!GetPointerPenInfo(pointerEvent.id, &penInfo)) {
+
+			LOG_ERROR(winwinlog) << "could not get pen info" << std::endl;
+
+		} else {
+
+			pointerEvent.pressure = penInfo.pressure;
+			LOG_DEBUG(winwinlog) << "\tpressure: " << pointerEvent.pressure << std::endl;
+		}
+	}
+
+	return pointerEvent;
+}
+
+buttons::Button
+WinWindow::getButton(POINTER_FLAGS flags) {
+
+	if (flags & POINTER_FLAG_FIRSTBUTTON)
+		return buttons::Button::Left;
+
+	if (flags & POINTER_FLAG_SECONDBUTTON)
+		return buttons::Button::Right;
+
+	if (flags & POINTER_FLAG_THIRDBUTTON)
+		return buttons::Button::Middle;
+
+	return buttons::Button::NoButton;
+}
+
+Modifiers
+WinWindow::getModifiers(DWORD keyState) {
+
+	return Modifiers::NoModifier;
 }
 
 } // namespace sg_gui
