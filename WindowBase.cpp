@@ -171,10 +171,10 @@ WindowBase::processResizeEvent(int width, int height) {
 	if (_region.max().x() == width && _region.max().y() == height && _resolution.x() == width && _resolution.y() == height)
 		return false;
 
-	_region.max().x() = width;
-	_region.max().y() = height;
-	_resolution.x() = width;
-	_resolution.y() = height;
+	_region.max().x() = (float)width;
+	_region.max().y() = (float)height;
+	_resolution.x() = (float)width;
+	_resolution.y() = (float)height;
 
 	{
 		// ensure that our context is active

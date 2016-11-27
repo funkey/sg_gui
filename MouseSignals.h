@@ -14,7 +14,7 @@ public:
 
 	MouseMove(
 			unsigned long timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			const Modifiers& modifiers) :
 		PointerMove(timestamp, position, modifiers) {}
 };
@@ -28,7 +28,7 @@ public:
 	MouseDown(
 			unsigned long timestamp,
 			const buttons::Button& button,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			const Modifiers& modifiers) :
 		PointerDown(timestamp, position, modifiers, button) {}
 };
@@ -42,7 +42,7 @@ public:
 	MouseUp(
 			unsigned long timestamp,
 			const buttons::Button& button,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			const Modifiers& modifiers) :
 		PointerUp(timestamp, position, modifiers, button) {}
 };

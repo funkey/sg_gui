@@ -15,13 +15,13 @@ public:
 
 	PenMove(
 			unsigned long timestamp,
-			const util::point<double,2>& position,
-			double pressure_,
+			const util::point<float,2>& position,
+			float pressure_,
 			const Modifiers& modifiers) :
 		PointerMove(timestamp, position, modifiers),
 		pressure(pressure_) {}
 
-	double pressure;
+	float pressure;
 };
 
 class PenDown : public PointerDown {
@@ -33,13 +33,13 @@ public:
 	PenDown(
 			unsigned long timestamp,
 			const buttons::Button& button,
-			const util::point<double,2>& position,
-			double pressure_,
+			const util::point<float,2>& position,
+			float pressure_,
 			const Modifiers& modifiers) :
 		PointerDown(timestamp, position, modifiers, button),
 		pressure(pressure_) {}
 
-	double          pressure;
+	float pressure;
 };
 
 class PenUp : public PointerUp {
@@ -51,13 +51,13 @@ public:
 	PenUp(
 			unsigned long timestamp,
 			const buttons::Button& button,
-			const util::point<double,2>& position,
-			double pressure_,
+			const util::point<float,2>& position,
+			float pressure_,
 			const Modifiers& modifiers) :
 		PointerUp(timestamp, position, modifiers, button),
 		pressure(pressure_) {}
 
-	double          pressure;
+	float pressure;
 };
 
 class PenIn : public PointerSignal {
@@ -69,7 +69,7 @@ public:
 	PenIn(unsigned long timestamp) :
 		PointerSignal(
 				timestamp,
-				util::point<double,2>(0, 0),
+				util::point<float,2>(0, 0),
 				sg_gui::NoModifier) {}
 };
 
@@ -82,7 +82,7 @@ public:
 	PenOut(unsigned long timestamp) :
 		PointerSignal(
 				timestamp,
-				util::point<double,2>(0, 0),
+				util::point<float,2>(0, 0),
 				sg_gui::NoModifier) {}
 };
 
@@ -95,7 +95,7 @@ public:
 	PenAway(unsigned long timestamp) :
 		PointerSignal(
 				timestamp,
-				util::point<double,2>(0, 0),
+				util::point<float,2>(0, 0),
 				sg_gui::NoModifier) {}
 };
 
