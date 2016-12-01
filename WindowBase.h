@@ -3,27 +3,65 @@
 
 #include <string>
 
-#include <boost/thread.hpp>
-
+#include <scopegraph/Scope.h>
+#include <sg_gui/GlContext.h>
+#include <sg_gui/GlContextCreator.h>
+#include <sg_gui/FingerSignals.h>
+#include <sg_gui/PenSignals.h>
+#include <sg_gui/MouseSignals.h>
+#include <sg_gui/KeySignals.h>
+#include <sg_gui/WindowSignals.h>
 #include <sg_gui/Keys.h>
 #include <sg_gui/Buttons.h>
 #include <sg_gui/Modifiers.h>
+#include <util/box.hpp>
 #include <util/point.hpp>
-
-using std::string;
+#include <config.h>
 
 namespace sg_gui {
 
 /**
- * Abstract base class that defines the interface for all window
+ * Base class providing common functionality for all window
  * implementations.
+ *
+ * Subclasses are expected to implement all pure virtual functions (obviously) 
+ * and create (and show) the window in the constructor.
  */
-class WindowBase {
+class WindowBase :
+		public sg::Scope<
+				WindowBase,
+				sg::ProvidesInner<
+						DrawOpaque,
+						DrawTranslucent,
+						Resize,
+						KeyDown,
+						KeyUp,
+						FingerMove,
+						FingerDown,
+						FingerUp,
+						PenMove,
+						PenDown,
+						PenUp,
+						PenIn,
+						PenOut,
+						PenAway,
+						MouseMove,
+						MouseDown,
+						MouseUp
+				>,
+				sg::AcceptsInner<
+						ContentChanged,
+						SizeChanged,
+						WindowFullscreen
+				>
+		>,
+		public GlContextCreator {
 
 public:
 
-	WindowBase(string caption) :
-		_caption(caption) {}
+	WindowBase(std::string caption);
+
+	virtual ~WindowBase();
 
 	/**
 	 * Close this window and release all resources.
@@ -43,15 +81,24 @@ public:
 
 	/**
 	 * Change to or from fullscreen mode.
+	 *
+	 * Platform dependent.
 	 */
 	virtual void setFullscreen(bool fullscreen) = 0;
 
 	/**
-	 * Get the resolution of this window.
+	 * Set the background color of this window.
 	 *
-	 * @return The resolution of this window.
+	 * @param r The red portion in [0,1].
+	 * @param g The red portion in [0,1].
+	 * @param b The red portion in [0,1].
 	 */
-	virtual const util::point<float,2>& getResolution() = 0;
+	void setBackgroundColor(float r, float g, float b) {
+
+	    _clear_r = r;
+	    _clear_g = g;
+	    _clear_b = b;
+	}
 
 	/**
 	 * Process window manager events and redraw. If this call blocks for events, 
@@ -63,182 +110,49 @@ public:
 	virtual void processEvents() = 0;
 
 	/**
-	 * Interrupt the event thread. This method will be called whenever a redraw 
-	 * is required. Implementations should guarantee that the event loop gets 
-	 * interrupted and initiates the redraw.
+	 * Create a GlContext that allows drawing to this window.
 	 */
-	virtual void interrupt() {};
+	GlContext* createGlContext() override;
 
 	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
+	 * If called, the outcome of the next redraw will be saved in a png file.
 	 */
-	virtual void processKeyUpEvent(const keys::Key& key, const Modifiers& modifiers) = 0;
+	void requestFrameSave();
 
 	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
+	 * Callback for size change signals.
 	 */
-	virtual void processKeyDownEvent(const keys::Key& key, const Modifiers& modifiers) = 0;
+	void onInnerSignal(SizeChanged& signal);
 
 	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
+	 * Callback for content change signals.
 	 */
-	virtual void processFingerUpEvent(
-			unsigned long                timestamp,
-			const util::point<float,2>& position,
-			int                          id,
-			const Modifiers&             modifiers) = 0;
+	void onInnerSignal(ContentChanged& signal);
 
 	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
+	 * Callback for fullscreen requests.
 	 */
-	virtual void processFingerDownEvent(
-			unsigned long                timestamp,
-			const util::point<float,2>& position,
-			int                          id,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processFingerMoveEvent(
-			unsigned long                timestamp,
-			const util::point<float,2>& position,
-			int                          id,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processPenUpEvent(
-			unsigned long                timestamp,
-			const buttons::Button&       button,
-			const util::point<float,2>& position,
-			float                       pressure,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processPenDownEvent(
-			unsigned long                timestamp,
-			const buttons::Button&       button,
-			const util::point<float,2>& position,
-			float                       pressure,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processPenMoveEvent(
-			unsigned long                timestamp,
-			const util::point<float,2>& position,
-			float                       pressure,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processPenInEvent(
-			unsigned long              timestamp) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processPenOutEvent(
-			unsigned long              timestamp) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processPenAwayEvent(
-			unsigned long              timestamp) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processButtonUpEvent(
-			unsigned long                timestamp,
-			const buttons::Button&       button,
-			const util::point<float,2>& position,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processButtonDownEvent(
-			unsigned long                timestamp,
-			const buttons::Button&       button,
-			const util::point<float,2>& position,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Callback for input events.
-	 *
-	 * @param event The input event.
-	 */
-	virtual void processMouseMoveEvent(
-			unsigned long                timestamp,
-			const util::point<float,2>& position,
-			const Modifiers&             modifiers) = 0;
-
-	/**
-	 * Get the caption of this window as assigned by the constructor.
-	 */
-	string getCaption() {
-
-		return _caption;
-	}
+	void onInnerSignal(WindowFullscreen& signal);
 
 protected:
 
 	/**
-	 * React on close events.
-	 *
-	 * Subclass implementation dependent.
+	 * Get the caption of this window.
 	 */
-	virtual void processCloseEvent() = 0;
+	std::string getCaption() {
+
+		return _caption;
+	}
 
 	/**
-	 * React on resize events.
+	 * Get the resolution of this window.
 	 *
-	 * Subclass implementation dependent.
-	 *
-	 * @return True, if the size of the window changed and a redraw is in order.
+	 * @return The resolution of this window.
 	 */
-	virtual bool processResizeEvent(int width, int height) = 0;
+	const util::point<float,2>& getResolution() {
 
-	/**
-	 * Instruct the window to redraw itself.
-	 *
-	 * Subclass implementation dependent.
-	 */
-	virtual void redraw() = 0;
+		return _resolution;
+	}
 
 	/**
 	 * Mark this window as being dirty. redraw() will be called on the next
@@ -253,7 +167,7 @@ protected:
 	 *             you call this from within the event processing code, you want 
 	 *             that.
 	 */
-	void setDirty(bool dirty = true, bool needInterrupt = true) {
+	inline void setDirty(bool dirty = true, bool needInterrupt = true) {
 	
 		_dirty = dirty;
 
@@ -271,11 +185,220 @@ protected:
 		return _dirty;
 	}
 
+	/**
+	 * Instruct the window to redraw itself, if needed. Should be called from 
+	 * the subclass event loop periodically.
+	 */
+	void redraw();
+
+	/**
+	 * React on expose events.
+	 *
+	 * To be called from processEvents() by subclasses.
+	 */
+	void processExposeEvent();
+
+	/**
+	 * React on resize events. Returns true, if the size was really changed.
+	 *
+	 * To be called from processEvents() by subclasses.
+	 */
+	bool processResizeEvent(int width, int height);
+
+	/**
+	 * React on close events.
+	 *
+	 * To be called from processEvents().
+	 */
+	void processCloseEvent();
+
+	/*******************************************************
+	 * Input event callbacks.
+	 *
+	 * To be called from processEvents() by subclasses.
+	 *******************************************************/
+
+	inline void processKeyUpEvent(const keys::Key& key, const Modifiers& modifiers) {
+
+		sendInner<KeyUp>(key, modifiers);
+	}
+
+	inline void processKeyDownEvent(const keys::Key& key, const Modifiers& modifiers) {
+
+		sendInner<KeyDown>(key, modifiers);
+	}
+
+	inline void processFingerUpEvent(
+			unsigned long               timestamp,
+			const util::point<float,2>& position,
+			int                         id,
+			const Modifiers&            modifiers) {
+
+		sendInner<FingerUp>(timestamp, position, id, modifiers);
+	}
+
+	inline void processFingerDownEvent(
+			unsigned long               timestamp,
+			const util::point<float,2>& position,
+			int                         id,
+			const Modifiers&            modifiers) {
+
+		sendInner<FingerDown>(timestamp, position, id, modifiers);
+	}
+
+	inline void processFingerMoveEvent(
+			unsigned long               timestamp,
+			const util::point<float,2>& position,
+			int                         id,
+			const Modifiers&            modifiers) {
+
+		sendInner<FingerMove>(timestamp, position, id, modifiers);
+	}
+
+	inline void processPenUpEvent(
+			unsigned long               timestamp,
+			const buttons::Button&      button,
+			const util::point<float,2>& position,
+			float                       pressure,
+			const Modifiers&            modifiers) {
+
+		sendInner<PenUp>(timestamp, button, position, pressure, modifiers);
+	}
+
+	inline void processPenDownEvent(
+			unsigned long               timestamp,
+			const buttons::Button&      button,
+			const util::point<float,2>& position,
+			float                       pressure,
+			const Modifiers&            modifiers) {
+
+		sendInner<PenDown>(timestamp, button, position, pressure, modifiers);
+	}
+
+	inline void processPenMoveEvent(
+			unsigned long               timestamp,
+			const util::point<float,2>& position,
+			float                       pressure,
+			const Modifiers&            modifiers) {
+
+		sendInner<PenMove>(timestamp, position, pressure, modifiers);
+	}
+
+	inline void processPenInEvent(unsigned long timestamp) {
+
+		sendInner<PenIn>(timestamp);
+	}
+
+	inline void processPenOutEvent(unsigned long timestamp) {
+
+		sendInner<PenOut>(timestamp);
+	}
+
+	inline void processPenAwayEvent(unsigned long timestamp) {
+
+		sendInner<PenAway>(timestamp);
+	}
+
+	inline void processButtonUpEvent(
+			unsigned long               timestamp,
+			const buttons::Button&      button,
+			const util::point<float,2>& position,
+			const Modifiers&            modifiers) {
+
+		sendInner<MouseUp>(timestamp, button, position, modifiers);
+	}
+
+	inline void processButtonDownEvent(
+			unsigned long               timestamp,
+			const buttons::Button&      button,
+			const util::point<float,2>& position,
+			const Modifiers&            modifiers) {
+
+		sendInner<MouseDown>(timestamp, button, position, modifiers);
+	}
+
+	inline void processMouseMoveEvent(
+			unsigned long               timestamp,
+			const util::point<float,2>& position,
+			const Modifiers&            modifiers) {
+
+		sendInner<MouseMove>(timestamp, position, modifiers);
+	}
+
 private:
 
-	bool   _dirty;
+	/**
+	 * Create a GlContext that is shared with the given global context.
+	 *
+	 * Platform dependent.
+	 */
+	virtual GlContext* createSharedGlContext(
+			const ContextSettings& settings,
+			GlContext*             globalContext) = 0;
 
-	string _caption;
+	/**
+	 * Interrupt the event thread. This method will be called whenever a redraw 
+	 * is required. Implementations should guarantee that the event loop gets 
+	 * interrupted and initiates the redraw.
+	 *
+	 * Platform dependent.
+	 */
+	virtual void interrupt() {}
+
+	/**
+	 * Clear the window with the background color.
+	 */
+	void clear();
+
+	/**
+	 * Show the updates from the views.
+	 */
+	void flush();
+
+	/**
+	 * Reconfigure the OpenGL viewport on window resize events.
+	 */
+	void configureViewport();
+
+	/**
+	 * Allocate memory for the frame buffer.
+	 */
+	void createFrameBuffer();
+
+	/**
+	 * Free memory of the frame buffer.
+	 */
+	void deleteFrameBuffer();
+
+	/**
+	 * Save the current content of the window to a file.
+	 */
+	void saveFrame();
+
+	// the name of the window
+	std::string _caption;
+
+	// the region displayed by this window in GL units
+	util::box<float,2> _region;
+
+	// the resolution of the region in pixels
+	util::point<float,2> _resolution;
+
+	// set to true if the next frame should be saved to file
+	bool _saveFrameRequest;
+
+#ifdef HAVE_PNG
+	// the next frame number
+	unsigned _frameNumber;
+#endif
+
+	// a buffer to save the frame to file (exclusively owned)
+	unsigned char* _frameBuffer;
+
+	// the background color of this window
+	float _clear_r, _clear_g, _clear_b;
+
+	bool _dirty;
 };
 
 } // namespace sg_gui

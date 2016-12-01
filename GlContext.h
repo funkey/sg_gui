@@ -3,20 +3,31 @@
 
 #include <config.h>
 
-// include platform dependent implementations
-#if defined(SYSTEM_LINUX) || defined(SYSTEM_FREEBSD)
+#if defined(SYSTEM_UNIX)
+#include <sg_gui/linux/GlxContext.h>
+#elif defined(SYSTEM_WINDOWS)
+#include <sg_gui/windows/WglContext.h>
+#elif defined(SYSTEM_OSX)
+#include <sg_gui/osx/CocoaContext.h>
+#endif
 
-	#include <sg_gui/linux/GlxContext.h>
+namespace sg_gui {
+
+#if defined(SYSTEM_UNIX)
+
+	typedef GlxContext GlContext;
 
 #elif defined(SYSTEM_WINDOWS)
 
-	#include <sg_gui/windows/WglContext.h>
+	typedef WglContext GlContext;
 
 #elif defined(SYSTEM_OSX)
 
-	#include <sg_gui/osx/CocoaContext.h>
+	typedef CocoaContext GlContext;
 
 #endif
+
+}
 
 #endif // SG_GUI_GL_CONTEXT_H__
 

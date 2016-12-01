@@ -10,8 +10,6 @@
 #include <sg_gui/WindowBase.h>
 #include <sg_gui/WindowMode.h>
 
-using std::string;
-
 namespace sg_gui {
 
 /**
@@ -27,7 +25,7 @@ public:
 	 * @param caption The caption of the window to be created.
 	 * @param mode The requested mode of the window (size, position, ...)
 	 */
-	XWindow(string caption, const WindowMode& mode);
+	XWindow(std::string caption, const WindowMode& mode = WindowMode());
 
 	/**
 	 * Desctructor. Closes the window, if still open.
@@ -37,36 +35,36 @@ public:
 	/**
 	 * Close this window.
 	 */
-	void close();
+	void close() override;
 
 	/**
 	 * Check whether the window was closed by the user.
 	 *
 	 * @return <code>true</code> if the window was closed.
 	 */
-	bool closed();
+	bool closed() override;
 
 	/**
 	 * Maximizes the window without decorations.
 	 */
-	void setFullscreen(bool fullscreen);
+	void setFullscreen(bool fullscreen) override;
 
 	/**
 	 * Process all accumulated X events since the last call to this function.
 	 * This method should be called repeatedly to ensure proper redrawing and
 	 * user interaction.
 	 */
-	void processEvents();
+	void processEvents() override;
 
 	/**
 	 * Provides access to the X11 display to create an OpenGl context.
 	 */
-	Display* getDisplay() { return _display; };
+	Display* getDisplay() { return _display; }
 
 	/**
 	 * Provides access to the X11 window to create an OpenGl context.
 	 */
-	::Window getX11Window() { return _window; };
+	::Window getX11Window() { return _window; }
 
 private:
 
@@ -92,6 +90,18 @@ private:
 	};
 
 	/**
+	 * Create a GlContext that is shared with the given global context.
+	 */
+	GlxContext* createSharedGlContext(
+			const ContextSettings& settings,
+			GlContext*             globalContext) override;
+
+	/**
+	 * Interrupt the call to waitForEvents().
+	 */
+	void interrupt() override;
+
+	/**
 	 * Process a general X event.
 	 */
 	void processEvent(XEvent& event);
@@ -101,11 +111,6 @@ private:
 	 * got interrupted.
 	 */
 	bool waitForEvents();
-
-	/**
-	 * Interrupt the call to waitForEvents().
-	 */
-	void interrupt();
 
 	/**
 	 * Process a xinput2 property change event.

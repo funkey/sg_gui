@@ -6,12 +6,12 @@
 #include <boost/thread.hpp>
 
 #include <GL/glew.h>
-#include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glx.h>
 
 #include <util/exceptions.h>
+
+#include "GlContext.h"
 
 namespace sg_gui {
 
@@ -36,7 +36,6 @@ void glCheckError(const char* file, const char* function, unsigned int line);
 } // namespace priv
 
 // forward declaration
-class GlContext;
 class GlContextCreator;
 
 // exceptions

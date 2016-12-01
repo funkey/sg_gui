@@ -15,7 +15,7 @@ public:
 
 	FingerMove(
 			unsigned long timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			int id_,
 			const Modifiers& modifiers) :
 		PointerMove(timestamp, position, modifiers),
@@ -32,7 +32,7 @@ public:
 
 	FingerDown(
 			unsigned long timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			int id_,
 			const Modifiers& modifiers) :
 		PointerDown(timestamp, position, modifiers, buttons::Left),
@@ -49,7 +49,7 @@ public:
 
 	FingerUp(
 			unsigned long timestamp,
-			const util::point<double,2>& position,
+			const util::point<float,2>& position,
 			int id_,
 			const Modifiers& modifiers) :
 		PointerUp(timestamp, position, modifiers, buttons::Left),

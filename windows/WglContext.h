@@ -1,43 +1,44 @@
 #ifndef SG_GUI_GLX_CONTEXT_H__
 #define SG_GUI_GLX_CONTEXT_H__
 
+#define NOMINMAX
+#include <windows.h>
+
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glx.h>
-#include <X11/Xlib.h>
 
 #include <sg_gui/GlContextBase.h>
 
 namespace sg_gui {
 
 // forward declaration
-class XWindow;
+class WinWindow;
 
-class GlxContext : public GlContextBase {
+class WglContext : public GlContextBase {
 
 public:
 
 	/**
 	 * Create an OpenGL context that is not attached to any window.
 	 *
-	 * @param share A GlxContext to share display lists with.
+	 * @param share A WglContext to share display lists with.
 	 */
-	GlxContext(const ContextSettings& settings, GlxContext* share = 0);
+	WglContext(const ContextSettings& settings, WglContext* share = 0);
 
 	/**
 	 * Create an OpenGL context that renders into the specified window.
 	 *
 	 * @param window The owner of this context.
 	 * @param settings The desired settings of the context.
-	 * @param share A GlxContext to share display lists with.
+	 * @param share A WglContext to share display lists with.
 	 */
-	GlxContext(XWindow* window, const ContextSettings& settings, GlxContext* shared = 0);
+	WglContext(WinWindow* window, const ContextSettings& settings, WglContext* shared = 0);
 
 	/**
 	 * Release this context.
 	 */
-	virtual ~GlxContext();
+	virtual ~WglContext();
 
 	/**
 	 * Make this context the active context of the calling thread. If called
@@ -63,24 +64,24 @@ private:
 	/**
 	 * Create a context for the current window and display.
 	 */
-	void createContext(const ContextSettings& settings, GlxContext* share);
+	void createContext(WglContext* share);
 
 	/**
 	 * Enables vertical sync if desired by ContextSettings.
 	 */
 	void enableVerticalSync(bool enable);
 
-	// the X11 display
-	Display*   _display;
+	// the window this context renders to
+	HWND _window;
 
-	// the X11 window this context renders to
-	::Window   _window;
+	// the device context of the window
+	HDC _hdc;
 
 	// have we created the window?
-	bool       _ownWindow;
+	bool _ownWindow;
 
 	// the true OpenGl context
-	GLXContext _context;
+	HGLRC _context;
 
 	// the settings according to this context
 	ContextSettings _settings;

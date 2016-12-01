@@ -5,8 +5,6 @@
 
 #include <sg_gui/ContextSettings.h>
 
-using std::abs;
-
 namespace sg_gui {
 
 class GlContextBase {
@@ -48,9 +46,9 @@ protected:
 			int stencilBits,
 			int antialiasing) {
 
-		return abs(static_cast<int>(settings.depthBits         - depthBits))   +
-			   abs(static_cast<int>(settings.stencilBits       - stencilBits)) +
-			   abs(static_cast<int>(settings.antialiasingLevel - antialiasing));
+		return std::abs(static_cast<int>(settings.depthBits         - depthBits))   +
+			   std::abs(static_cast<int>(settings.stencilBits       - stencilBits)) +
+			   std::abs(static_cast<int>(settings.antialiasingLevel - antialiasing));
 	}
 };
 
