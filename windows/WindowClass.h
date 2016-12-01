@@ -1,3 +1,6 @@
+#ifndef SG_GUI_WINDOWS_WINDOW_CLASS_H__
+#define SG_GUI_WINDOWS_WINDOW_CLASS_H__
+
 #define NOMINMAX
 #include <windows.h>
 
@@ -19,3 +22,5 @@ private:
 };
 
 } // namespace sg_gui
+
+#endif // SG_GUI_WINDOWS_WINDOW_CLASS_H__
