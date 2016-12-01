@@ -1,5 +1,5 @@
-#ifndef SG_GUI_X_WINDOW_H__
-#define SG_GUI_X_WINDOW_H__
+#ifndef SG_GUI_WINDOWS_WINWINDOW_H__
+#define SG_GUI_WINDOWS_WINWINDOW_H__
 
 #include <map>
 #include <string>
@@ -103,5 +103,5 @@ private:
 
 } // namespace sg_gui
 
-#endif // SG_GUI_X_WINDOW_H__
+#endif // SG_GUI_WINDOWS_WINWINDOW_H__
 
