@@ -1,3 +1,6 @@
+#include <config.h>
+#ifdef SYSTEM_WINDOWS
+
 #include "WindowClass.h"
 
 #include <sg_gui/windows/WinWindow.h>
@@ -63,3 +66,5 @@ char*
 }
 
 } // namespace sg_gui
+
+#endif
