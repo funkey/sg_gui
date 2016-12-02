@@ -1,8 +1,10 @@
 #include "config.h"
 
 #ifdef HAVE_PNG
+#define int_p_NULL (int*)NULL
 #include <boost/gil/gil_all.hpp>
 #include <boost/gil/extension/io/png_io.hpp>
+#include <util/helpers.hpp>
 using namespace boost::gil;
 #endif
 
@@ -154,6 +156,12 @@ WindowBase::redraw() {
 	GL_ASSERT;
 
 	LOG_ALL(winlog) << "[" << getCaption() << "] finished redrawing" << std::endl;
+
+	if (_saveFrameRequest) {
+
+		saveFrame();
+		_saveFrameRequest = false;
+	}
 }
 
 void
@@ -272,6 +280,9 @@ WindowBase::saveFrame() {
 	// ensure that our context is active
 	OpenGl::Guard guard(this);
 
+	std::string filename = getCaption() + util::to_string_with_leading_zeros(_frameNumber, 8) + ".png";
+	LOG_DEBUG(winlog) << "saving current frame to " << filename << std::endl;
+
 	glReadPixels(
 			0, 0,
 			_resolution.x(), _resolution.y(),
@@ -286,10 +297,12 @@ WindowBase::saveFrame() {
 					_resolution.x()*3);
 
 	png_write_view(
-			"./shots/" + getCaption() + to_string_with_leading_zeros(_frameNumber, 8) + ".png",
+			filename.c_str(),
 			flipped_up_down_view(frameView));
 
 	_frameNumber++;
+#else
+	LOG_DEBUG(winlog) << "save frame requested, but no libpng support compiled" << std::endl;
 #endif
 }
 
