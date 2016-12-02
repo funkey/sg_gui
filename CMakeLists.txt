@@ -1,5 +1,5 @@
 if (WIN32)
-  define_module(sg_gui OBJECT LINKS util cohear imageprocessing opengl glew boost INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
+  define_module(sg_gui OBJECT LINKS util cohear imageprocessing opengl glew boost png INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
 else()
-  define_module(sg_gui OBJECT LINKS util cohear imageprocessing x11 opengl glew boost INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
+  define_module(sg_gui OBJECT LINKS util cohear imageprocessing x11 opengl glew boost png INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/..)
 endif()
