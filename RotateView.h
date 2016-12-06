@@ -76,6 +76,9 @@ private:
 
 	// hightlight on mouse over
 	bool _highlight;
+
+	// show a frame around the content
+	bool _showFrame;
 };
 
 } // namespace sg_gui

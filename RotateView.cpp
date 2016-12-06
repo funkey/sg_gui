@@ -20,7 +20,8 @@ RotateView::RotateView() :
 	_prevW(0.0),
 	_buttonDown(0, 0),
 	_dragging(false),
-	_highlight(false) {}
+	_highlight(false),
+	_showFrame(true) {}
 
 bool
 RotateView::filterDown(DrawBase& /*signal*/) {
@@ -54,49 +55,52 @@ RotateView::filterDown(DrawBase& /*signal*/) {
 	glRotated(_w/M_PI*180.0, _x, _y, _z);
 	glTranslated(-center.x(), -center.y(), -center.z());
 
-	glColor4f((_highlight ? 0.88 : 0.1), 0.2, 0.05, 0.5);
+	if (_showFrame) {
 
-	// draw box around content
-	glLineWidth(1.0);
-	glEnable(GL_LINE_SMOOTH);
+		glColor4f((_highlight ? 0.88 : 0.1), 0.2, 0.05, 0.5);
 
-	glBegin(GL_LINES);
-	glVertex3f(min.x(), min.y(), min.z());
-	glVertex3f(min.x(), min.y(), max.z());
+		// draw box around content
+		glLineWidth(1.0);
+		glEnable(GL_LINE_SMOOTH);
 
-	glVertex3f(min.x(), min.y(), max.z());
-	glVertex3f(min.x(), max.y(), max.z());
+		glBegin(GL_LINES);
+		glVertex3f(min.x(), min.y(), min.z());
+		glVertex3f(min.x(), min.y(), max.z());
 
-	glVertex3f(min.x(), max.y(), max.z());
-	glVertex3f(min.x(), max.y(), min.z());
+		glVertex3f(min.x(), min.y(), max.z());
+		glVertex3f(min.x(), max.y(), max.z());
 
-	glVertex3f(min.x(), max.y(), min.z());
-	glVertex3f(min.x(), min.y(), min.z());
+		glVertex3f(min.x(), max.y(), max.z());
+		glVertex3f(min.x(), max.y(), min.z());
 
-	glVertex3f(max.x(), min.y(), min.z());
-	glVertex3f(max.x(), min.y(), max.z());
+		glVertex3f(min.x(), max.y(), min.z());
+		glVertex3f(min.x(), min.y(), min.z());
 
-	glVertex3f(max.x(), min.y(), max.z());
-	glVertex3f(max.x(), max.y(), max.z());
+		glVertex3f(max.x(), min.y(), min.z());
+		glVertex3f(max.x(), min.y(), max.z());
 
-	glVertex3f(max.x(), max.y(), max.z());
-	glVertex3f(max.x(), max.y(), min.z());
+		glVertex3f(max.x(), min.y(), max.z());
+		glVertex3f(max.x(), max.y(), max.z());
 
-	glVertex3f(max.x(), max.y(), min.z());
-	glVertex3f(max.x(), min.y(), min.z());
+		glVertex3f(max.x(), max.y(), max.z());
+		glVertex3f(max.x(), max.y(), min.z());
 
-	glVertex3f(min.x(), min.y(), min.z());
-	glVertex3f(max.x(), min.y(), min.z());
+		glVertex3f(max.x(), max.y(), min.z());
+		glVertex3f(max.x(), min.y(), min.z());
 
-	glVertex3f(min.x(), min.y(), max.z());
-	glVertex3f(max.x(), min.y(), max.z());
+		glVertex3f(min.x(), min.y(), min.z());
+		glVertex3f(max.x(), min.y(), min.z());
 
-	glVertex3f(min.x(), max.y(), max.z());
-	glVertex3f(max.x(), max.y(), max.z());
+		glVertex3f(min.x(), min.y(), max.z());
+		glVertex3f(max.x(), min.y(), max.z());
 
-	glVertex3f(min.x(), max.y(), min.z());
-	glVertex3f(max.x(), max.y(), min.z());
-	glEnd();
+		glVertex3f(min.x(), max.y(), max.z());
+		glVertex3f(max.x(), max.y(), max.z());
+
+		glVertex3f(min.x(), max.y(), min.z());
+		glVertex3f(max.x(), max.y(), min.z());
+		glEnd();
+	}
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
@@ -261,6 +265,12 @@ RotateView::onSignal(KeyDown& signal) {
 
 		} else
 			LOG_USER(rotateviewlog) << "rotation transformation: " << _x << " " << _y << " " << _z << " " << _w << std::endl;
+	}
+
+	if (signal.key == keys::B) {
+
+		_showFrame = !_showFrame;
+		send<ContentChanged>();
 	}
 }
 
