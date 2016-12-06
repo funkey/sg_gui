@@ -1,7 +1,26 @@
 #include <sstream>
 #include <util/Logger.h>
+#include <util/ProgramOptions.h>
 #include "OpenGl.h"
 #include "ZoomView.h"
+
+util::ProgramOption optionZoomInitialScale(
+		util::_module           = "gui",
+		util::_long_name        = "zoomInitialScale",
+		util::_description_text = "The initial scale.",
+		util::_default_value    = 1.0);
+
+util::ProgramOption optionZoomInitialShiftX(
+		util::_module           = "gui",
+		util::_long_name        = "zoomInitialShiftX",
+		util::_description_text = "The initial shift as (x,y).",
+		util::_default_value    = 0.0);
+
+util::ProgramOption optionZoomInitialShiftY(
+		util::_module           = "gui",
+		util::_long_name        = "zoomInitialShiftY",
+		util::_description_text = "The initial shift as (x,y).",
+		util::_default_value    = 0.0);
 
 namespace sg_gui {
 
@@ -11,8 +30,8 @@ ZoomView::ZoomView(bool autoscale) :
 	_zoomStep(1.1),
 	_dragging(false),
 	_autoscale(autoscale),
-	_userScale(1.0),
-	_userShift(0, 0),
+	_userScale(optionZoomInitialScale),
+	_userShift(optionZoomInitialShiftX, optionZoomInitialShiftY),
 	_autoScale(1.0),
 	_autoShift(0, 0),
 	_scale(1.0),

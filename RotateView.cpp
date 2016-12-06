@@ -2,18 +2,43 @@
 #include <cmath>
 #include <util/Logger.h>
 #include <util/geometry.hpp>
+#include <util/ProgramOptions.h>
 #include "OpenGl.h"
 #include "RotateView.h"
+
+util::ProgramOption optionRotateInitialX(
+		util::_module           = "gui",
+		util::_long_name        = "rotateInitialX",
+		util::_description_text = "The initial rotation as axis/angle representation (x,y,z,w).",
+		util::_default_value    = 0.0);
+
+util::ProgramOption optionRotateInitialY(
+		util::_module           = "gui",
+		util::_long_name        = "rotateInitialY",
+		util::_description_text = "The initial rotation as axis/angle representation (x,y,z,w).",
+		util::_default_value    = 1.0);
+
+util::ProgramOption optionRotateInitialZ(
+		util::_module           = "gui",
+		util::_long_name        = "rotateInitialZ",
+		util::_description_text = "The initial rotation as axis/angle representation (x,y,z,w).",
+		util::_default_value    = 0.0);
+
+util::ProgramOption optionRotateInitialW(
+		util::_module           = "gui",
+		util::_long_name        = "rotateInitialW",
+		util::_description_text = "The initial rotation as axis/angle representation (x,y,z,w).",
+		util::_default_value    = 0.0);
 
 namespace sg_gui {
 
 static logger::LogChannel rotateviewlog("rotateviewlog", "[RotateView] ");
 
 RotateView::RotateView() :
-	_x(0.0),
-	_y(1.0),
-	_z(0.0),
-	_w(0.0),
+	_x(optionRotateInitialX),
+	_y(optionRotateInitialY),
+	_z(optionRotateInitialZ),
+	_w(optionRotateInitialW),
 	_prevX(0.0),
 	_prevY(1.0),
 	_prevZ(0.0),
