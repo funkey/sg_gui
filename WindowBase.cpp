@@ -21,19 +21,19 @@ util::ProgramOption optionWindowBackgroundRed(
 		util::_module           = "gui",
 		util::_long_name        = "windowBackgroundRed",
 		util::_description_text = "The red component of the window background color, between 0 and 1.",
-		util::_default_value    = 0.5);
+		util::_default_value    = 0.1);
 
 util::ProgramOption optionWindowBackgroundGreen(
 		util::_module           = "gui",
 		util::_long_name        = "windowBackgroundGreen",
 		util::_description_text = "The green component of the window background color, between 0 and 1.",
-		util::_default_value    = 0.5);
+		util::_default_value    = 0.1);
 
 util::ProgramOption optionWindowBackgroundBlue(
 		util::_module           = "gui",
 		util::_long_name        = "windowBackgroundBlue",
 		util::_description_text = "The blue component of the window background color, between 0 and 1.",
-		util::_default_value    = 0.5);
+		util::_default_value    = 0.2);
 
 namespace sg_gui {
 
