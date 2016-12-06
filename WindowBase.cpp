@@ -10,11 +10,30 @@ using namespace boost::gil;
 
 #include <util/Logger.h>
 #include <util/helpers.hpp>
+#include <util/ProgramOptions.h>
 #include <sg_gui/OpenGl.h>
 #include <sg_gui/ContextSettings.h>
 #include <sg_gui/Keys.h>
 #include <sg_gui/error_handling.h>
 #include "WindowBase.h"
+
+util::ProgramOption optionWindowBackgroundRed(
+		util::_module           = "gui",
+		util::_long_name        = "windowBackgroundRed",
+		util::_description_text = "The red component of the window background color, between 0 and 1.",
+		util::_default_value    = 0.5);
+
+util::ProgramOption optionWindowBackgroundGreen(
+		util::_module           = "gui",
+		util::_long_name        = "windowBackgroundGreen",
+		util::_description_text = "The green component of the window background color, between 0 and 1.",
+		util::_default_value    = 0.5);
+
+util::ProgramOption optionWindowBackgroundBlue(
+		util::_module           = "gui",
+		util::_long_name        = "windowBackgroundBlue",
+		util::_description_text = "The blue component of the window background color, between 0 and 1.",
+		util::_default_value    = 0.5);
 
 namespace sg_gui {
 
@@ -29,9 +48,9 @@ WindowBase::WindowBase(std::string caption) :
 	_frameNumber(0),
 #endif
 	_frameBuffer(0),
-	_clear_r(0.5),
-	_clear_g(0.5),
-	_clear_b(0.5) {
+	_clear_r(optionWindowBackgroundRed),
+	_clear_g(optionWindowBackgroundGreen),
+	_clear_b(optionWindowBackgroundBlue) {
 
 	// initiate first redraw
 	setDirty();
