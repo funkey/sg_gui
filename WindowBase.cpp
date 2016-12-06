@@ -90,8 +90,9 @@ WindowBase::createGlContext() {
 }
 
 void
-WindowBase::requestFrameSave() {
+WindowBase::requestNextFrameSave() {
 
+	LOG_DEBUG(winlog) << "[" << getCaption() << "] frame save requested" << std::endl;
 	_saveFrameRequest = true;
 }
 

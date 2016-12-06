@@ -115,9 +115,14 @@ public:
 	GlContext* createGlContext() override;
 
 	/**
+	 * Save the current content of the window to a file.
+	 */
+	void saveFrame();
+
+	/**
 	 * If called, the outcome of the next redraw will be saved in a png file.
 	 */
-	void requestFrameSave();
+	void requestNextFrameSave();
 
 	/**
 	 * Callback for size change signals.
@@ -369,11 +374,6 @@ private:
 	 * Free memory of the frame buffer.
 	 */
 	void deleteFrameBuffer();
-
-	/**
-	 * Save the current content of the window to a file.
-	 */
-	void saveFrame();
 
 	// the name of the window
 	std::string _caption;
