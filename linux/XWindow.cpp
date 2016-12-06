@@ -855,6 +855,42 @@ XWindow::keycodeToKey(unsigned int keycode) {
 		case 23:
 			return keys::Tab;
 
+		case 67:
+			return keys::F1;
+
+		case 68:
+			return keys::F2;
+
+		case 69:
+			return keys::F3;
+
+		case 70:
+			return keys::F4;
+
+		case 71:
+			return keys::F5;
+
+		case 72:
+			return keys::F6;
+
+		case 73:
+			return keys::F7;
+
+		case 74:
+			return keys::F8;
+
+		case 75:
+			return keys::F9;
+
+		case 76:
+			return keys::F10;
+
+		case 95:
+			return keys::F11;
+
+		case 96:
+			return keys::F12;
+
 		default:
 			LOG_ALL(xlog) << "received unknown key code: " << keycode << std::endl;
 			return keys::NoKey;
