@@ -9,10 +9,6 @@
 #include <vigra/stdimage.hxx>
 #endif
 
-#ifdef HAVE_CAIRO
-//#include <sg_gui/Cairo.h>
-#endif
-
 #ifdef HAVE_SKIA
 #include <sg_gui/Skia.h>
 #endif
@@ -77,20 +73,6 @@ struct pixel_format_traits<vigra::RGBValue<ValueType> > {
 	enum { gl_format = GL_RGB };
 	enum { gl_type   = pixel_type_traits<value_type>::gl_type };
 };
-
-#endif
-
-#ifdef HAVE_CAIRO
-
-//// specialisation: Cairo
-//template <>
-//struct pixel_format_traits<cairo_pixel_t> {
-
-	//typedef unsigned char      value_type;
-
-	//enum { gl_format = GL_BGRA };
-	//enum { gl_type   = GL_UNSIGNED_BYTE };
-//};
 
 #endif
 
