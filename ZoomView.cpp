@@ -2,6 +2,7 @@
 #include <util/Logger.h>
 #include "OpenGl.h"
 #include "ZoomView.h"
+#include "error_handling.h"
 
 namespace sg_gui {
 
@@ -39,6 +40,8 @@ ZoomView::filterDown(RoiSignal& signal) {
 
 	_zoomedRoi = (signal.roi() - _shift)/_scale;
 
+	LOG_ALL(zoomviewlog) << "zoomed roi is " << _zoomedRoi << std::endl;
+
 	/* To obtain proper perspective deformations, we set the frustum such that 
 	 * the vanishing point is in the middle of the zoomed roi. During drawing, 
 	 * we change the modelview matrix to compensate for that, such that zoomed 
@@ -54,9 +57,27 @@ ZoomView::filterDown(RoiSignal& signal) {
 	float t2d = - _zoomedRoi.height()/2;
 	float b2d = t2d + _zoomedRoi.height();
 
+	LOG_ALL(zoomviewlog) << "frustrum limits: " << l2d << ", " << r2d << ", " << t2d << ", " << b2d << std::endl;
+	LOG_ALL(zoomviewlog) << "clip near: " << _zClipNear << std::endl;
+	LOG_ALL(zoomviewlog) << "clip far : " << _zClipFar  << std::endl;
+	LOG_ALL(zoomviewlog) << "frustrum middle: " << _z2d << std::endl;
+
 	glMatrixMode(GL_PROJECTION);
+	GL_ASSERT;
 	glPushMatrix();
+	GL_ASSERT;
 	glLoadIdentity();
+	GL_ASSERT;
+
+	LOG_ALL(zoomviewlog)
+			<< "setting frustrum to " << std::endl
+			<< l2d*_zClipNear/_z2d << std::endl // left
+			<< r2d*_zClipNear/_z2d << std::endl // right
+			<< b2d*_zClipNear/_z2d << std::endl // bottom
+			<< t2d*_zClipNear/_z2d << std::endl // top
+			<< _zClipNear << std::endl          // near
+			<< _zClipFar << std::endl;          // far
+
 	glFrustum(
 			l2d*_zClipNear/_z2d, // left
 			r2d*_zClipNear/_z2d, // right
@@ -65,6 +86,8 @@ ZoomView::filterDown(RoiSignal& signal) {
 			_zClipNear,          // near
 			_zClipFar            // far
 	);
+
+	GL_ASSERT;
 
 	/* It remains to invert the z-axis to obtain the coordinate system as 
 	 * described above. This is done here, together with translating the world 
@@ -75,6 +98,8 @@ ZoomView::filterDown(RoiSignal& signal) {
 	glLoadIdentity();
 	glTranslatef(-_zoomedRoi.min().x() - _zoomedRoi.width()/2, -_zoomedRoi.min().y() - _zoomedRoi.height()/2, -_z2d);
 	glScalef(1, 1, -1);
+
+	GL_ASSERT;
 
 	signal.roi() = _zoomedRoi;
 	signal.resolution() = signal.resolution()*_scale;
@@ -90,6 +115,8 @@ ZoomView::unfilterDown(RoiSignal& signal) {
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
+
+	GL_ASSERT;
 }
 
 bool
@@ -360,6 +387,10 @@ ZoomView::updateClippingPlanes() {
 	 */
 
 	float maxExtent = std::max(_contentSize.width(), _contentSize.height())/2.0;
+
+	// if there is no content
+	if (maxExtent == 0)
+		maxExtent = 1.0;
 
 	_zClipNear = 2*maxExtent;
 	_zClipFar  = _zClipNear + std::max(10.0, 2*_contentSize.max().z() + 1.0);
