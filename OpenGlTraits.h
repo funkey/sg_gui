@@ -13,7 +13,9 @@
 //#include <sg_gui/Cairo.h>
 #endif
 
-//#include <sg_gui/Skia.h>
+#ifdef HAVE_SKIA
+#include <sg_gui/Skia.h>
+#endif
 
 namespace sg_gui {
 
@@ -92,15 +94,19 @@ struct pixel_format_traits<vigra::RGBValue<ValueType> > {
 
 #endif
 
+#ifdef HAVE_SKIA
+
 // specialisation: Skia
-//template <>
-//struct pixel_format_traits<skia_pixel_t> {
+template <>
+struct pixel_format_traits<::gui::skia_pixel_t> {
 
-	//typedef unsigned char      value_type;
+	typedef unsigned char value_type;
 
-	//enum { gl_format = GL_BGRA };
-	//enum { gl_type   = GL_UNSIGNED_BYTE };
-//};
+	enum { gl_format = GL_BGRA };
+	enum { gl_type   = GL_UNSIGNED_BYTE };
+};
+
+#endif
 
 // specialisation: boost::array<???, 4>
 template <typename ValueType>
