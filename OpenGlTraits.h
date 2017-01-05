@@ -80,7 +80,7 @@ struct pixel_format_traits<vigra::RGBValue<ValueType> > {
 
 // specialisation: Skia
 template <>
-struct pixel_format_traits<::gui::skia_pixel_t> {
+struct pixel_format_traits<::sg_gui::skia_pixel_t> {
 
 	typedef unsigned char value_type;
 

@@ -52,7 +52,7 @@ struct skia_image_adaptor {
 	unsigned int   height;
 };
 
-} // namespace gui
+} // namespace sg_gui
 
 #endif // SG_GUI_SKIA_H__
 
