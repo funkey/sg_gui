@@ -27,8 +27,33 @@ Texture::Texture(GLsizei width, GLsizei height, GLint format) :
 	resize(_width, _height);
 }
 
-Texture::~Texture()
-{
+Texture::Texture(Texture&& other) :
+	_format(other._format),
+	_width(other._width),
+	_height(other._height),
+	_tex(other._tex) {
+
+	other._tex = 0;
+}
+
+Texture&
+Texture::operator=(Texture&& other) {
+
+	_format = other._format;
+	_width  = other._width;
+	_height = other._height;
+	_tex    = other._tex;
+
+	other._tex = 0;
+
+	return *this;
+}
+
+Texture::~Texture() {
+
+	if (_tex == 0)
+		return;
+
 	// make sure we have a valid OpenGl context
 	OpenGl::Guard guard;
 

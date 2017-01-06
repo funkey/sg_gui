@@ -31,6 +31,18 @@ public:
 	Texture(GLsizei data_width, GLsizei data_height, GLint format);
 
 	/**
+	 * Don't allow copying of textures.
+	 */
+	Texture(const Texture& other) = delete;
+	Texture& operator=(const Texture& other) = delete;
+
+	/**
+	 * Move constructor.
+	 */
+	Texture(Texture&& other);
+	Texture& operator=(Texture&& other);
+
+	/**
 	 * Frees the texture and pixel buffer object.
 	 */
 	virtual ~Texture();
