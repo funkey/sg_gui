@@ -2,11 +2,12 @@
 #define SG_GUI_MESHES_H__
 
 #include <imageprocessing/Volume.h>
+#include <util/Lockable.h>
 #include "Mesh.h"
 
 namespace sg_gui {
 
-class Meshes : public Volume {
+class Meshes : public Volume, public Lockable {
 
 public:
 

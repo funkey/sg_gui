@@ -45,6 +45,8 @@ MeshView::onSignal(QuerySize& signal) {
 	if (!_meshes)
 		return;
 
+	LockGuard guard(*_meshes);
+
 	signal.setSize(_meshes->getBoundingBox() + _offset);
 }
 
@@ -78,7 +80,9 @@ MeshView::updateRecording() {
 	if (!_meshes)
 		return;
 
-	OpenGl::Guard guard;
+	LockGuard guard(*_meshes);
+
+	OpenGl::Guard glguard;
 
 	startRecording();
 
