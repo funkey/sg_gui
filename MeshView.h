@@ -2,39 +2,66 @@
 #define SG_GUI_MESH_VIEW_H__
 
 #include <scopegraph/Agent.h>
+#include <imageprocessing/ExplicitVolume.h>
 #include "GuiSignals.h"
+#include "SegmentSignals.h"
 #include "ViewSignals.h"
+#include "KeySignals.h"
 #include "RecordableView.h"
 #include "Meshes.h"
+#include <future>
+#include <thread>
 
 namespace sg_gui {
 
-class SetMeshes : public SetContent {
+/**
+ * A marching cubes adaptor that binarizes an explicit volume by reporting 1 for 
+ * a given label and 0 otherwise.
+ */
+template <typename EV>
+class ExplicitVolumeLabelAdaptor {
 
 public:
 
-	typedef SetContent parent_type;
+	typedef typename EV::value_type value_type;
 
-	SetMeshes(std::shared_ptr<Meshes> meshes) :
-			_meshes(meshes) {}
+	ExplicitVolumeLabelAdaptor(const EV& ev, value_type label) :
+		_ev(ev),
+		_label(label) {}
 
-	std::shared_ptr<Meshes> getMeshes() { return _meshes; }
+	const util::box<float,3>& getBoundingBox() const { return _ev.getBoundingBox(); }
+
+	float operator()(float x, float y, float z) const {
+
+		if (!getBoundingBox().contains(x, y, z))
+			return 0;
+
+		unsigned int dx, dy, dz;
+
+		_ev.getDiscreteCoordinates(x, y, z, dx, dy, dz);
+
+		return (_ev(dx, dy, dz) == _label);
+	}
 
 private:
 
-	std::shared_ptr<Meshes> _meshes;
+	const EV& _ev;
+
+	value_type _label;
 };
 
 class MeshView :
 		public sg::Agent<
 			MeshView,
 			sg::Accepts<
-					SetMeshes,
+					ShowSegment,
+					HideSegment,
 					DrawOpaque,
 					DrawTranslucent,
 					QuerySize,
 					ChangeAlpha,
-					SetAlphaPlane
+					SetAlphaPlane,
+					KeyDown
 			>,
 			sg::Provides<
 					ContentChanged
@@ -44,13 +71,9 @@ class MeshView :
 
 public:
 
-	MeshView() : _alpha(1.0), _haveAlphaPlane(false) {}
-
-	void setMeshes(std::shared_ptr<Meshes> meshes);
+	MeshView(std::shared_ptr<ExplicitVolume<float>> labels);
 
 	void setOffset(util::point<float, 3> offset);
-
-	void onSignal(SetMeshes& signal) { setMeshes(signal.getMeshes()); }
 
 	void onSignal(DrawOpaque& signal);
 
@@ -62,13 +85,31 @@ public:
 
 	void onSignal(SetAlphaPlane& signal);
 
+	void onSignal(ShowSegment& signal);
+
+	void onSignal(HideSegment& signal);
+
+	void onSignal(KeyDown& signal);
+
 private:
+
+	void notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, float label);
+
+	void exportMeshes();
 
 	void updateRecording();
 
 	void setVertexAlpha(const Point3d& p, float r, float g, float b);
 
+	std::shared_ptr<ExplicitVolume<float>> _labels;
+
 	std::shared_ptr<Meshes> _meshes;
+
+	std::map<float, std::shared_ptr<sg_gui::Mesh>> _meshCache;
+
+	std::vector<std::future<std::shared_ptr<sg_gui::Mesh>>> _highresMeshFutures;
+
+	float _minCubeSize;
 
 	double _alpha;
 	util::plane<float, 3> _alphaPlane;

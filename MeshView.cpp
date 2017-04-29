@@ -1,19 +1,27 @@
 #include "OpenGl.h"
 #include "Colors.h"
 #include "MeshView.h"
+#include "MarchingCubes.h"
+#include <util/ProgramOptions.h>
+#include <util/Logger.h>
 #include <util/geometry.hpp>
+#include <fstream>
+
+logger::LogChannel meshviewlog("meshviewlog", "[MeshView] ");
+
+util::ProgramOption optionCubeSize(
+		util::_long_name        = "cubeSize",
+		util::_description_text = "The size of a cube for the marching cubes visualization.",
+		util::_default_value    = 10);
 
 namespace sg_gui {
 
-void
-MeshView::setMeshes(std::shared_ptr<Meshes> meshes) {
-
-	_meshes = meshes;
-	updateRecording();
-
-	send<ContentChanged>();
-}
-
+MeshView::MeshView(std::shared_ptr<ExplicitVolume<float>> labels) :
+	_labels(labels),
+	_meshes(std::make_shared<Meshes>()),
+	_minCubeSize(optionCubeSize),
+	_alpha(1.0),
+	_haveAlphaPlane(false) {}
 void
 MeshView::setOffset(util::point<float, 3> offset) {
 
@@ -45,8 +53,6 @@ MeshView::onSignal(QuerySize& signal) {
 	if (!_meshes)
 		return;
 
-	LockGuard guard(*_meshes);
-
 	signal.setSize(_meshes->getBoundingBox() + _offset);
 }
 
@@ -57,7 +63,6 @@ MeshView::onSignal(ChangeAlpha& signal) {
 	_haveAlphaPlane = false;
 
 	updateRecording();
-
 	send<ContentChanged>();
 }
 
@@ -70,8 +75,145 @@ MeshView::onSignal(SetAlphaPlane& signal) {
 	_haveAlphaPlane = true;
 
 	updateRecording();
-
 	send<ContentChanged>();
+}
+
+void
+MeshView::onSignal(ShowSegment& signal) {
+
+	LockGuard guard(*_meshes);
+
+	unsigned int label = signal.getId();
+
+	LOG_USER(meshviewlog) << "showing label " << label << std::endl;
+
+	if (_meshCache.count(label)) {
+
+		_meshes->add(label, _meshCache[label]);
+
+		updateRecording();
+		send<ContentChanged>();
+
+		return;
+	}
+
+	typedef ExplicitVolumeLabelAdaptor<ExplicitVolume<float>> Adaptor;
+
+	for (float downsample : {32, 16, 8, 4, 2, 1}) {
+
+		auto extractMesh =
+				std::packaged_task<std::shared_ptr<sg_gui::Mesh>()>(
+						[this, label, downsample]() {
+
+							Adaptor adaptor(*this->_labels, label);
+							float cubeSize = this->_minCubeSize*downsample;
+
+							sg_gui::MarchingCubes<Adaptor> marchingCubes;
+							std::shared_ptr<sg_gui::Mesh> mesh = marchingCubes.generateSurface(
+									adaptor,
+									sg_gui::MarchingCubes<Adaptor>::AcceptAbove(0),
+									cubeSize,
+									cubeSize,
+									cubeSize);
+
+							this->notifyMeshExtracted(mesh, label);
+
+							return mesh;
+						}
+				);
+
+		if (downsample == 1)
+			_highresMeshFutures.push_back(extractMesh.get_future());
+
+		std::thread(std::move(extractMesh)).detach();
+	}
+}
+
+void
+MeshView::onSignal(HideSegment& signal) {
+
+	LockGuard guard(*_meshes);
+
+	_meshes->remove(signal.getId());
+
+	updateRecording();
+	send<ContentChanged>();
+}
+
+void
+MeshView::notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, float label) {
+
+	LockGuard guard(*_meshes);
+
+	LOG_USER(meshviewlog) << "finished mesh for " << label << std::endl;
+
+	// don't replace existing mesh with lower resolution mesh
+	if (_meshes->contains(label))
+		if (_meshes->get(label)->getNumVertices() > mesh->getNumVertices())
+			return;
+
+	_meshes->add(label, mesh);
+	_meshCache[label] = mesh;
+
+	updateRecording();
+	send<ContentChanged>();
+}
+
+void
+MeshView::onSignal(KeyDown& signal) {
+
+	if (signal.key == sg_gui::keys::F8) {
+
+		LOG_USER(meshviewlog) << "exporting currently visible meshes" << std::endl;
+
+		exportMeshes();
+	}
+}
+
+void
+MeshView::exportMeshes() {
+
+	std::vector<unsigned int> currentMeshIds;
+	std::vector<std::future<std::shared_ptr<sg_gui::Mesh>>> pendingFutures;
+
+	{
+		LockGuard guard(*_meshes);
+
+		// get IDs of currently visible meshes
+		currentMeshIds = _meshes->getMeshIds();
+
+		// get all currently pending high-res mesh futures
+		std::swap(pendingFutures, _highresMeshFutures);
+	}
+
+	// make sure all pending high-res meshes are done
+	for (auto& future : pendingFutures)
+		future.get();
+
+	LockGuard guard(*_meshes);
+
+	for (int id : currentMeshIds) {
+
+		std::stringstream filename;
+		filename << "mesh_" << id << ".raw";
+
+		std::ofstream file(filename.str().c_str());
+		std::shared_ptr<sg_gui::Mesh> mesh = _meshes->get(id);
+
+		for (int i = 0; i < mesh->getNumTriangles(); i++) {
+
+			const sg_gui::Triangle& triangle = mesh->getTriangle(i);
+
+			for (const sg_gui::Point3d& v : {
+					mesh->getVertex(triangle.v0),
+					mesh->getVertex(triangle.v1),
+					mesh->getVertex(triangle.v2) }) {
+
+				file << v.x() << " " << v.y() << " " << v.z() << " ";
+			}
+			file << std::endl;
+		}
+	}
 }
 
 void
@@ -80,9 +222,8 @@ MeshView::updateRecording() {
 	if (!_meshes)
 		return;
 
-	LockGuard guard(*_meshes);
-
-	OpenGl::Guard glguard;
+	LockGuard meshGuard(*_meshes);
+	OpenGl::Guard guard;
 
 	startRecording();
 
