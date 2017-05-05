@@ -34,8 +34,7 @@ class ImageView :
 						DrawTranslucent,
 						QuerySize,
 						SetImage,
-						ChangeAlpha,
-						MouseDown
+						ChangeAlpha
 				>,
 				sg::Provides<
 						ContentChanged
@@ -61,7 +60,7 @@ public:
 
 	void onSignal(ChangeAlpha& signal);
 
-	void onSignal(MouseDown& signal);
+	std::shared_ptr<Image> getImage() { return _image; }
 
 private:
 

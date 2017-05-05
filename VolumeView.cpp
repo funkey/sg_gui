@@ -55,6 +55,15 @@ VolumeView::onSignal(PointerDown& signal) {
 		util::point<float,3> prev = _prevPointerDown;
 		_prevPointerDown = intersection;
 
+		unsigned int x, y, z;
+		auto image = _imageView->getImage();
+		image->getDiscreteCoordinates(
+				intersection.x(),
+				intersection.y(),
+				intersection.z(),
+				x, y, z);
+		std::cout << "value at " << intersection << " is " << (*image)(x, y, z) << std::endl;
+
 		if (util::length(prev - intersection) >= 1.0)
 			return;
 
