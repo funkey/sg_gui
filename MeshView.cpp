@@ -108,7 +108,8 @@ MeshView::onSignal(ShowSegment& signal) {
 
 	typedef ExplicitVolumeLabelAdaptor<ExplicitVolume<float>> Adaptor;
 
-	for (float downsample : {32, 16, 8, 4, 2, 1}) {
+	for (float downsample : {1}) {
+	//for (float downsample : {32, 16, 8, 4, 2, 1}) {
 
 		auto extractMesh =
 				std::packaged_task<std::shared_ptr<sg_gui::Mesh>()>(
@@ -239,6 +240,8 @@ MeshView::exportMeshes() {
 
 void
 MeshView::updateRecording() {
+
+	return;
 
 	if (!_meshes)
 		return;
