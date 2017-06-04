@@ -117,6 +117,9 @@ private:
 	bool _haveAlphaPlane;
 
 	util::point<float, 3> _offset;
+
+	unsigned int _numThreads;
+	unsigned int _maxNumThreads;
 };
 
 } // namespace sg_gui

@@ -14,6 +14,11 @@ util::ProgramOption optionCubeSize(
 		util::_description_text = "The size of a cube for the marching cubes visualization.",
 		util::_default_value    = 10);
 
+util::ProgramOption optionMaxNumThreads(
+		util::_long_name        = "maxNumThreads",
+		util::_description_text = "The maximal number of threads to use for mesh extraction.",
+		util::_default_value    = 10);
+
 namespace sg_gui {
 
 MeshView::MeshView(std::shared_ptr<ExplicitVolume<float>> labels) :
@@ -21,7 +26,9 @@ MeshView::MeshView(std::shared_ptr<ExplicitVolume<float>> labels) :
 	_meshes(std::make_shared<Meshes>()),
 	_minCubeSize(optionCubeSize),
 	_alpha(1.0),
-	_haveAlphaPlane(false) {}
+	_haveAlphaPlane(false),
+	_numThreads(0),
+	_maxNumThreads(optionMaxNumThreads) {}
 void
 MeshView::setOffset(util::point<float, 3> offset) {
 
@@ -127,7 +134,13 @@ MeshView::onSignal(ShowSegment& signal) {
 		if (downsample == 1)
 			_highresMeshFutures.push_back(extractMesh.get_future());
 
+		// don't overdo it...
+		while (_numThreads > _maxNumThreads)
+			usleep(1000);
+
 		std::thread(std::move(extractMesh)).detach();
+
+		_numThreads++;
 	}
 }
 
@@ -159,6 +172,10 @@ MeshView::notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, float label) {
 
 	updateRecording();
 	send<ContentChanged>();
+
+	LOG_USER(meshviewlog) << "added mesh " << label << std::endl;
+
+	_numThreads--;
 }
 
 void
