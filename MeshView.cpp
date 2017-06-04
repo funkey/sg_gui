@@ -81,20 +81,22 @@ MeshView::onSignal(SetAlphaPlane& signal) {
 void
 MeshView::onSignal(ShowSegment& signal) {
 
-	LockGuard guard(*_meshes);
-
 	unsigned int label = signal.getId();
 
 	LOG_USER(meshviewlog) << "showing label " << label << std::endl;
 
-	if (_meshCache.count(label)) {
+	{
+		LockGuard guard(*_meshes);
 
-		_meshes->add(label, _meshCache[label]);
+		if (_meshCache.count(label)) {
 
-		updateRecording();
-		send<ContentChanged>();
+			_meshes->add(label, _meshCache[label]);
 
-		return;
+			updateRecording();
+			send<ContentChanged>();
+
+			return;
+		}
 	}
 
 	typedef ExplicitVolumeLabelAdaptor<ExplicitVolume<float>> Adaptor;
@@ -173,26 +175,28 @@ MeshView::onSignal(KeyDown& signal) {
 void
 MeshView::exportMeshes() {
 
-	std::vector<unsigned int> currentMeshIds;
 	std::vector<std::future<std::shared_ptr<sg_gui::Mesh>>> pendingFutures;
 
 	{
 		LockGuard guard(*_meshes);
 
-		// get IDs of currently visible meshes
-		currentMeshIds = _meshes->getMeshIds();
-
 		// get all currently pending high-res mesh futures
 		std::swap(pendingFutures, _highresMeshFutures);
 	}
+
+	LOG_USER(meshviewlog) << "waiting for all high-res meshes to complete..." << std::endl;
 
 	// make sure all pending high-res meshes are done
 	for (auto& future : pendingFutures)
 		future.get();
 
+	LOG_USER(meshviewlog) << "all high-res meshes completed" << std::endl;
+
 	LockGuard guard(*_meshes);
 
-	for (int id : currentMeshIds) {
+	for (int id : _meshes->getMeshIds()) {
+
+		LOG_USER(meshviewlog) << "exporting mesh " << id << std::endl;
 
 		std::stringstream filename;
 		filename << "mesh_" << id << ".raw";
