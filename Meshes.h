@@ -13,7 +13,7 @@ public:
 
 	Meshes() {}
 
-	void add(unsigned int id, std::shared_ptr<Mesh> mesh, int color = -1) {
+	void add(uint64_t id, std::shared_ptr<Mesh> mesh, int color = -1) {
 
 		_meshes[id] = mesh;
 		_colors[id] = (color < 0 ? id : color);
@@ -21,7 +21,7 @@ public:
 		setBoundingBoxDirty();
 	}
 
-	void remove(unsigned int id) {
+	void remove(uint64_t id) {
 
 		_meshes.erase(id);
 		_colors.erase(id);
@@ -29,7 +29,7 @@ public:
 		setBoundingBoxDirty();
 	}
 
-	std::shared_ptr<Mesh> get(unsigned int id) {
+	std::shared_ptr<Mesh> get(uint64_t id) {
 
 		if (_meshes.count(id))
 			return _meshes[id];
@@ -37,14 +37,14 @@ public:
 		return std::shared_ptr<Mesh>();
 	}
 
-	int getColor(unsigned int id) {
+	int getColor(uint64_t id) {
 
 		return _colors[id];
 	}
 
-	const std::vector<unsigned int> getMeshIds() const {
+	const std::vector<uint64_t> getMeshIds() const {
 
-		std::vector<unsigned int> ids;
+		std::vector<uint64_t> ids;
 		for (auto& p : _meshes)
 			ids.push_back(p.first);
 		return ids;
@@ -52,7 +52,7 @@ public:
 
 	void clear() { _meshes.clear(); _colors.clear(); setBoundingBoxDirty(); }
 
-	bool contains(unsigned int id) const { return _meshes.count(id); }
+	bool contains(uint64_t id) const { return _meshes.count(id); }
 
 private:
 
@@ -60,15 +60,15 @@ private:
 
 		util::box<float,3> boundingBox;
 
-		std::map<unsigned int, std::shared_ptr<Mesh> >::const_iterator i;
+		std::map<uint64_t, std::shared_ptr<Mesh> >::const_iterator i;
 		for (i = _meshes.begin(); i != _meshes.end(); i++)
 			boundingBox += i->second->getBoundingBox();
 
 		return boundingBox;
 	}
 
-	std::map<unsigned int, std::shared_ptr<Mesh> > _meshes;
-	std::map<unsigned int, int >                   _colors;
+	std::map<uint64_t, std::shared_ptr<Mesh> > _meshes;
+	std::map<uint64_t, int >                   _colors;
 };
 
 } // namespace sg_gui

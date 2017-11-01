@@ -71,7 +71,7 @@ class MeshView :
 
 public:
 
-	MeshView(std::shared_ptr<ExplicitVolume<float>> labels);
+	MeshView(std::shared_ptr<ExplicitVolume<uint64_t>> labels);
 
 	void setOffset(util::point<float, 3> offset);
 
@@ -93,7 +93,7 @@ public:
 
 private:
 
-	void notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, float label);
+	void notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, uint64_t label);
 
 	void exportMeshes();
 
@@ -101,11 +101,11 @@ private:
 
 	void setVertexAlpha(const Point3d& p, float r, float g, float b);
 
-	std::shared_ptr<ExplicitVolume<float>> _labels;
+	std::shared_ptr<ExplicitVolume<uint64_t>> _labels;
 
 	std::shared_ptr<Meshes> _meshes;
 
-	std::map<float, std::shared_ptr<sg_gui::Mesh>> _meshCache;
+	std::map<uint64_t, std::shared_ptr<sg_gui::Mesh>> _meshCache;
 
 	std::vector<std::future<std::shared_ptr<sg_gui::Mesh>>> _highresMeshFutures;
 

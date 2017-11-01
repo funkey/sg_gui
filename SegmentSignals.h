@@ -7,17 +7,17 @@ class SegmentSignal : sg::Signal {
 
 public:
 
-	SegmentSignal(unsigned int id) : _id(id) {}
+	SegmentSignal(uint64_t id) : _id(id) {}
 
-	unsigned int getId() { return _id; }
+	uint64_t getId() { return _id; }
 
 private:
 
-	unsigned int _id;
+	uint64_t _id;
 };
 
-class ShowSegment : public SegmentSignal { public: ShowSegment(unsigned int id) : SegmentSignal(id) {} };
-class HideSegment : public SegmentSignal { public: HideSegment(unsigned int id) : SegmentSignal(id) {} };
+class ShowSegment : public SegmentSignal { public: ShowSegment(uint64_t id) : SegmentSignal(id) {} };
+class HideSegment : public SegmentSignal { public: HideSegment(uint64_t id) : SegmentSignal(id) {} };
 
 } // namespace sg_gui
 

@@ -34,7 +34,7 @@ NormalsView::updateRecording() {
 	glEnable(GL_DEPTH_TEST);
 	glColor3f(0, 0, 0);
 
-	foreach (unsigned int id, _meshes->getMeshIds()) {
+	foreach (uint64_t id, _meshes->getMeshIds()) {
 
 		const std::vector<sg_gui::Triangle>& triangles = _meshes->get(id)->getTriangles();
 
