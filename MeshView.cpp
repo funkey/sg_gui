@@ -199,6 +199,8 @@ MeshView::exportMeshes() {
 	{
 		LockGuard guard(*_meshes);
 
+		currentMeshIds = _meshes->getMeshIds();
+
 		// get all currently pending high-res mesh futures
 		std::swap(pendingFutures, _highresMeshFutures);
 	}
