@@ -21,7 +21,7 @@ util::ProgramOption optionMaxNumThreads(
 
 namespace sg_gui {
 
-MeshView::MeshView(std::shared_ptr<ExplicitVolume<float>> labels) :
+MeshView::MeshView(std::shared_ptr<ExplicitVolume<uint64_t>> labels) :
 	_labels(labels),
 	_meshes(std::make_shared<Meshes>()),
 	_minCubeSize(optionCubeSize),
@@ -106,7 +106,7 @@ MeshView::onSignal(ShowSegment& signal) {
 		}
 	}
 
-	typedef ExplicitVolumeLabelAdaptor<ExplicitVolume<float>> Adaptor;
+	typedef ExplicitVolumeLabelAdaptor<ExplicitVolume<uint64_t>> Adaptor;
 
 	for (float downsample : {32, 16, 8, 4, 2, 1}) {
 
@@ -156,7 +156,7 @@ MeshView::onSignal(HideSegment& signal) {
 }
 
 void
-MeshView::notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, float label) {
+MeshView::notifyMeshExtracted(std::shared_ptr<sg_gui::Mesh> mesh, uint64_t label) {
 
 	LockGuard guard(*_meshes);
 
@@ -192,6 +192,7 @@ MeshView::onSignal(KeyDown& signal) {
 void
 MeshView::exportMeshes() {
 
+	std::vector<uint64_t> currentMeshIds;
 	std::vector<std::future<std::shared_ptr<sg_gui::Mesh>>> pendingFutures;
 
 	{
@@ -211,7 +212,7 @@ MeshView::exportMeshes() {
 
 	LockGuard guard(*_meshes);
 
-	for (int id : _meshes->getMeshIds()) {
+	for (uint64_t id : currentMeshIds) {
 
 		LOG_USER(meshviewlog) << "exporting mesh " << id << std::endl;
 
@@ -251,7 +252,7 @@ MeshView::updateRecording() {
 	glPushMatrix();
 	glTranslatef(_offset.x(), _offset.y(), _offset.z());
 
-	foreach (unsigned int id, _meshes->getMeshIds()) {
+	foreach (uint64_t id, _meshes->getMeshIds()) {
 
 		// colorize the mesh according to its id
 		unsigned char cr, cg, cb;
