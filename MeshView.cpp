@@ -88,7 +88,7 @@ MeshView::onSignal(SetAlphaPlane& signal) {
 void
 MeshView::onSignal(ShowSegment& signal) {
 
-	unsigned int label = signal.getId();
+	uint64_t label = signal.getId();
 
 	LOG_USER(meshviewlog) << "showing label " << label << std::endl;
 
@@ -193,13 +193,10 @@ MeshView::onSignal(KeyDown& signal) {
 void
 MeshView::exportMeshes() {
 
-	std::vector<uint64_t> currentMeshIds;
 	std::vector<std::future<std::shared_ptr<sg_gui::Mesh>>> pendingFutures;
 
 	{
 		LockGuard guard(*_meshes);
-
-		currentMeshIds = _meshes->getMeshIds();
 
 		// get all currently pending high-res mesh futures
 		std::swap(pendingFutures, _highresMeshFutures);
@@ -215,7 +212,7 @@ MeshView::exportMeshes() {
 
 	LockGuard guard(*_meshes);
 
-	for (uint64_t id : currentMeshIds) {
+	for (uint64_t id : _meshes->getMeshIds()) {
 
 		LOG_USER(meshviewlog) << "exporting mesh " << id << std::endl;
 
